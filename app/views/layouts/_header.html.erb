@@ -1,0 +1,26 @@
+<header class="navbar navbar-fixed-top navbar-inverse">
+  <div class="container">
+    <%= link_to "Mira", root_path, id: "logo" %>
+    <nav>
+      <ul class="nav navbar-nav navbar-right">
+        <!--<li><%= link_to "Home",   '#' %></li>
+        <li><%= link_to "Projects", projects_path %></li>-->
+<%
+=begin
+%>
+              <% if user_signed_in? %>
+                <li>
+                <%= link_to('Logout', destroy_user_session_path, :method => :delete) %>        
+                </li>
+              <% else %>
+                <li>
+                <%= link_to('Login', new_user_session_path)  %>  
+                </li>
+              <% end %> 
+<%
+=end
+%>
+      </ul>
+    </nav>
+  </div>
+</header>

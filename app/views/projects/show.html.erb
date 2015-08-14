@@ -1,0 +1,68 @@
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">Project Overview</h3>
+  </div>
+
+  <%= render 'error_messages' %>    
+
+  <div class="panel-body">
+    <div class="col-md-4">
+      <p>
+  	    <b>Project ID</b><br />
+  	    <%= @project.name %><br />
+        <b>Project Description</b><br />
+        <%= @project.description %>
+      </p>
+      <hr />
+    </div>
+    <div class="col-md-12">
+
+
+      <% if not @datapackages.empty? %>
+        <table class="table">
+          <tr>
+            <th>Datapackage</th>
+            <th>Created</th>
+            <th>Process Log</th>
+          </tr>
+          <% @datapackages.each do |dp| %>
+            <tr>
+              <td><%= link_to dp.datafile_file_name, dp.datafile.url %></td>
+              <th><%= dp.created_at.strftime("%FT%R") %></td>
+              <td><a href="/job_logs/project_<%= dp.project_id %>/<%= dp.datafile_file_name %>.log"><%= dp.datafile_file_name %>.log</a></td>
+            </tr>
+          <% end %>
+        </table>
+      <% else %>
+        <p>No datapackage.json file has been uploaded</p>
+      <% end %>
+
+
+      <br />
+      <% if not @datasources.empty? %>
+        <table class="table">
+          <tr>
+            <th>Data source</th>
+            <th>Created</th>
+            <th>Process Log</th>
+          </tr>
+
+          <% @datasources.each do |ds| %>
+            <tr>
+              <td><%= link_to ds.datafile_file_name, ds.datafile.url %></td>
+              <th><%= ds.created_at.strftime("%FT%R") %></td>
+              <td><a href="/job_logs/project_<%= ds.project_id %>/<%= ds.datafile_file_name %>.log"><%= ds.datafile_file_name %>.log</a></td>
+            </tr>
+          <% end %>
+        </table>
+      <% else %>
+        <p>No csv files have been uploaded</p>
+      <% end %>
+
+    </div>
+  </div>
+</div>
+
+<% if user_signed_in? %>
+  <%= render :partial => 'upload_project_files' %>
+<% end %>

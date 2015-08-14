@@ -1,0 +1,8 @@
+<% provide(:title, 'Edit Project') %>
+<h1>Project</h1>
+
+<%= render :partial => 'form' %>
+
+<% if user_signed_in? %>
+  <%= render :partial => 'upload_project_files' %>
+<% end %>

@@ -1,0 +1,236 @@
+
+
+<div class="col-md-6">
+  <h3>Project Details</h3>
+  <table class="table">
+    <tbody>
+      <tr>
+        <td><strong>Project ID</strong></td>
+        <td><%= @project.id %></td>
+      </tr>
+      <tr>
+        <td><strong>Project Name</strong></td>
+        <td><%= @project.name %></td>
+      </tr>
+      <tr>
+        <td><strong>Project Description</strong></td>
+        <td><%= @project.description %></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <br /><br />
+</div>
+
+
+<div class="col-md-9">
+  <h3>API Endpoints</h3>
+  <table class="table table-bordered table-hover" border="1">
+    <tbody>
+      <tr>
+        <th><strong>Description</strong></th>
+        <th><strong>HTTP Method</strong></th>
+        <th><strong>API Endpoint</strong></th>
+      </tr>
+    </tbody>
+    <tr>
+      <td>All projects</td>
+      <td>GET</td>
+      <td><a class="api-endpoint-link" href="<%= root_url %>api/projects"><%= root_url %>api/projects</a></td>
+    </tr>
+    <tr>
+      <td>This project</td>
+      <td>GET</td>
+      <td><a class="api-endpoint-link" href="<%= root_url %>api/projects/<%= @project.id %>"><%= root_url %>api/projects/<%= @project.id %></a></td>
+    </tr>
+      <tr>
+        <td>Project tables</td>
+        <td>GET</td>
+        <td><a class="api-endpoint-link" href="<%= root_url %>api/projects/<%= @project.id %>/tables"><%= root_url %>api/projects/<%= @project.id %>/tables</a></td>
+      </tr>
+      <tr>
+        <td><strong>Tables</strong></td>
+        <td></td>
+      </tr>
+      <% @datasources.each do |ds| %>
+        <tr>
+          <td>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<%= ds.table_ref %></td>
+          <td>GET</td>
+          <td>
+            <dl class="dl-horizontal2">
+              <dt width="40px">Detail</dt>
+              <dd><a class="api-endpoint-link" href="<%= root_url %>api/projects/<%= @project.id %>/tables/<%= ds.table_ref %>"><%= root_url %>api/projects/<%= @project.id %>/tables/<%= ds.table_ref %></a></dd>
+              <dt width="40px">Columns</dt>
+              <dd><a class="api-endpoint-link" href="<%= root_url %>api/projects/<%= @project.id %>/tables/<%= ds.table_ref %>/columns"><%= root_url %>api/projects/<%= @project.id %>/tables/<%= ds.table_ref %>/columns</a></dd>
+              <dt width="40px">Data</dt>
+              <dd><a class="api-endpoint-link" href="<%= root_url %>api/projects/<%= @project.id %>/tables/<%= ds.table_ref %>/data"><%= root_url %>api/projects/<%= @project.id %>/tables/<%= ds.table_ref %>/data</a></dd>
+            </dl>
+          </td>
+        </tr>
+      <% end %>
+<!--        <tr>
+        <td>Table detail</td>
+        <td>GET</td>
+        <td><pre><%= root_url %>api/projects/<%= @project.id %>/tables/<strong>[table_ref]</strong></pre>where [table_ref] is the table reference assigned during the import process</td>
+      </tr>
+      <tr>
+        <td>Table column details</td>
+        <td>GET</td>
+        <td><pre><%= root_url %>api/projects/<%= @project.id %>/tables/<strong>[table_ref]</strong>/columns</pre>where [table_ref] is the table reference assigned during the import process</td>
+      </tr>
+      <tr>
+        <td>Table data</td>
+        <td>GET</td>
+        <td><pre><%= root_url %>api/projects/<%= @project.id %>/tables/<strong>[table_ref]</strong>/data<strong>[?field1=value1&field2=value2...]</strong></pre>where [table_ref] is the table reference assigned during the import process and [?field1=value1&field2=value2...] is an optional query string of field-value pairs which are used to filter the table.<a href="#querying-data"> See below for more detail.</a></td>
+      </tr>  -->     
+
+    </tbody>
+  </table>
+
+  <br /><br />
+</div>
+
+
+<div id="querying-data" name="querying-data" class="col-md-9">
+  <br />
+  <h3>Querying</h3>
+
+  <p>
+    Consider a table <i>mytable</i> in your project, with columns <i>col1</i>, <i>col2</i> and <i>col3</i>. To get rows where <i>col1</i> equals XXX, <i>col2</i> equals YYY and <i>col3</i> equals ZZZ, the corresponding GET request would be:
+  </p>
+  <pre><%= root_url %>api/projects/<%= @project.id %>/tables/<strong>mytable</strong>/data<strong>?col1=XXX&col2=YYY&col3=ZZZ</strong></pre>
+  <p>   
+    Each column has additional query fields which can be used for filtering. For example, with a text column <i>col1</i>, and integer columns <i>col2</i> and <i>col3</i> in table <i>mytable</i>, to retrieve rows where <i>col1</i> contains the text "foo", <i>col2</i> is less than 10 and <i>col3</i> is greater than 5, the request would look like:
+  </p>
+  <pre><%= root_url %>api/projects/<%= @project.id %>/tables/mytable/data?<strong>col1_contains=foo&col2_lt=10&col3_gt=5</strong></pre>
+
+  <br />
+  <p><strong>The following table outlines the query fields which can be used in the query string. The available query fields depends on the database column type</strong></p>
+  <table class="table table-bordered table-hover" border="1">
+    <thead>
+      <tr>
+        <th>Field-value Pairs</th>
+        <th>Description</th>
+        <th>Available for Column Types</th>
+      </tr>
+    </thead>
+      <tr>
+        <td>[<i>column</i>]=value</td>
+        <td>Return rows where [<i>column</i>] equals <i>value</i></td>
+        <td>All column types</td>
+      </tr>
+      <tr>
+        <td>[<i>column</i>]<strong>_contains</strong>=value</td>
+        <td>Return rows where [<i>column</i>] contains <i>value</i></td>
+        <td><i>text</i> only</td>
+      </tr>
+      <tr>
+        <td>[<i>column</i>]<strong>_not_contains</strong>=value</td>
+        <td>Return rows where [<i>column</i>] does not contain <i>value</i></td>
+        <td><i>text</i> only</td>
+      </tr>
+      <tr>
+        <td>[<i>column</i>]<strong>_begins</strong>=value</td>
+        <td>Return rows where [<i>column</i>] begins with <i>value</i></td>
+        <td><i>text</i> only</td>
+      </tr>
+      <tr>
+        <td>[<i>column</i>]<strong>_not_begins</strong>=value</td>
+        <td>Return rows where [<i>column</i>] does not begin with <i>value</i></td>
+        <td><i>text</i> only</td>
+      </tr>
+      <tr>
+        <td>[<i>column</i>]<strong>_ends</strong>=value</td>
+        <td>Return rows where [<i>column</i>] ends with <i>value</i></td>
+        <td><i>text</i> only</td>
+      </tr>
+      <tr>
+        <td>[<i>column</i>]<strong>_not_ends</strong>=value</td>
+        <td>Return rows where [<i>column</i>] does not end with <i>value</i></td>
+        <td><i>text</i> only</td>
+      </tr>
+      <tr>
+        <td>[<i>column</i>]<strong>_lt</strong>=value</td>
+        <td>Return rows where [<i>column</i>] is less than <i>value</i></td>
+        <td><i>integer, float, decimal, date, time, datetime, timestamp</i></td>
+      </tr>
+      <tr>
+        <td>[<i>column</i>]<strong>_le</strong>=value</td>
+        <td>Return rows where [<i>column</i>] is less than or equal to <i>value</i></td>
+        <td><i>integer, float, decimal, date, time, datetime, timestamp</i></td>
+      </tr>
+      <tr>
+        <td>[<i>column</i>]<strong>_gt</strong>=value</td>
+        <td>Return rows where [<i>column</i>] is greater than <i>value</i></td>
+        <td><i>integer, float, decimal, date, time, datetime, timestamp</i></td>
+      </tr>
+      <tr>
+        <td>[<i>column</i>]<strong>_ge</strong>=value</td>
+        <td>Return rows where [<i>column</i>] is greater than or equal to <i>value</i></td>
+        <td><i>integer, float, decimal, date, time, datetime, timestamp</i></td>
+      </tr>
+  </table>
+
+
+  <br /><br />
+</div>
+
+
+
+<div id="ordering-data" name="ordering-data" class="col-md-9">
+  <h3>Ordering</h3>
+
+  <p>
+    To apply ordering to the query, the <i>order=[column]</i> field-value pair is added to the query string. For example, to request rows from the <i>mytable</i> table, ordered by <i>col1</i>:</p>
+
+    <pre><%= root_url %>api/projects/<%= @project.id %>/tables/mytable/data?<strong>order=col1</strong></pre>    
+
+    <p>Ascending order is applied by default. To apply descending order, the above example would become:</p>
+
+    <pre><%= root_url %>api/projects/<%= @project.id %>/tables/mytable/data?order=col1<strong>:desc</strong></pre>    
+
+    <p>To order by multiple columns, delimit each column name with a comma. For example, to order by <i>col1</i> and <i>col2</i> :</p>
+
+    <pre><%= root_url %>api/projects/<%= @project.id %>/tables/mytable/data?<strong>order=col1,col2</strong></pre>    
+
+  <br /><br />
+</div>
+
+
+
+
+
+
+<div id="paging-data" name="paging-data" class="col-md-9">
+
+  <h3>Paging</h3>
+  <p>
+    By default, the API returns <%= Rails.configuration.x.api_default_per_page %> rows per page. This can be adjusted using the <i>per_page</i> query field. A particular page number can be requested using the <i>page</i> query field, e.g. for 50 rows per page, and the 4<sup>th</sup> such page:
+  </p>
+
+  <pre><%= root_url %>api/projects/<%= @project.id %>/tables/mytable/data?<strong>per_page=50&page=4</strong>&col1=XXX...</pre>
+
+  <p>
+    The maximum allowable <i>per_page</i> value on this server is <%= Rails.configuration.x.api_max_per_page %> (and can be adjusted by the server administrator).
+    <br /><br />
+    Paging links are included in the response's <a href="http://www.w3.org/wiki/LinkHeader">HTTP Link Header</a>. E.g. if you request page 4 from <i>mytable</i> they will look like:
+  </p>    
+  <pre>&lt;<%= root_url %>api/projects/<%= @project.id %>/tables/mytable/data?page=1&gt;; rel="first",<br />&lt;<%= root_url %>api/projects/<%= @project.id %>/tables/mytable/data?page=3&gt;; rel="prev",<br />&lt;<%= root_url %>api/projects/<%= @project.id %>/tables/mytable/data?page=21&gt;; rel="last",<br />&lt;<%= root_url %>api/projects/<%= @project.id %>/tables/mytable/data?page=5&gt;; rel="next"</pre>
+
+  <p>The number of records per page and the total number of records are returned in the <i>Records-Per-Page</i> and <i>Records-Total</i> HTTP response headers.
+  These provide what's needed to implement pagination on the client side.
+  </p>
+  <br /><br />
+</div>
+
+
+<div id="datatables-info" name="datatables-info" class="col-md-9">
+  <h3>DataTables</h3>
+  <p>
+    The API is capable of responding to requests from the <a href="http://www.datatables.net">DataTables</a> front-end javascript library.
+
+    <br />Note: DataTables AJAX requests to this API must use the POST HTTP method.
+  </p>
+
+  <br /><br />
+</div>

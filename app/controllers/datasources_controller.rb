@@ -1,0 +1,2 @@
+class DatasourcesController < ApplicationController  
+end

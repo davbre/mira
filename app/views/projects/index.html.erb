@@ -1,0 +1,30 @@
+<% provide(:title, 'Projects') %>
+<h1>Projects</h1>
+
+<% if user_signed_in? %>
+  <%= link_to "New project", new_project_path, :class => "btn btn-primary" %>
+  <br /><br />
+<% end %>
+<%= paginate @projects %>
+<table class="table">
+  <thead>
+    <th>Project ID</th>
+    <th>Project Name</th>
+    <th>Description</th>
+    <th> </th>
+  </thead>
+  <% @projects.each do |proj| %>  
+    <tr>
+      <td><%= proj.id %></td>
+      <td><%= link_to proj.name, proj %></td>
+      <td><%= proj.description %></td>
+      <td><a href="/projects/<%= proj.id %>/api-details">API details</a></td>
+      <% if user_signed_in? %>
+        <td><%= link_to "Edit Project", edit_project_path(proj), :class => "btn btn-xs btn-info" %></td>
+        <td><%= link_to "delete", proj, method: :delete,
+                        data: { confirm: "You sure?" }, :class => "btn btn-xs btn-danger" %></td>      
+      <%end %>
+    </tr>
+  <% end %>  
+</table>
+<%= paginate @projects %>

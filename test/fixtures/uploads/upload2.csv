@@ -1,0 +1,101 @@
+studyid,siteid,subjid,usubjid,invnam,country,sex,armcd,arm,actarmcd,actarm,rfstdtc,rfendtc,age,ageu,domain
+ABC001,101,01,ABC001-101-01,Dr. Mr. Sienna Barrows,FRA,F,TRTC,Treatment C,TRTC,Treatment C,2014-06-25,2014-07-22,41,years,DM
+ABC001,101,02,ABC001-101-02,Dr. Mr. Sienna Barrows,FRA,F,PBO,Placebo,PBO,Placebo,2014-03-01,2014-05-04,60,years,DM
+ABC001,101,03,ABC001-101-03,Dr. Mr. Sienna Barrows,FRA,F,TRTC,Treatment C,SCRNFAIL,Screen Failure,,2014-03-02,64,years,DM
+ABC001,101,04,ABC001-101-04,Dr. Mr. Sienna Barrows,FRA,F,TRTA,Treatment A,TRTA,Treatment A,2014-03-21,2014-05-02,36,years,DM
+ABC001,101,05,ABC001-101-05,Dr. Mr. Sienna Barrows,FRA,M,TRTC,Treatment C,TRTC,Treatment C,2014-03-20,2014-05-16,23,years,DM
+ABC001,102,01,ABC001-102-01,Dr. Donald McClure,DEU,F,PBO,Placebo,PBO,Placebo,2014-05-19,2014-05-19,40,years,DM
+ABC001,102,02,ABC001-102-02,Dr. Donald McClure,DEU,M,TRTB,Treatment B,TRTB,Treatment B,2014-05-25,2014-07-31,37,years,DM
+ABC001,102,03,ABC001-102-03,Dr. Donald McClure,DEU,F,TRTA,Treatment A,TRTA,Treatment A,2014-11-03,2014-12-12,48,years,DM
+ABC001,102,04,ABC001-102-04,Dr. Donald McClure,DEU,M,TRTA,Treatment A,TRTA,Treatment A,2014-11-15,2014-11-28,60,years,DM
+ABC001,102,05,ABC001-102-05,Dr. Donald McClure,DEU,F,TRTC,Treatment C,TRTC,Treatment C,2014-03-14,2014-05-22,65,years,DM
+ABC001,102,06,ABC001-102-06,Dr. Donald McClure,DEU,M,TRTC,Treatment C,TRTC,Treatment C,2014-08-22,2014-09-20,35,years,DM
+ABC001,102,07,ABC001-102-07,Dr. Donald McClure,DEU,F,TRTB,Treatment B,SCRNFAIL,Screen Failure,,2014-03-04,37,years,DM
+ABC001,102,08,ABC001-102-08,Dr. Donald McClure,DEU,F,PBO,Placebo,SCRNFAIL,Screen Failure,,2014-10-06,36,years,DM
+ABC001,102,09,ABC001-102-09,Dr. Donald McClure,DEU,F,TRTC,Treatment C,SCRNFAIL,Screen Failure,,2014-03-01,39,years,DM
+ABC001,102,10,ABC001-102-10,Dr. Donald McClure,DEU,M,TRTA,Treatment A,TRTA,Treatment A,2014-04-04,2014-06-15,63,years,DM
+ABC001,103,01,ABC001-103-01,Dr. Oleta Schaden,GBR,M,TRTB,Treatment B,TRTB,Treatment B,2014-04-01,2014-05-24,34,years,DM
+ABC001,103,02,ABC001-103-02,Dr. Oleta Schaden,GBR,F,PBO,Placebo,PBO,Placebo,2014-03-31,2014-06-09,38,years,DM
+ABC001,103,03,ABC001-103-03,Dr. Oleta Schaden,GBR,M,TRTA,Treatment A,TRTA,Treatment A,2014-03-05,2014-03-19,26,years,DM
+ABC001,201,01,ABC001-201-01,Dr. Tremaine Mann DVM,FRA,M,TRTC,Treatment C,TRTC,Treatment C,2014-05-24,2014-08-01,37,years,DM
+ABC001,201,02,ABC001-201-02,Dr. Tremaine Mann DVM,FRA,M,TRTB,Treatment B,TRTB,Treatment B,2014-07-27,2014-10-04,60,years,DM
+ABC001,201,03,ABC001-201-03,Dr. Tremaine Mann DVM,FRA,M,TRTC,Treatment C,TRTC,Treatment C,2014-03-23,2014-05-29,33,years,DM
+ABC001,201,04,ABC001-201-04,Dr. Tremaine Mann DVM,FRA,M,TRTB,Treatment B,SCRNFAIL,Screen Failure,,2014-09-30,24,years,DM
+ABC001,201,05,ABC001-201-05,Dr. Tremaine Mann DVM,FRA,F,TRTC,Treatment C,SCRNFAIL,Screen Failure,,2014-06-07,27,years,DM
+ABC001,201,06,ABC001-201-06,Dr. Tremaine Mann DVM,FRA,M,TRTA,Treatment A,TRTA,Treatment A,2014-03-31,2014-05-11,36,years,DM
+ABC001,201,07,ABC001-201-07,Dr. Tremaine Mann DVM,FRA,M,TRTA,Treatment A,TRTA,Treatment A,2014-07-06,2014-08-15,64,years,DM
+ABC001,201,08,ABC001-201-08,Dr. Tremaine Mann DVM,FRA,M,TRTB,Treatment B,TRTB,Treatment B,2014-04-17,2014-05-02,43,years,DM
+ABC001,201,09,ABC001-201-09,Dr. Tremaine Mann DVM,FRA,F,TRTB,Treatment B,SCRNFAIL,Screen Failure,,2014-05-07,21,years,DM
+ABC001,201,10,ABC001-201-10,Dr. Tremaine Mann DVM,FRA,M,TRTA,Treatment A,TRTA,Treatment A,2014-04-27,2014-05-10,64,years,DM
+ABC001,201,11,ABC001-201-11,Dr. Tremaine Mann DVM,FRA,M,TRTC,Treatment C,TRTC,Treatment C,2014-03-26,2014-05-05,24,years,DM
+ABC001,201,12,ABC001-201-12,Dr. Tremaine Mann DVM,FRA,F,TRTB,Treatment B,TRTB,Treatment B,2014-07-23,2014-09-01,54,years,DM
+ABC001,201,13,ABC001-201-13,Dr. Tremaine Mann DVM,FRA,F,PBO,Placebo,PBO,Placebo,2014-03-06,2014-05-14,64,years,DM
+ABC001,201,14,ABC001-201-14,Dr. Tremaine Mann DVM,FRA,M,TRTB,Treatment B,TRTB,Treatment B,2014-11-29,2014-12-28,65,years,DM
+ABC001,201,15,ABC001-201-15,Dr. Tremaine Mann DVM,FRA,M,TRTA,Treatment A,TRTA,Treatment A,2014-04-24,2014-05-22,64,years,DM
+ABC001,201,16,ABC001-201-16,Dr. Tremaine Mann DVM,FRA,F,TRTC,Treatment C,TRTC,Treatment C,2014-04-06,2014-06-11,30,years,DM
+ABC001,201,17,ABC001-201-17,Dr. Tremaine Mann DVM,FRA,M,TRTC,Treatment C,TRTC,Treatment C,2014-05-17,2014-07-28,33,years,DM
+ABC001,201,18,ABC001-201-18,Dr. Tremaine Mann DVM,FRA,F,TRTB,Treatment B,TRTB,Treatment B,2014-09-30,2014-12-07,54,years,DM
+ABC001,301,01,ABC001-301-01,Dr. Deron Walker,FRA,M,PBO,Placebo,PBO,Placebo,2014-08-18,2014-10-24,56,years,DM
+ABC001,301,02,ABC001-301-02,Dr. Deron Walker,FRA,F,TRTC,Treatment C,TRTC,Treatment C,2014-07-06,2014-09-12,40,years,DM
+ABC001,301,03,ABC001-301-03,Dr. Deron Walker,FRA,F,TRTC,Treatment C,TRTC,Treatment C,2014-07-01,2014-09-05,32,years,DM
+ABC001,301,04,ABC001-301-04,Dr. Deron Walker,FRA,M,TRTB,Treatment B,TRTB,Treatment B,2014-05-21,2014-06-04,64,years,DM
+ABC001,301,05,ABC001-301-05,Dr. Deron Walker,FRA,M,TRTA,Treatment A,TRTA,Treatment A,2014-06-03,2014-08-09,62,years,DM
+ABC001,301,06,ABC001-301-06,Dr. Deron Walker,FRA,M,TRTC,Treatment C,TRTC,Treatment C,2014-11-24,2015-02-02,65,years,DM
+ABC001,302,01,ABC001-302-01,Dr. Dr. Lucy Funk,DEU,M,TRTA,Treatment A,TRTA,Treatment A,2014-05-14,2014-07-20,38,years,DM
+ABC001,302,02,ABC001-302-02,Dr. Dr. Lucy Funk,DEU,F,PBO,Placebo,PBO,Placebo,2014-04-21,2014-06-28,25,years,DM
+ABC001,302,03,ABC001-302-03,Dr. Dr. Lucy Funk,DEU,M,TRTB,Treatment B,TRTB,Treatment B,2014-05-04,2014-05-04,60,years,DM
+ABC001,303,01,ABC001-303-01,Dr. Jeremy Baumbach Sr.,GBR,F,TRTC,Treatment C,SCRNFAIL,Screen Failure,,2014-05-23,59,years,DM
+ABC001,303,02,ABC001-303-02,Dr. Jeremy Baumbach Sr.,GBR,M,PBO,Placebo,PBO,Placebo,2014-05-05,2014-05-19,56,years,DM
+ABC001,304,01,ABC001-304-01,Dr. Ola Romaguera,ESP,F,TRTC,Treatment C,TRTC,Treatment C,2014-03-05,2014-05-11,42,years,DM
+ABC001,304,02,ABC001-304-02,Dr. Ola Romaguera,ESP,M,TRTB,Treatment B,TRTB,Treatment B,2014-03-05,2014-05-12,58,years,DM
+ABC001,304,03,ABC001-304-03,Dr. Ola Romaguera,ESP,M,TRTA,Treatment A,TRTA,Treatment A,2014-07-06,2014-07-06,35,years,DM
+ABC001,304,04,ABC001-304-04,Dr. Ola Romaguera,ESP,F,TRTB,Treatment B,SCRNFAIL,Screen Failure,,2014-05-04,50,years,DM
+ABC001,304,05,ABC001-304-05,Dr. Ola Romaguera,ESP,M,TRTB,Treatment B,TRTB,Treatment B,2014-03-02,2014-04-12,40,years,DM
+ABC001,304,06,ABC001-304-06,Dr. Ola Romaguera,ESP,M,PBO,Placebo,PBO,Placebo,2014-04-06,2014-06-14,42,years,DM
+ABC001,305,01,ABC001-305-01,Dr. Roxane Osinski III,IRL,M,TRTB,Treatment B,TRTB,Treatment B,2014-03-10,2014-03-24,65,years,DM
+ABC001,305,02,ABC001-305-02,Dr. Roxane Osinski III,IRL,M,TRTB,Treatment B,TRTB,Treatment B,2014-03-15,2014-04-13,26,years,DM
+ABC001,305,03,ABC001-305-03,Dr. Roxane Osinski III,IRL,M,TRTC,Treatment C,TRTC,Treatment C,2014-04-22,2014-06-27,23,years,DM
+ABC001,305,04,ABC001-305-04,Dr. Roxane Osinski III,IRL,M,PBO,Placebo,PBO,Placebo,2014-06-07,2014-08-11,32,years,DM
+ABC001,401,01,ABC001-401-01,Dr. Javonte West MD,FRA,M,TRTB,Treatment B,TRTB,Treatment B,2014-05-13,2014-06-20,43,years,DM
+ABC001,401,02,ABC001-401-02,Dr. Javonte West MD,FRA,M,TRTA,Treatment A,TRTA,Treatment A,2014-04-12,2014-06-19,31,years,DM
+ABC001,401,03,ABC001-401-03,Dr. Javonte West MD,FRA,F,TRTB,Treatment B,TRTB,Treatment B,2014-06-16,2014-08-26,26,years,DM
+ABC001,401,04,ABC001-401-04,Dr. Javonte West MD,FRA,F,PBO,Placebo,PBO,Placebo,2014-03-02,2014-05-06,24,years,DM
+ABC001,401,05,ABC001-401-05,Dr. Javonte West MD,FRA,F,TRTC,Treatment C,SCRNFAIL,Screen Failure,,2014-09-25,29,years,DM
+ABC001,402,01,ABC001-402-01,Dr. Mr. Alejandra Stark,DEU,M,PBO,Placebo,PBO,Placebo,2014-04-16,2014-04-30,35,years,DM
+ABC001,402,02,ABC001-402-02,Dr. Mr. Alejandra Stark,DEU,M,TRTB,Treatment B,TRTB,Treatment B,2014-03-11,2014-05-19,34,years,DM
+ABC001,402,03,ABC001-402-03,Dr. Mr. Alejandra Stark,DEU,M,TRTB,Treatment B,TRTB,Treatment B,2014-03-01,2014-05-09,20,years,DM
+ABC001,402,04,ABC001-402-04,Dr. Mr. Alejandra Stark,DEU,F,TRTA,Treatment A,TRTA,Treatment A,2014-03-06,2014-05-14,47,years,DM
+ABC001,402,05,ABC001-402-05,Dr. Mr. Alejandra Stark,DEU,M,TRTB,Treatment B,TRTB,Treatment B,2014-06-16,2014-08-20,51,years,DM
+ABC001,402,06,ABC001-402-06,Dr. Mr. Alejandra Stark,DEU,F,TRTC,Treatment C,TRTC,Treatment C,2014-10-23,2014-12-28,44,years,DM
+ABC001,403,01,ABC001-403-01,Dr. Taurean Emmerich,GBR,M,TRTA,Treatment A,TRTA,Treatment A,2014-05-04,2014-05-04,33,years,DM
+ABC001,403,02,ABC001-403-02,Dr. Taurean Emmerich,GBR,F,PBO,Placebo,PBO,Placebo,2014-03-25,2014-06-03,46,years,DM
+ABC001,403,03,ABC001-403-03,Dr. Taurean Emmerich,GBR,M,TRTB,Treatment B,TRTB,Treatment B,2014-04-25,2014-06-04,39,years,DM
+ABC001,403,04,ABC001-403-04,Dr. Taurean Emmerich,GBR,F,TRTB,Treatment B,TRTB,Treatment B,2014-06-27,2014-09-01,30,years,DM
+ABC001,403,05,ABC001-403-05,Dr. Taurean Emmerich,GBR,F,TRTA,Treatment A,TRTA,Treatment A,2014-05-24,2014-07-28,55,years,DM
+ABC001,403,06,ABC001-403-06,Dr. Taurean Emmerich,GBR,M,TRTC,Treatment C,TRTC,Treatment C,2014-03-08,2014-05-17,52,years,DM
+ABC001,404,01,ABC001-404-01,Dr. Mr. Marcelle Kertzmann,ESP,F,TRTC,Treatment C,TRTC,Treatment C,2014-07-26,2014-10-02,46,years,DM
+ABC001,404,02,ABC001-404-02,Dr. Mr. Marcelle Kertzmann,ESP,F,TRTA,Treatment A,TRTA,Treatment A,2014-04-06,2014-06-12,21,years,DM
+ABC001,404,03,ABC001-404-03,Dr. Mr. Marcelle Kertzmann,ESP,M,TRTB,Treatment B,SCRNFAIL,Screen Failure,,2014-03-17,45,years,DM
+ABC001,404,04,ABC001-404-04,Dr. Mr. Marcelle Kertzmann,ESP,F,TRTA,Treatment A,TRTA,Treatment A,2014-03-04,2014-04-29,34,years,DM
+ABC001,404,05,ABC001-404-05,Dr. Mr. Marcelle Kertzmann,ESP,M,TRTB,Treatment B,TRTB,Treatment B,2014-08-26,2014-11-02,20,years,DM
+ABC001,404,06,ABC001-404-06,Dr. Mr. Marcelle Kertzmann,ESP,M,TRTA,Treatment A,TRTA,Treatment A,2014-10-23,2014-12-18,27,years,DM
+ABC001,404,07,ABC001-404-07,Dr. Mr. Marcelle Kertzmann,ESP,M,TRTA,Treatment A,TRTA,Treatment A,2014-08-20,2014-10-28,35,years,DM
+ABC001,404,08,ABC001-404-08,Dr. Mr. Marcelle Kertzmann,ESP,F,TRTA,Treatment A,TRTA,Treatment A,2014-04-10,2014-06-12,54,years,DM
+ABC001,501,01,ABC001-501-01,Dr. Joanie Lemke MD,FRA,M,TRTC,Treatment C,TRTC,Treatment C,2014-03-16,2014-03-30,30,years,DM
+ABC001,501,02,ABC001-501-02,Dr. Joanie Lemke MD,FRA,M,TRTB,Treatment B,TRTB,Treatment B,2014-04-30,2014-07-07,37,years,DM
+ABC001,501,03,ABC001-501-03,Dr. Joanie Lemke MD,FRA,F,TRTC,Treatment C,TRTC,Treatment C,2014-03-28,2014-06-07,45,years,DM
+ABC001,501,04,ABC001-501-04,Dr. Joanie Lemke MD,FRA,F,TRTC,Treatment C,TRTC,Treatment C,2014-03-26,2014-05-31,25,years,DM
+ABC001,501,05,ABC001-501-05,Dr. Joanie Lemke MD,FRA,F,PBO,Placebo,PBO,Placebo,2014-04-01,2014-04-15,55,years,DM
+ABC001,502,01,ABC001-502-01,Dr. Linda Thompson,DEU,M,PBO,Placebo,PBO,Placebo,2014-03-05,2014-05-13,49,years,DM
+ABC001,502,02,ABC001-502-02,Dr. Linda Thompson,DEU,F,TRTB,Treatment B,TRTB,Treatment B,2014-07-17,2014-09-24,21,years,DM
+ABC001,502,03,ABC001-502-03,Dr. Linda Thompson,DEU,F,TRTA,Treatment A,TRTA,Treatment A,2014-05-09,2014-05-24,35,years,DM
+ABC001,502,04,ABC001-502-04,Dr. Linda Thompson,DEU,F,TRTB,Treatment B,TRTB,Treatment B,2014-03-08,2014-03-08,63,years,DM
+ABC001,502,05,ABC001-502-05,Dr. Linda Thompson,DEU,M,TRTC,Treatment C,TRTC,Treatment C,2014-04-03,2014-06-09,56,years,DM
+ABC001,502,06,ABC001-502-06,Dr. Linda Thompson,DEU,M,TRTC,Treatment C,TRTC,Treatment C,2014-03-10,2014-04-05,59,years,DM
+ABC001,502,07,ABC001-502-07,Dr. Linda Thompson,DEU,M,TRTB,Treatment B,TRTB,Treatment B,2014-04-01,2014-04-27,49,years,DM
+ABC001,502,08,ABC001-502-08,Dr. Linda Thompson,DEU,F,PBO,Placebo,PBO,Placebo,2014-03-24,2014-04-08,29,years,DM
+ABC001,502,09,ABC001-502-09,Dr. Linda Thompson,DEU,M,TRTC,Treatment C,TRTC,Treatment C,2014-04-16,2014-06-23,47,years,DM
+ABC001,503,01,ABC001-503-01,Dr. Mrs. Guillermo Zulauf,GBR,F,TRTA,Treatment A,TRTA,Treatment A,2014-03-23,2014-04-19,48,years,DM
+ABC001,503,02,ABC001-503-02,Dr. Mrs. Guillermo Zulauf,GBR,F,TRTA,Treatment A,TRTA,Treatment A,2014-03-04,2014-05-09,65,years,DM
+ABC001,503,03,ABC001-503-03,Dr. Mrs. Guillermo Zulauf,GBR,F,TRTA,Treatment A,TRTA,Treatment A,2014-09-24,2014-09-24,46,years,DM
+ABC001,503,04,ABC001-503-04,Dr. Mrs. Guillermo Zulauf,GBR,M,PBO,Placebo,PBO,Placebo,2014-04-19,2014-05-03,40,years,DM
