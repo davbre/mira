@@ -13,11 +13,16 @@
       self.abstract_class = false
       self.table_name = table # this is the existing table
       self.model_name = ActiveModel::Name.new(self, nil, table)
-
       # class_variable_set(:@@columns, self.columns_hash)
+      # set inheritance_column to nil. See http://api.rubyonrails.org/classes/ActiveRecord/Inheritance.html
+      # If we don't do this, columns with the name "type" generate errors:
+      #   "This error is raised because the column 'type' is reserved for storing the class in case of inheritance."
+      self.inheritance_column = nil
 
       self.column_names.each do |sv|
-        equals_scope = "scope :#{sv}, -> (#{sv}) { where #{sv}: #{sv} }"
+
+        # using "_eq" suffix as without it we run the risk of conflicting with existing methods, e.g. "name", "time" etc.
+        equals_scope = "scope :#{sv}_eq, -> (#{sv}) { where #{sv}: #{sv} }"
         eval(equals_scope) # unless BANNED_COLUMN_NAMES.include? sv.downcase
         
         # if a text column then add a "contains" scope

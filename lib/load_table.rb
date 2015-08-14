@@ -12,6 +12,7 @@ class LoadTable
       "boolean" => "boolean",
       "integer" => "integer",
       "number" => "float",
+      "geopoint" => "float",     # seen in airport-codes dataset although have not found any documentation for it!
       "datetime" => "datetime",
       "date" => "date",
       "time" => "time",
@@ -37,7 +38,7 @@ class LoadTable
     # end
     @tmpfile = File.open(@ds.datafile.path)
 
-    @datapackage_data = datapackage["resources"].select { |res| res["path"] == datasource.datafile_file_name }[0]
+    @datapackage_data = datapackage["resources"].select { |res| res["path"].split("/").last == datasource.datafile_file_name }[0]
 
     load_logger.info("====>   Fetching column information from datapackage   <====")
     @column_info = get_column_info
@@ -122,7 +123,7 @@ class LoadTable
   def upload_to_db_table
 
     begin
-      delimiter = @datapackage_data["dialect"]["delimiter"]
+      delimiter = get_delimiter(@datapackage_data)
       column_names = @column_info.map { |k,v| v[:name] }
       column_string = "\"#{column_names.join('","')}\""
       csv_options = "DELIMITER '#{delimiter}' CSV"
@@ -136,10 +137,23 @@ class LoadTable
       end
     rescue StandardError => e
       load_logger.error(e)
+      raise e
     end
 
   end
 
+
+  def get_delimiter(dp_metadata)
+
+    if dp_metadata.has_key?("dialect") && (dp_metadata["dialect"].has_key? "delimiter") then
+      delimiter = dp_metadata["dialect"]["delimiter"]
+    else
+      load_logger.info("datapackage.json does not specify the delimiter (via 'dialect': { 'delimiter': '?'}). Assuming it to be a comma.")
+      delimiter = ','
+    end
+    delimiter
+
+  end
 
 end
   

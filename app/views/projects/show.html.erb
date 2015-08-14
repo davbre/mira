@@ -34,7 +34,7 @@
           <% end %>
         </table>
       <% else %>
-        <p>No datapackage.json file has been uploaded</p>
+        <p>A datapackage.json file has not been successfully uploaded and processed</p>
       <% end %>
 
 
@@ -59,6 +59,15 @@
         <p>No csv files have been uploaded</p>
       <% end %>
 
+
+      <% if not @log_file_names.empty? %>
+        <p>All log files</p>
+        <ul>
+          <% @log_file_names.each do |lf| %>
+            <li><a href="<%= root_url %>job_logs/project_<%= @project.id %>/<%= lf %>"><%= lf %></a>
+          <% end %>
+        </ul>
+      <% end %>
     </div>
   </div>
 </div>

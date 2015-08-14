@@ -21,7 +21,6 @@ class CheckDatapackage
   end
 
   def perform
-
     extant_dp_file = @project.datasources.where(:datafile_file_name => "datapackage.json").first
     ds_archive("datapackage.json") unless extant_dp_file.nil?
 
@@ -29,7 +28,7 @@ class CheckDatapackage
     datapackage_file = File.read(datapackage_tempfile_path)
     datapackage = JSON.parse(datapackage_file)
 
-    dp_file_names = datapackage["resources"].map { |r| r["path"] }
+    dp_file_names = datapackage["resources"].map { |r| r["path"].split("/").last }
     dp_file_formats = datapackage["resources"].map { |r| r["format"] }
     job_logger.info("datapackage.json resources: " + dp_file_names.sort.to_s)
     job_logger.info("uploaded csv files:         " + @tempfile_locations.keys.sort.to_s)
@@ -44,12 +43,13 @@ class CheckDatapackage
       extant_csv_files = @project.datasources.map { |d| d.datafile_file_name if d.datafile_file_name.include? "csv" } - [nil]
 
       dp = @project.datasources.create(datafile: File.open(datapackage_tempfile_path), datafile_file_name: "datapackage.json")
-      dp.public_url = dp.datafile.url.partition("?").first
 
       if dp.valid?
         job_logger.info("Saving datapackage.json and creating publicly accessible url")
+        dp.public_url = dp.datafile.url.partition("?").first
         dp.save
       else
+        job_logger.warn("Content-type should be application/json. The server determines the file to be of content-type: " + dp.datafile_content_type + ".")
         raise "Failed to save datapackage.json. Errors: " + dp.errors.to_a.to_s
       end
 

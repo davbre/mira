@@ -18,6 +18,8 @@ class ProjectsController < ApplicationController
   	@project = Project.find(params[:id])
     @datasources = @project.datasources.where.not(datapackage_id: nil).order(:table_ref,:archived)    
     @datapackages = @project.datasources.where(datapackage_id: nil).order(:archived,:datafile_file_name)
+    log_files = Dir.glob(Rails.configuration.x.job_log_path + "/project_" + @project.id.to_s + '/*.log')
+    @log_file_names = log_files.map { |l| l.split("/").last }
   end
 
   def new
