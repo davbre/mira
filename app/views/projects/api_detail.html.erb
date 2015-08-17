@@ -98,7 +98,7 @@
   <p>
     Consider a table <i>mytable</i> in your project, with columns <i>col1</i>, <i>col2</i> and <i>col3</i>. To get rows where <i>col1</i> equals XXX, <i>col2</i> equals YYY and <i>col3</i> equals ZZZ, the corresponding GET request would be:
   </p>
-  <pre><%= root_url %>api/projects/<%= @project.id %>/tables/<strong>mytable</strong>/data<strong>?col1=XXX&col2=YYY&col3=ZZZ</strong></pre>
+  <pre><%= root_url %>api/projects/<%= @project.id %>/tables/<strong>mytable</strong>/data<strong>?col1_eq=XXX&col2_eq=YYY&col3_eq=ZZZ</strong></pre>
   <p>   
     Each column has additional query fields which can be used for filtering. For example, with a text column <i>col1</i>, and integer columns <i>col2</i> and <i>col3</i> in table <i>mytable</i>, to retrieve rows where <i>col1</i> contains the text "foo", <i>col2</i> is less than 10 and <i>col3</i> is greater than 5, the request would look like:
   </p>
@@ -115,7 +115,7 @@
       </tr>
     </thead>
       <tr>
-        <td>[<i>column</i>]=value</td>
+        <td>[<i>column</i>]<strong>_eq</strong>=value</td>
         <td>Return rows where [<i>column</i>] equals <i>value</i></td>
         <td>All column types</td>
       </tr>

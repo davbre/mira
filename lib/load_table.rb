@@ -12,6 +12,7 @@ class LoadTable
       "boolean" => "boolean",
       "integer" => "integer",
       "number" => "float",
+      "float" => "float",
       "geopoint" => "float",     # seen in airport-codes dataset although have not found any documentation for it!
       "datetime" => "datetime",
       "date" => "date",
@@ -76,10 +77,17 @@ class LoadTable
 
     jts_columns.each_with_index do |col,i|
 
-      ar_type = @@type_map[col["type"]] || "ERROR: failed to JSON table type to Active Record type!"
+      begin
+        ar_type = @@type_map[col["type"]]
+        if ar_type.nil?
+          raise "Failed to map datapackage json column type --> " + col["type"] + " <-- to Active Record type!"
+        end
+      rescue StandardError => e
+        @load_logger.error(e)
+      end
 
       column_info[i+1] = {
-        :name => col["name"],
+        :name => col["name"].parameterize.underscore,
         :jason_schema_table_type => col["type"],
         :active_record_type => ar_type
       }
@@ -94,7 +102,6 @@ class LoadTable
 
   def create_db_table
     # Create table with columns
-
     begin
       ActiveRecord::Base.connection.create_table @ds.db_table_name.to_sym do |t|
         @column_info.each do |colindex,colhash|
@@ -124,12 +131,13 @@ class LoadTable
 
     begin
       delimiter = get_delimiter(@datapackage_data)
+      quote_char = get_quote_char(@datapackage_data)
       column_names = @column_info.map { |k,v| v[:name] }
       column_string = "\"#{column_names.join('","')}\""
       csv_options = "DELIMITER '#{delimiter}' CSV"
       skip_header_line = @tmpfile.gets
       # https://github.com/theSteveMitchell/postgres_upsert
-      ActiveRecord::Base.connection.raw_connection.copy_data "COPY #{@ds.db_table_name} (#{column_string}) FROM STDIN #{csv_options}" do
+      ActiveRecord::Base.connection.raw_connection.copy_data "COPY #{@ds.db_table_name} (#{column_string}) FROM STDIN #{csv_options} QUOTE '#{quote_char}'" do
         while line = @tmpfile.gets do
           next if line.strip.size == 0
           ActiveRecord::Base.connection.raw_connection.put_copy_data line
@@ -148,11 +156,23 @@ class LoadTable
     if dp_metadata.has_key?("dialect") && (dp_metadata["dialect"].has_key? "delimiter") then
       delimiter = dp_metadata["dialect"]["delimiter"]
     else
-      load_logger.info("datapackage.json does not specify the delimiter (via 'dialect': { 'delimiter': '?'}). Assuming it to be a comma.")
+      load_logger.info("datapackage.json does not specify the delimiter (via 'dialect': { 'delimiter': '?'}). Defaulting to a comma.")
       delimiter = ','
     end
     delimiter
 
+  end
+
+
+  def get_quote_char(dp_metadata)
+    if dp_metadata.has_key?("dialect") && (dp_metadata["dialect"].has_key? "quote") then
+      quote_char = dp_metadata["dialect"]["quote"]
+      quote_char = "''" if quote_char == "'" # http://stackoverflow.com/a/12857090/1002140
+    else
+      load_logger.info("datapackage.json does not specify a quote characher (via ['dialect']['quote']). Defaulting to a double quote.")
+      quote_char = '"'
+    end
+    quote_char
   end
 
 end

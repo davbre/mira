@@ -48,7 +48,15 @@
           eval(gt_scope)
           eval(ge_scope)
         end
+
+        # eval("def self.#{sv}_uniq; self.uniq.select(:#{sv}); end;")
+        eval("def self.#{sv}_uniq; self.uniq.pluck(:#{sv}); end;")
+
       end
+
+      def self.hey
+        self.uniq.select(:lbtestcd)
+      end      
     end
     
     Object.const_set "#{table}".capitalize, new_klass

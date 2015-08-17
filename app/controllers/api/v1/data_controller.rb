@@ -126,6 +126,33 @@ module Api
         render json: results
       end
 
+
+
+      def distinct
+        project_datasources = Project.find(params[:id]).datasources
+        datasource = project_datasources.where(table_ref: "#{params[:table_ref]}" ).first
+        query_params = request.query_parameters
+        per_page_num = query_params.delete(:per_page).to_i || Rails.configuration.x.api_default_per_page
+        per_page_num = [Rails.configuration.x.api_max_per_page, per_page_num].min
+
+        # extract the sort order (in this case it is either order=asc or order=desc)
+        o = query_params.delete(:order)
+        order = (["asc", "desc"].include? o) ? o : "asc"
+
+        column = params[:col_ref].parameterize
+        uniq_method = "#{column}_uniq".to_sym
+        table_const = Mira::Application.const_get(datasource.db_table_name.capitalize)
+        if table_const.respond_to? uniq_method
+          distinct_values = paginate table_const.order(column.to_sym => order.to_sym).send(uniq_method), per_page: per_page_num
+          render json: distinct_values
+        else
+          render json: {"Message" => "The API does not support getting distinct '#{column}' values from #{params[table_ref]}"}
+        end
+
+      end
+
+
+
       
     end
   end

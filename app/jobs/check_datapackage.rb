@@ -45,12 +45,22 @@ class CheckDatapackage
       dp = @project.datasources.create(datafile: File.open(datapackage_tempfile_path), datafile_file_name: "datapackage.json")
 
       if dp.valid?
-        job_logger.info("Saving datapackage.json and creating publicly accessible url")
-        dp.public_url = dp.datafile.url.partition("?").first
-        dp.save
+        save_dp(dp)
       else
+        # If can't save datapackage, then we trim some attributes and try again
         job_logger.warn("Content-type should be application/json. The server determines the file to be of content-type: " + dp.datafile_content_type + ".")
-        raise "Failed to save datapackage.json. Errors: " + dp.errors.to_a.to_s
+        job_logger.warn("An attempt will be made to remove some attributes (e.g. readme) from datapackage.json")
+        trimmed_dp = trim_datapackage(datapackage)
+        File.open(datapackage_tempfile_path,"w") do |f|
+          f.write(trimmed_dp.to_json)
+        end
+        dp2 = @project.datasources.create(datafile: File.open(datapackage_tempfile_path), datafile_file_name: "datapackage.json")
+        if dp2.valid?
+          job_logger.info("Saving trimmed datapackage.json")
+          save_dp(dp2)
+        else
+          raise "Failed to save datapackage.json. Errors: " + dp2.errors.to_a.to_s
+        end
       end
 
       # save and process csv files
@@ -119,5 +129,23 @@ class CheckDatapackage
         job_logger.error("Failed to rename archived files:")
         job_logger.error(e)
       end
+    end
+
+
+    def save_dp(dp)
+      job_logger.info("Saving datapackage.json and creating publicly accessible url")
+      dp.public_url = dp.datafile.url.partition("?").first
+      dp.save
+    end
+
+    def trim_datapackage(dp)
+      check = ["readme", "readmeHtml", "readme_html", "README", "READMEHTML", "README_HTML"]
+      check.each do |chk|
+        del = dp.delete(chk)
+        if not del.nil?
+          job_logger.info("Trimming '" + chk + "' attribute from datapackage.json")
+        end
+      end
+      dp
     end
 end

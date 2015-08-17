@@ -22,7 +22,8 @@ Rails.application.routes.draw do
       # Data sources
       get "projects/:id/tables" => "datasources#index"
       get "projects/:id/tables/:table_ref" => "datasources#show"
-      get "projects/:id/tables/:table_ref/columns" => "datasources#show_columns"
+      get "projects/:id/tables/:table_ref/columns" => "datasources#column_index"
+      get "projects/:id/tables/:table_ref/columns/:col_ref" => "datasources#column_show"
 
       # Data
       match "projects/:id/tables/:table_ref/data" => "data#datatables",
@@ -31,6 +32,8 @@ Rails.application.routes.draw do
 
       get "projects/:id/tables/:table_ref/data" => "data#index"
 
+      # Distinct values
+      get "projects/:id/tables/:table_ref/columns/:col_ref/distinct" => "data#distinct"
     end
 
   end

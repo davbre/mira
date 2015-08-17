@@ -12,4 +12,9 @@ class DatasourcesControllerTest < ActionController::TestCase
   test "should log errors when wrong mime-type detected (use airport-codes.csv which contains html" do
     skip
   end
+
+  test "single and double quoting characters in upload" do
+    skip
+  end
+
 end
