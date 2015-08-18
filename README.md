@@ -22,6 +22,8 @@ CSV files are uploaded to Mira along with a corresponding tabular data package (
   gem install bundler
 
 
+---
+
 1. Clone the repository
 
 2. Run bundle
@@ -30,14 +32,14 @@ CSV files are uploaded to Mira along with a corresponding tabular data package (
 
 3. Update the config/database.yml file with your database credentials
 
-      default: &default
-        adapter: postgresql
-        encoding: unicode
-        pool: 5
-        host: localhost
-        port: 5432
-        **username: mira**
-        **password: your_password**
+        default: &default
+          adapter: postgresql
+          encoding: unicode
+          pool: 5
+          host: localhost
+          port: 5432
+          **username: mira**
+          **password: your_password**
 
 4. Create and migrate database:
 
@@ -65,3 +67,4 @@ CSV files are uploaded to Mira along with a corresponding tabular data package (
 
 ## Demo
 http://178.62.7.111
+https://178.62.7.111/projects/1/api-details
