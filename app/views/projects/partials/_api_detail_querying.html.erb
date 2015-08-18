@@ -1,0 +1,83 @@
+<div id="querying-data" name="querying-data" class="col-md-9">
+  <br />
+  <h3><a id="querying-data-h" class="anchor" href="#querying-data" aria-hidden="true"></a>Querying</h3>
+
+  <p>
+    Consider a table <i>mytable</i> in your project, with columns <i>col1</i>, <i>col2</i> and <i>col3</i>. To get rows where <i>col1</i> equals XXX, <i>col2</i> equals YYY and <i>col3</i> equals ZZZ, the corresponding GET request would be:
+  </p>
+  <pre><%= root_url %>api/projects/<%= @project.id %>/tables/<strong>mytable</strong>/data<strong>?col1_eq=XXX&col2_eq=YYY&col3_eq=ZZZ</strong></pre>
+  <p>   
+    Each column has additional query fields which can be used for filtering. For example, with a text column <i>col1</i>, and integer columns <i>col2</i> and <i>col3</i> in table <i>mytable</i>, to retrieve rows where <i>col1</i> contains the text "foo", <i>col2</i> is less than 10 and <i>col3</i> is greater than 5, the request would look like:
+  </p>
+  <pre><%= root_url %>api/projects/<%= @project.id %>/tables/mytable/data?<strong>col1_contains=foo&col2_lt=10&col3_gt=5</strong></pre>
+
+  <br />
+  <p><strong>The following table outlines the query fields which can be used in the query string. The available query fields depends on the database column type</strong></p>
+  <table class="table table-bordered table-hover" border="1">
+    <thead>
+      <tr>
+        <th>Field-value Pairs</th>
+        <th>Description</th>
+        <th>Available for Column Types</th>
+      </tr>
+    </thead>
+      <tr>
+        <td>[<i>column</i>]<strong>_eq</strong>=value</td>
+        <td>Return rows where [<i>column</i>] equals <i>value</i></td>
+        <td>All column types</td>
+      </tr>
+      <tr>
+        <td>[<i>column</i>]<strong>_contains</strong>=value</td>
+        <td>Return rows where [<i>column</i>] contains <i>value</i></td>
+        <td><i>text</i> only</td>
+      </tr>
+      <tr>
+        <td>[<i>column</i>]<strong>_not_contains</strong>=value</td>
+        <td>Return rows where [<i>column</i>] does not contain <i>value</i></td>
+        <td><i>text</i> only</td>
+      </tr>
+      <tr>
+        <td>[<i>column</i>]<strong>_begins</strong>=value</td>
+        <td>Return rows where [<i>column</i>] begins with <i>value</i></td>
+        <td><i>text</i> only</td>
+      </tr>
+      <tr>
+        <td>[<i>column</i>]<strong>_not_begins</strong>=value</td>
+        <td>Return rows where [<i>column</i>] does not begin with <i>value</i></td>
+        <td><i>text</i> only</td>
+      </tr>
+      <tr>
+        <td>[<i>column</i>]<strong>_ends</strong>=value</td>
+        <td>Return rows where [<i>column</i>] ends with <i>value</i></td>
+        <td><i>text</i> only</td>
+      </tr>
+      <tr>
+        <td>[<i>column</i>]<strong>_not_ends</strong>=value</td>
+        <td>Return rows where [<i>column</i>] does not end with <i>value</i></td>
+        <td><i>text</i> only</td>
+      </tr>
+      <tr>
+        <td>[<i>column</i>]<strong>_lt</strong>=value</td>
+        <td>Return rows where [<i>column</i>] is less than <i>value</i></td>
+        <td><i>integer, float, decimal, date, time, datetime, timestamp</i></td>
+      </tr>
+      <tr>
+        <td>[<i>column</i>]<strong>_le</strong>=value</td>
+        <td>Return rows where [<i>column</i>] is less than or equal to <i>value</i></td>
+        <td><i>integer, float, decimal, date, time, datetime, timestamp</i></td>
+      </tr>
+      <tr>
+        <td>[<i>column</i>]<strong>_gt</strong>=value</td>
+        <td>Return rows where [<i>column</i>] is greater than <i>value</i></td>
+        <td><i>integer, float, decimal, date, time, datetime, timestamp</i></td>
+      </tr>
+      <tr>
+        <td>[<i>column</i>]<strong>_ge</strong>=value</td>
+        <td>Return rows where [<i>column</i>] is greater than or equal to <i>value</i></td>
+        <td><i>integer, float, decimal, date, time, datetime, timestamp</i></td>
+      </tr>
+  </table>
+
+
+  <br /><br />
+</div>

@@ -37,7 +37,8 @@
           eval(not_contains_scope)
           eval(begins_scope)
           eval(ends_scope)
-        # else if numeric add greater than, less than filters
+          # distinct values method...(note, this is not a scope)
+          eval("def self.#{sv}_uniq; self.uniq.pluck(:#{sv}); end;")
         elsif ["integer", "float", "decimal", "date", "time", "datetime", "timestamp"].include? self.columns_hash[sv].type.to_s
           lt_scope = "scope :#{sv}_lt, -> (#{sv}) { where(\"#{sv} < ?\",  \"\#{#{sv}}\") }"
           le_scope = "scope :#{sv}_le, -> (#{sv}) { where(\"#{sv} <= ?\", \"\#{#{sv}}\") }"
@@ -48,9 +49,6 @@
           eval(gt_scope)
           eval(ge_scope)
         end
-
-        # eval("def self.#{sv}_uniq; self.uniq.select(:#{sv}); end;")
-        eval("def self.#{sv}_uniq; self.uniq.pluck(:#{sv}); end;")
 
       end
 

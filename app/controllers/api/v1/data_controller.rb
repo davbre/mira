@@ -146,7 +146,7 @@ module Api
           distinct_values = paginate table_const.order(column.to_sym => order.to_sym).send(uniq_method), per_page: per_page_num
           render json: distinct_values
         else
-          render json: {"Message" => "The API does not support getting distinct '#{column}' values from #{params[table_ref]}"}
+          render json: {"Message" => "The API does not support getting distinct '#{column}' values from the '#{params[:table_ref]}' table"}
         end
 
       end

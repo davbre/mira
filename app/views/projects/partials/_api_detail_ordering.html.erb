@@ -1,0 +1,18 @@
+<div id="ordering-data" name="ordering-data" class="col-md-9">
+  <h3><a id="ordering-data-h" class="anchor" href="#ordering-data" aria-hidden="true"></a>Ordering</h3>
+
+  <p>
+    To apply ordering to the query, the <i>order=[column]</i> field-value pair is added to the query string. For example, to request rows from the <i>mytable</i> table, ordered by <i>col1</i>:</p>
+
+    <pre><%= root_url %>api/projects/<%= @project.id %>/tables/mytable/data?<strong>order=col1</strong></pre>    
+
+    <p>Ascending order is applied by default. To apply descending order, the above example would become:</p>
+
+    <pre><%= root_url %>api/projects/<%= @project.id %>/tables/mytable/data?order=col1<strong>:desc</strong></pre>    
+
+    <p>To order by multiple columns, delimit each column name with a comma. For example, to order by <i>col1</i> and <i>col2</i> :</p>
+
+    <pre><%= root_url %>api/projects/<%= @project.id %>/tables/mytable/data?<strong>order=col1,col2</strong></pre>    
+
+  <br /><br />
+</div>

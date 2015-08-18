@@ -1,13 +1,26 @@
+
+
 # Mira
 
-Mira takes CSV files and gives you a read-only HTTP API.
+Mira is developed using Ruby on Rails. You upload CSV files to it and it *tries* to give you a read-only HTTP API (if it likes the files you upload ;)) 
 
-Upload CSV files along with a corresponding tabular data package (a datapackage.json file). The datapackage.json file provides the CSV file metadata, i.e. file names, columns, column-types, delimiters etc. See [here](http://data.okfn.org/doc/tabular-data-package) and [here](http://dataprotocols.org/tabular-data-package/) for more information on tabular data packages.
+CSV files are uploaded to Mira along with a corresponding tabular data package (a datapackage.json file). The datapackage.json file provides the CSV file metadata, i.e. file names, columns, column-types, delimiters etc. See [here](http://data.okfn.org/doc/tabular-data-package) and [here](http://dataprotocols.org/tabular-data-package/) for more information on tabular data packages.
 
-## Demo
-http://178.62.7.111
 
 ## Quick Start
+
+#### Pre-requisites
+- Ruby is installed (the version in Gemfile). Installing using RVM could be a good idea
+  [https://www.ruby-lang.org/en/] (https://www.ruby-lang.org/en/)
+  [https://rvm.io/] (https://rvm.io/)
+
+- postgresql is installed [https://www.digitalocean.com/community/tutorials/how-to-use-postgresql-with-your-ruby-on-rails-application-on-ubuntu-14-04] (https://www.digitalocean.com/community/tutorials/how-to-use-postgresql-with-your-ruby-on-rails-application-on-ubuntu-14-04)
+
+  Suggest creating a user called "mira"
+
+- install the bundler gem
+  gem install bundler
+
 
 1. Clone the repository
 
@@ -15,20 +28,40 @@ http://178.62.7.111
 
         bundle install
 
-3. Create and migrate database
+3. Update the config/database.yml file with your database credentials
+
+      default: &default
+        adapter: postgresql
+        encoding: unicode
+        pool: 5
+        host: localhost
+        port: 5432
+        **username: mira**
+        **password: your_password**
+
+4. Create and migrate database:
 
         rake db:create
         rake db:migrate
-        
-4. Seed the database with the single admin user, email = admin@example.com and password = topsecret
+
+5. Seed the database with the single admin user, email = admin@example.com and password = topsecret
 
         rake db:seed
 
-5. Start your local development server
+6. Start your local development server
 
         rails s
 
-6. Navigate to http://localhost:3000
+7. In a separate terminal start a background job to process uploaded files
 
-5. Log in, create a new project, upload csv files along with their corresponding datapackage.json file.
+        rake jobs:work
 
+8. Navigate to http://localhost:3000
+
+9. Log in, create a new project, upload csv files along with their corresponding datapackage.json file
+
+10. Keep you fingers crossed :)
+
+
+## Demo
+http://178.62.7.111

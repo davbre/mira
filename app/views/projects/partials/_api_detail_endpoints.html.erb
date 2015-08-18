@@ -1,0 +1,50 @@
+<div class="col-md-9">
+  <h3>API Endpoints</h3>
+  <table class="table table-bordered table-hover" border="1">
+    <tbody>
+      <tr>
+        <th><strong>Description</strong></th>
+        <th><strong>HTTP Method</strong></th>
+        <th><strong>API Endpoint</strong></th>
+      </tr>
+    </tbody>
+    <tr>
+      <td>All projects</td>
+      <td>GET</td>
+      <td><a class="api-endpoint-link" href="<%= root_url %>api/projects"><%= root_url %>api/projects</a></td>
+    </tr>
+    <tr>
+      <td>This project</td>
+      <td>GET</td>
+      <td><a class="api-endpoint-link" href="<%= root_url %>api/projects/<%= @project.id %>"><%= root_url %>api/projects/<%= @project.id %></a></td>
+    </tr>
+      <tr>
+        <td>Project tables</td>
+        <td>GET</td>
+        <td><a class="api-endpoint-link" href="<%= root_url %>api/projects/<%= @project.id %>/tables"><%= root_url %>api/projects/<%= @project.id %>/tables</a></td>
+      </tr>
+      <tr>
+        <td><strong>Tables</strong></td>
+        <td></td>
+      </tr>
+      <% @datasources.each do |ds| %>
+        <tr>
+          <td>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<%= ds.table_ref %></td>
+          <td>GET</td>
+          <td>
+            <dl class="dl-horizontal2">
+              <dt width="40px">Detail</dt>
+              <dd><a class="api-endpoint-link" href="<%= root_url %>api/projects/<%= @project.id %>/tables/<%= ds.table_ref %>"><%= root_url %>api/projects/<%= @project.id %>/tables/<%= ds.table_ref %></a></dd>
+              <dt width="40px">Columns</dt>
+              <dd><a class="api-endpoint-link" href="<%= root_url %>api/projects/<%= @project.id %>/tables/<%= ds.table_ref %>/columns"><%= root_url %>api/projects/<%= @project.id %>/tables/<%= ds.table_ref %>/columns</a></dd>
+              <dt width="40px">Data</dt>
+              <dd><a class="api-endpoint-link" href="<%= root_url %>api/projects/<%= @project.id %>/tables/<%= ds.table_ref %>/data"><%= root_url %>api/projects/<%= @project.id %>/tables/<%= ds.table_ref %>/data</a></dd>
+            </dl>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <br /><br />
+</div>

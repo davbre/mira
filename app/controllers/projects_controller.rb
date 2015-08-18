@@ -1,6 +1,6 @@
 require 'net/http'
 require 'json'
-
+require 'fileutils'
 
 class ProjectsController < ApplicationController
 
@@ -11,7 +11,7 @@ class ProjectsController < ApplicationController
 
 
   def index
-    @projects = Project.page params[:page] # kaminari
+    @projects = Project.order(id: :desc).page params[:page] # kaminari
   end
 
   def show
@@ -100,8 +100,17 @@ class ProjectsController < ApplicationController
 
   def destroy
     @project = Project.find(params[:id])
-    @project.destroy
-    flash[:success] = "Project deleted"
+    if @project.destroy
+      # delete uploads and logs
+      logs_dir = Rails.root.join("public","job_logs","project_" + params[:id].to_s)
+      uploads_dir = Rails.root.join("public","uploads","project_" + params[:id].to_s)
+      FileUtils.rm_rf(logs_dir) if Dir.exists? logs_dir
+      FileUtils.rm_rf(uploads_dir) if Dir.exists? uploads_dir
+      Dir.exists? Rails.root.join("public","job_logs","project_" + params[:id].to_s)
+      flash[:success] = "Project deleted"
+    else
+      flash[:error] = "Failed to delete project"
+    end
     redirect_to projects_url
   end
 

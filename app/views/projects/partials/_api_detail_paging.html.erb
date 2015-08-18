@@ -1,0 +1,21 @@
+<div id="paging-data" name="paging-data" class="col-md-9">
+
+  <h3><a id="paging-data-h" class="anchor" href="#paging-data" aria-hidden="true"></a>Paging</h3>
+  <p>
+    By default, the API returns <%= Rails.configuration.x.api_default_per_page %> rows per page. This can be adjusted using the <i>per_page</i> query field. A particular page number can be requested using the <i>page</i> query field, e.g. for 50 rows per page, and the 4<sup>th</sup> such page:
+  </p>
+
+  <pre><%= root_url %>api/projects/<%= @project.id %>/tables/mytable/data?<strong>per_page=50&page=4</strong>&col1=XXX...</pre>
+
+  <p>
+    The maximum allowable <i>per_page</i> value on this server is <%= Rails.configuration.x.api_max_per_page %> (and can be adjusted by the server administrator).
+    <br /><br />
+    Paging links are included in the response's <a href="http://www.w3.org/wiki/LinkHeader">HTTP Link Header</a>. E.g. if you request page 4 from <i>mytable</i> they will look like:
+  </p>    
+  <pre>&lt;<%= root_url %>api/projects/<%= @project.id %>/tables/mytable/data?page=1&gt;; rel="first",<br />&lt;<%= root_url %>api/projects/<%= @project.id %>/tables/mytable/data?page=3&gt;; rel="prev",<br />&lt;<%= root_url %>api/projects/<%= @project.id %>/tables/mytable/data?page=21&gt;; rel="last",<br />&lt;<%= root_url %>api/projects/<%= @project.id %>/tables/mytable/data?page=5&gt;; rel="next"</pre>
+
+  <p>The number of records per page and the total number of records are returned in the <i>Records-Per-Page</i> and <i>Records-Total</i> HTTP response headers.
+  These provide what's needed to implement pagination on the client side.
+  </p>
+  <br /><br />
+</div>

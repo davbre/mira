@@ -116,6 +116,10 @@ class ProjectsControllerTest < ActionController::TestCase
     assert_redirected_to new_user_session_path
   end
 
+  test "should delete uploads and log files on delete" do
+    skip
+  end
+
 
   # uploads
   test "should detect when no files uploaded" do
