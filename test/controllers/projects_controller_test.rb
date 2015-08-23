@@ -120,6 +120,9 @@ class ProjectsControllerTest < ActionController::TestCase
     skip
   end
 
+  test "should delete xy tables on delete" do
+  end
+
 
   # uploads
   test "should detect when no files uploaded" do

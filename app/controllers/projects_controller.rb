@@ -99,14 +99,21 @@ class ProjectsController < ApplicationController
 
 
   def destroy
-    @project = Project.find(params[:id])
-    if @project.destroy
+    project = Project.find(params[:id])
+    project_db_tables = project.datasources.select { |ds| ds.db_table_name != nil }.map(&:db_table_name)
+    if project.destroy
       # delete uploads and logs
       logs_dir = Rails.root.join("public","job_logs","project_" + params[:id].to_s)
       uploads_dir = Rails.root.join("public","uploads","project_" + params[:id].to_s)
       FileUtils.rm_rf(logs_dir) if Dir.exists? logs_dir
       FileUtils.rm_rf(uploads_dir) if Dir.exists? uploads_dir
       Dir.exists? Rails.root.join("public","job_logs","project_" + params[:id].to_s)
+      # delete database tables
+      project_db_tables.each do |dbt|
+        if ActiveRecord::Base.connection.table_exists? dbt
+          ActiveRecord::Base.connection.drop_table(dbt)
+        end
+      end
       flash[:success] = "Project deleted"
     else
       flash[:error] = "Failed to delete project"

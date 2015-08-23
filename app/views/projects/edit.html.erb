@@ -1,8 +1,12 @@
 <% provide(:title, 'Edit Project') %>
-<h1>Project</h1>
 
-<%= render :partial => 'form' %>
+<div class="col-md-9">
 
-<% if user_signed_in? %>
-  <%= render :partial => 'upload_project_files' %>
-<% end %>
+  <h3>Edit Project</h3>
+
+  <%= render :partial => 'form' %>
+
+  <% if user_signed_in? %>
+    <%= render :partial => 'upload_project_files' %>
+  <% end %>
+</div>

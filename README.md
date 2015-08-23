@@ -11,14 +11,18 @@ CSV files are uploaded to Mira along with a corresponding tabular data package (
 
 #### Pre-requisites
 - Ruby is installed (the version in Gemfile). Installing using RVM could be a good idea
+
   [https://www.ruby-lang.org/en/] (https://www.ruby-lang.org/en/)
+
   [https://rvm.io/] (https://rvm.io/)
 
-- postgresql is installed [https://www.digitalocean.com/community/tutorials/how-to-use-postgresql-with-your-ruby-on-rails-application-on-ubuntu-14-04] (https://www.digitalocean.com/community/tutorials/how-to-use-postgresql-with-your-ruby-on-rails-application-on-ubuntu-14-04)
+- postgresql is installed
+[https://www.digitalocean.com/community/tutorials/how-to-use-postgresql-with-your-ruby-on-rails-application-on-ubuntu-14-04] (https://www.digitalocean.com/community/tutorials/how-to-use-postgresql-with-your-ruby-on-rails-application-on-ubuntu-14-04)
 
   Suggest creating a user called "mira"
 
 - install the bundler gem
+
   gem install bundler
 
 
@@ -66,5 +70,7 @@ CSV files are uploaded to Mira along with a corresponding tabular data package (
 
 
 ## Demo
-http://178.62.7.111
+
+https://178.62.7.111
+
 https://178.62.7.111/projects/1/api-details

@@ -4,7 +4,13 @@
   def load_dynamic_AR_class_with_scopes(table)
 
     ds = Datasource.where(:db_table_name => "#{table}").first
-    proj_name = Project.find(ds.project_id).name
+    
+    if ds.nil?
+      return nil
+    else
+      proj_name = Project.find(ds.project_id).name
+    end
+    
     # logger.info("Project #{proj_name}: creating ActiveRecord class " + table +
     #      " which maps to " + ds.table_ref)
 
@@ -52,9 +58,6 @@
 
       end
 
-      def self.hey
-        self.uniq.select(:lbtestcd)
-      end      
     end
     
     Object.const_set "#{table}".capitalize, new_klass
