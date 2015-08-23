@@ -121,6 +121,7 @@ class ProjectsControllerTest < ActionController::TestCase
   end
 
   test "should delete xy tables on delete" do
+    skip
   end
 
 

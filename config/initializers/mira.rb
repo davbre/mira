@@ -2,17 +2,24 @@
 require 'load_dynamic_AR_class_with_scopes'
 
 
-valid_project_prefixes = Project.ids.map do |id|
-  Rails.application.config.x.db_table_prefix.downcase + id.to_s + "_"
-end
+# Prior to a migration the project table does not exist. Without checking
+# for it, it causes errors during an initial migration (i.e. create, migrate),
+# because you are referring to a table not yet created!
+if ActiveRecord::Base.connection.table_exists? 'projects'
 
-api_tables = ActiveRecord::Base.connection.tables.select { |a|
-  valid_project_prefixes.any? { |z| a.starts_with? z}
-}
+  valid_project_prefixes = Project.ids.map do |id|
+    Rails.application.config.x.db_table_prefix.downcase + id.to_s + "_"
+  end
 
-# Create a model for each of the data tables
-api_tables.each do |table|
+  api_tables = ActiveRecord::Base.connection.tables.select { |a|
+    valid_project_prefixes.any? { |z| a.starts_with? z}
+  }
 
-  load_dynamic_AR_class_with_scopes(table)
+  # Create a model for each of the data tables
+  api_tables.each do |table|
+
+    load_dynamic_AR_class_with_scopes(table)
+
+  end
 
 end
