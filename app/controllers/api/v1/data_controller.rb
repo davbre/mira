@@ -72,7 +72,8 @@ module Api
         query_params[:page] = params[:page]
 
 
-        range_filter_columns = @_params["lower_range_values"].keys;
+
+        range_filter_columns = @_params["lower_range_values"].nil? ? [] : @_params["lower_range_values"].keys
 
         # column search strings (we exclude those columns where we do column range filtering
         # as we get this information from the 'lower_range_values' and 'upper_range_values')
@@ -89,7 +90,8 @@ module Api
         end
 
         # column range filter: greater than or equal to
-        @_params["lower_range_values"].each do |k,v|
+        lrv_hash = @_params["lower_range_values"] || {}
+        lrv_hash.each do |k,v|
           if is_number? v
             scope = scope.send(k + "_ge", v)
           elsif v.length > 0
@@ -98,7 +100,8 @@ module Api
         end
 
         # column range filter: less than or equal to
-        @_params["upper_range_values"].each do |k,v|
+        urv_hash = @_params["upper_range_values"] || {}
+        urv_hash.each do |k,v|
           # binding.pry
           if is_number? v
             scope = scope.send(k + "_le", v)
@@ -115,7 +118,6 @@ module Api
           scope = scope.order(sort_column => sort_direction) unless sort_column.nil?
         end
 
- 
         # see the Datatables server processing documention => it expects a response
         # which includes "data", "recordsTotal", "recordsFiltered" and "draw"
         results = {}
