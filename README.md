@@ -66,19 +66,21 @@ CSV files are uploaded to Mira along with a corresponding tabular data package (
 
 8. Download sample csv files + their datapackage.json file:
 
-    [https://github.com/davbre/dummy-sdtm/blob/master/output/mira_sample_data/mira_sample_data.tar.gz] (tar.gz file)
-    [https://github.com/davbre/dummy-sdtm/blob/master/output/mira_sample_data/mira_sample_data.zip] (zip file)
+    [mira_sample_data.tar.gz] (https://github.com/davbre/dummy-sdtm/blob/master/output/mira_sample_data/mira_sample_data.tar.gz)
+    or
+    [mira_sample_data.zip] (https://github.com/davbre/dummy-sdtm/blob/master/output/mira_sample_data/mira_sample_data.zip)
 
 9. Log in, create a new project, upload the sample csv files + datapackage.json file (from previous step)
 
 10. Navigate to the following address for the project's API details:
 
-    [http://localhost:3000/projects/1/api-details] (http://localhost:3000/projects/1/api-details)
+    [http://localhost:3000/projects/1/api-details](http://localhost:3000/projects/1/api-details)
 
 
 ## Demo
 
-http://46.101.208.152
+[http://46.101.208.152](http://46.101.208.152)
 
 API details of an example project:
-http://46.101.208.152/projects/1/api-details
+
+[http://46.101.208.152/projects/1/api-details](http://46.101.208.152/projects/1/api-details)
