@@ -7,9 +7,12 @@ module V1
     include ApplicationHelper
 
     def index
-      paginate json: Project.find(params[:id]).datasources
+      paginate json: Project.find(params[:id]).datasources.where.not(db_table_name: nil)
     end
 
+    def dp_index
+      paginate json: Project.find(params[:id]).datasources.where(db_table_name: nil) # only datapackage files
+    end
 
     def show
       datasource = Project.find(params[:id]).datasources.where(table_ref: "#{params[:table_ref]}" ).first

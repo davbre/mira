@@ -19,6 +19,8 @@ Rails.application.routes.draw do
       # Projects
       get "projects" => "projects#index"
       get "projects/:id" => "projects#show"
+      # Datapackage files
+      get "projects/:id/datapackages" => "datasources#dp_index"
       # Data sources
       get "projects/:id/tables" => "datasources#index"
       get "projects/:id/tables/:table_ref" => "datasources#show"

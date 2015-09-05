@@ -17,7 +17,8 @@ CSV files are uploaded to Mira along with a corresponding tabular data package (
   [https://rvm.io/] (https://rvm.io/)
 
 - postgresql is installed
-[https://www.digitalocean.com/community/tutorials/how-to-use-postgresql-with-your-ruby-on-rails-application-on-ubuntu-14-04] (https://www.digitalocean.com/community/tutorials/how-to-use-postgresql-with-your-ruby-on-rails-application-on-ubuntu-14-04)
+
+  [https://www.digitalocean.com/community/tutorials/how-to-use-postgresql-with-your-ruby-on-rails-application-on-ubuntu-14-04] (https://www.digitalocean.com/community/tutorials/how-to-use-postgresql-with-your-ruby-on-rails-application-on-ubuntu-14-04)
 
   Suggest creating a user called "mira"
 
@@ -45,32 +46,39 @@ CSV files are uploaded to Mira along with a corresponding tabular data package (
           **username: mira**
           **password: your_password**
 
-4. Create and migrate database:
+4. Create and migrate database, and seed database with a single admin user (email = admin@example.com and password = topsecret):
 
         rake db:create
         rake db:migrate
-
-5. Seed the database with the single admin user, email = admin@example.com and password = topsecret
-
         rake db:seed
 
-6. Start your local development server
+5. Start your local development server
 
         rails s
 
-7. In a separate terminal start a background job to process uploaded files
+6. In a separate terminal start a background job to process uploaded files
 
         rake jobs:work
 
-8. Navigate to http://localhost:3000
+7. Open up the Mira homepage:
 
-9. Log in, create a new project, upload csv files along with their corresponding datapackage.json file
+    [http://localhost:3000] (http://localhost:3000)
 
-10. Keep you fingers crossed :)
+8. Download sample csv files + their datapackage.json file:
+
+    [https://github.com/davbre/dummy-sdtm/blob/master/output/mira_sample_data/mira_sample_data.tar.gz] (tar.gz file)
+    [https://github.com/davbre/dummy-sdtm/blob/master/output/mira_sample_data/mira_sample_data.zip] (zip file)
+
+9. Log in, create a new project, upload the sample csv files + datapackage.json file (from previous step)
+
+10. Navigate to the following address for the project's API details:
+
+    [http://localhost:3000/projects/1/api-details] (http://localhost:3000/projects/1/api-details)
 
 
 ## Demo
 
-https://178.62.7.111
+http://46.101.208.152
 
-https://178.62.7.111/projects/1/api-details
+API details of an example project:
+http://46.101.208.152/projects/1/api-details

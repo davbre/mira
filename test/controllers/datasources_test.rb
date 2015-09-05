@@ -29,4 +29,11 @@ class DatasourcesControllerTest < ActionController::TestCase
     skip
   end
 
+  test "table index should only return tables (and not datapackage files)" do
+    skip
+  end
+
+  test "datapackage index should only return datapackage files" do
+    skip
+  end
 end
