@@ -47,30 +47,24 @@ module Api
 
 
       def datatables
+
         project_datasources = Project.find(params[:id]).datasources
         datasource = project_datasources.where(table_ref: "#{params[:table_ref]}" ).first
 
-        # for the moment only consider some of datatables' query parameters
-        query_params = @_params.select {|k,v| ["draw", "length", "start"].include?(k) }
+# binding.pry
 
         # create active record table with scopes
         table_with_scopes = get_mira_ar_table("#{datasource.db_table_name}")
-
         scope = table_with_scopes.unscoped
 
-
-        per_page_num = query_params.delete(:length).to_i
-
+        per_page_num = @_params["length"].to_i
         # Datatables sends a start observations rather than a page number so
         # we infer the page number
-        dt_draw = query_params.delete(:draw)
-        dt_start = query_params.delete(:start).to_i
-
+        dt_draw = @_params["draw"]
+        dt_start = @_params["start"].to_i
         # the api-pagination gem accesses the param[:page] parameter. As
         # datatables doesn't use the same parameter we add it in manually.
         params[:page] = 1 + (dt_start.to_i)/per_page_num
-        query_params[:page] = params[:page]
-
 
 
         range_filter_columns = @_params["lower_range_values"].nil? ? [] : @_params["lower_range_values"].keys
@@ -82,6 +76,12 @@ module Api
           if !range_filter_columns.include?(v["data"]) && v["search"]["value"].length > 0 
             contains_filters[v["data"]] = v["search"]["value"]
           end
+        end
+
+        # apply each scope from query string
+        query_params = get_query_string_params(@_params)
+        query_params.each do |key,value|
+          scope = scope.send(key,value)
         end
 
         # apply simple contains search scopes
@@ -102,7 +102,6 @@ module Api
         # column range filter: less than or equal to
         urv_hash = @_params["upper_range_values"] || {}
         urv_hash.each do |k,v|
-          # binding.pry
           if is_number? v
             scope = scope.send(k + "_le", v)
           elsif v.length > 0
@@ -154,6 +153,16 @@ module Api
       end
 
 
+      private
+
+        def get_query_string_params(params)
+          query_params = params.select do |k,v|
+            ksplit = k.split("_")  
+            if ksplit.length > 1  
+              true if ["eq", "ne", "contains", "ends", "begins", "le", "lt", "ge", "gt"].include? ksplit.last    
+            end
+          end
+        end
 
       
     end

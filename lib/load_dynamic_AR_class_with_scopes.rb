@@ -27,10 +27,14 @@
 
       self.column_names.each do |sv|
 
+
+        # !! NB: when a new scope is added, update data_controller, specifically the datatables section!!
         # using "_eq" suffix as without it we run the risk of conflicting with existing methods, e.g. "name", "time" etc.
         equals_scope = "scope :#{sv}_eq, -> (#{sv}) { where #{sv}: #{sv} }"
-        eval(equals_scope) # unless BANNED_COLUMN_NAMES.include? sv.downcase
-        
+        not_equals_scope = "scope :#{sv}_ne, -> (#{sv}) { where.not #{sv}: #{sv} }"
+        eval(equals_scope)
+        eval(not_equals_scope)
+
         # if a text column then add a "contains" scope
         if ["text", "string"].include? self.columns_hash[sv].type.to_s
           contains_scope = "scope :#{sv}_contains, -> (#{sv}) { where(\"#{sv} like ?\", \"%\#{#{sv}}%\") }"
