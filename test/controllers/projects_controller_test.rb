@@ -232,4 +232,8 @@ class ProjectsControllerTest < ActionController::TestCase
   test "all scopes" do
     skip
   end
+
+  test "distinct endpoint working after upload" do
+    skip
+  end
 end

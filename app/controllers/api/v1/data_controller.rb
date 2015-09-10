@@ -142,7 +142,8 @@ module Api
 
         column = params[:col_ref].parameterize
         uniq_method = "#{column}_uniq".to_sym
-        table_const = Mira::Application.const_get(datasource.db_table_name.capitalize)
+        table_const = get_mira_ar_table("#{datasource.db_table_name}")
+        # table_const = Mira::Application.const_get(datasource.db_table_name.capitalize)
         if table_const.respond_to? uniq_method
           distinct_values = paginate table_const.order(column.to_sym => order.to_sym).send(uniq_method), per_page: per_page_num
           render json: distinct_values

@@ -50,7 +50,7 @@ class DataControllerTest < ActionController::TestCase
     skip
   end
 
-  test "DataTables: eq not_eq contains not_contains begins not_begins ends not_ends lt le gt ge query fields should work" do
+  test "DataTables: eq ne contains not_contains begins not_begins ends not_ends lt le gt ge query fields should work" do
     skip
   end
 
