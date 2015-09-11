@@ -40,13 +40,15 @@
           contains_scope = "scope :#{sv}_contains, -> (#{sv}) { where(\"#{sv} like ?\", \"%\#{#{sv}}%\") }"
           not_contains_scope = "scope :#{sv}_not_contains, -> (#{sv}) { where(\"#{sv} NOT like ?\", \"%\#{#{sv}}%\") }"
           begins_scope = "scope :#{sv}_begins, -> (#{sv}) { where(\"#{sv} like ?\", \"\#{#{sv}}%\") }"
-          begins_scope = "scope :#{sv}_begins, -> (#{sv}) { where(\"#{sv} NOT like ?\", \"\#{#{sv}}%\") }"
+          not_begins_scope = "scope :#{sv}_not_begins, -> (#{sv}) { where(\"#{sv} NOT like ?\", \"\#{#{sv}}%\") }"
           ends_scope = "scope :#{sv}_ends, -> (#{sv}) { where(\"#{sv} like ?\", \"%\#{#{sv}}\") }"
-          not_ends_scope = "scope :#{sv}_ends, -> (#{sv}) { where(\"#{sv} NOT like ?\", \"%\#{#{sv}}\") }"
+          not_ends_scope = "scope :#{sv}_not_ends, -> (#{sv}) { where(\"#{sv} NOT like ?\", \"%\#{#{sv}}\") }"
           eval(contains_scope)
           eval(not_contains_scope)
           eval(begins_scope)
+          eval(not_begins_scope)
           eval(ends_scope)
+          eval(not_ends_scope)
           # distinct values method...(note, this is not a scope)
           eval("def self.#{sv}_uniq; self.uniq.pluck(:#{sv}); end;")
         elsif ["integer", "float", "decimal", "date", "time", "datetime", "timestamp"].include? self.columns_hash[sv].type.to_s
