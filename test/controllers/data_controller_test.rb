@@ -40,6 +40,13 @@ class DataControllerTest < ActionController::TestCase
     skip
   end
 
+  test "'blank' query fields should work on all types" do
+    skip
+  end
+
+  test "'not_blank' query fields should work on all types" do
+    skip
+  end
 
   # DataTables queries...
   test "DataTables: 'page' and 'page_num' query field should be ignored (DataTables deals with paging)" do

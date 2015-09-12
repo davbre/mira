@@ -5,5 +5,11 @@
   <%= link_to "Logout", destroy_user_session_path, method: :delete, :class => 'navbar-link'  %>
 <% else %>
   <%#= link_to "Sign up", new_user_registration_path, :class => 'navbar-link'  %> <!--|-->
-  <%= link_to "Admin", new_user_session_path, :class => 'navbar-link'  %>
+
+  <% if Rails.env.production? %>
+    <%= link_to "Admin", new_user_session_url(:protocol => "https"), :class => 'navbar-link', :id => "admin-login-link"  %>
+  <% else %>
+    <%= link_to "Admin", new_user_session_path, :class => 'navbar-link', :id => "admin-login-link"  %>
+  <% end %>  
+
 <% end %>

@@ -43,23 +43,31 @@
           not_begins_scope = "scope :#{sv}_not_begins, -> (#{sv}) { where(\"#{sv} NOT like ?\", \"\#{#{sv}}%\") }"
           ends_scope = "scope :#{sv}_ends, -> (#{sv}) { where(\"#{sv} like ?\", \"%\#{#{sv}}\") }"
           not_ends_scope = "scope :#{sv}_not_ends, -> (#{sv}) { where(\"#{sv} NOT like ?\", \"%\#{#{sv}}\") }"
+          text_blank_scope = "scope :#{sv}_blank, -> (#{sv}) { where #{sv}: '' }"
+          text_not_blank_scope = "scope :#{sv}_not_blank, -> (#{sv}) { where.not #{sv}: '' }"
           eval(contains_scope)
           eval(not_contains_scope)
           eval(begins_scope)
           eval(not_begins_scope)
           eval(ends_scope)
           eval(not_ends_scope)
-          # distinct values method...(note, this is not a scope)
+          eval(text_blank_scope)
+          eval(text_not_blank_scope)
+          # distinct values method...(note, this is not a scope). This is used for the "distinct" routes (see data controller)
           eval("def self.#{sv}_uniq; self.uniq.pluck(:#{sv}); end;")
         elsif ["integer", "float", "decimal", "date", "time", "datetime", "timestamp"].include? self.columns_hash[sv].type.to_s
           lt_scope = "scope :#{sv}_lt, -> (#{sv}) { where(\"#{sv} < ?\",  \"\#{#{sv}}\") }"
           le_scope = "scope :#{sv}_le, -> (#{sv}) { where(\"#{sv} <= ?\", \"\#{#{sv}}\") }"
           gt_scope = "scope :#{sv}_gt, -> (#{sv}) { where(\"#{sv} > ?\",  \"\#{#{sv}}\") }"
           ge_scope = "scope :#{sv}_ge, -> (#{sv}) { where(\"#{sv} >= ?\", \"\#{#{sv}}\") }"
+          non_text_blank_scope = "scope :#{sv}_blank, -> (#{sv}) { where #{sv}: nil }"
+          non_text_not_blank_scope = "scope :#{sv}_not_blank, -> (#{sv}) { where.not #{sv}: nil }"
           eval(lt_scope)
           eval(le_scope)
           eval(gt_scope)
           eval(ge_scope)
+          eval(non_text_blank_scope)
+          eval(non_text_not_blank_scope)
         end
 
       end
