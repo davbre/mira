@@ -49,8 +49,8 @@ module Mira
 
     # DBR: see https://devmynd.com/blog/2014-7-rails-ember-js-with-the-ember-cli-redux-part-1-the-api-and-cms-with-ruby-on-rails
     #          http://www.adobe.com/devnet/archive/html5/articles/understanding-cross-origin-resource-sharing-cors.html
-
-    config.middleware.insert_before 0, "Rack::Cors", :debug => true, :logger => (-> { Rails.logger }) do
+#"Rack::Cors"
+    config.middleware.insert_before 0, "ActionDispatch::Static" , :debug => true, :logger => (-> { Rails.logger }) do
       #binding.pry
       allow do
         origins '*'
