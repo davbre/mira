@@ -48,6 +48,10 @@ class DataControllerTest < ActionController::TestCase
     skip
   end
 
+  test "'select_columns' works correctly..." do
+    skip
+  end
+
   # DataTables queries...
   test "DataTables: 'page' and 'page_num' query field should be ignored (DataTables deals with paging)" do
     skip

@@ -16,6 +16,8 @@ module Api
 
         # extract the sort order column
         order_columns = query_params.delete(:order)
+        # extract select columns
+        select_columns = query_params.delete(:select_columns)
         # extract the 'echo_params' parameter
         echo_params = query_params.delete(:echo_params)
         # get the per page, taking account default and maximum
@@ -26,6 +28,13 @@ module Api
           sort_column, sort_direction = (column || "").split(":")
           sort_direction = sort_direction == "desc" ? "desc" : "asc"
           scope = scope.order(sort_column.to_sym => sort_direction.to_sym) unless sort_column.nil?
+        end
+
+        if !select_columns.nil?
+          sc = (select_columns.split(",") + ["id"]).uniq # always return id
+          scope = scope.select(sc) # seems can't use pluck here as it does not return a relation. Had intended using below:
+          # apply select (pluck faster than select - http://stackoverflow.com/a/27995494/1002140)
+          # scope = scope.pluck(*sc).map{|a| Hash[*sc.zip(a).flatten]} unless select_columns.nil?
         end
 
         # apply each scope

@@ -1,0 +1,10 @@
+<div id="selecting-columns" name="selecting-columns" class="col-md-9">
+  <h3><a id="selecting-columns-h" class="anchor" href="#selecting-columns" aria-hidden="true"></a>Selecting Columns</h3>
+
+  <p>By default, responses include all columns. To request specific columns, you can use <i>select_columns=[comma separated list of column names]</i> in the query string:</p>
+
+  <pre><%= root_url %>api/projects/<%= @project.id %>/tables/mytable/data?<strong>select_columns=col1,col4,col7</strong></pre>    
+
+  <br /><br />
+</div>
+
