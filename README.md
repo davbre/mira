@@ -6,6 +6,16 @@ Mira is developed using Ruby on Rails. You upload CSV files to it and it *tries*
 
 CSV files are uploaded to Mira along with a corresponding tabular data package (a datapackage.json file). The datapackage.json file provides the CSV file metadata, i.e. file names, columns, column-types, delimiters etc. See [here](http://data.okfn.org/doc/tabular-data-package) and [here](http://dataprotocols.org/tabular-data-package/) for more information on tabular data packages.
 
+## Demo
+
+A Mira instance is running here:
+
+[http://46.101.208.152](http://46.101.208.152)
+
+Some [dummy clinical trial data](https://github.com/davbre/dummy-sdtm/tree/master/output/mira_sample_data) has been uploaded and its API details are found here:
+
+  [http://46.101.208.152/projects/1/api-details](http://46.101.208.152/projects/1/api-details)
+
 
 ## Quick Start
 
@@ -75,12 +85,3 @@ CSV files are uploaded to Mira along with a corresponding tabular data package (
 10. Navigate to the following address for the project's API details:
 
     [http://localhost:3000/projects/1/api-details](http://localhost:3000/projects/1/api-details)
-
-
-## Demo
-
-[http://46.101.208.152](http://46.101.208.152)
-
-API details of an example project:
-
-[http://46.101.208.152/projects/1/api-details](http://46.101.208.152/projects/1/api-details)
