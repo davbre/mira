@@ -13,7 +13,7 @@ class CheckDatapackage
   def job_logger
     log_dir = Rails.configuration.x.job_log_path + "/project_#{@project.id}"
     Dir.mkdir(log_dir) unless File.directory?(log_dir)
-    @@job_logger ||= Logger.new("#{log_dir}/datapackage.json.log")
+    @job_logger ||= Logger.new("#{log_dir}/datapackage.json.log")
   end
 
   def max_attempts
@@ -70,7 +70,8 @@ class CheckDatapackage
 
         cfile = File.open(path)
         job_logger.info("Queuing job to process " + csv)
-        ds = @project.datasources.create(datafile: cfile, datafile_file_name: csv, datapackage_id: dp.id) # ds = datasource
+        dp_id = (dp.id.nil?) ? dp2.id : dp.id
+        ds = @project.datasources.create(datafile: cfile, datafile_file_name: csv, datapackage_id: dp_id) # ds = datasource
         if ds.valid?
           set_table_name(ds)
           ds.public_url = ds.datafile.url.partition("?").first

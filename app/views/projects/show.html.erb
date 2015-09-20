@@ -23,13 +23,17 @@
           <tr>
             <th>Datapackage</th>
             <th>Created</th>
-            <th>Process Log</th>
+            <% if user_signed_in? %>
+              <th>Process Log</th>
+            <% end %>
           </tr>
           <% @datapackages.each do |dp| %>
             <tr>
               <td><%= link_to dp.datafile_file_name, dp.datafile.url %></td>
               <th><%= dp.created_at.strftime("%FT%R") %></td>
-              <td><a href="/job_logs/project_<%= dp.project_id %>/<%= dp.datafile_file_name %>.log"><%= dp.datafile_file_name %>.log</a></td>
+              <% if user_signed_in? %>                
+                <td><a href="/job_logs/project_<%= dp.project_id %>/<%= dp.datafile_file_name %>.log"><%= dp.datafile_file_name %>.log</a></td>
+              <% end %>
             </tr>
           <% end %>
         </table>
@@ -44,14 +48,18 @@
           <tr>
             <th>Data source</th>
             <th>Created</th>
-            <th>Process Log</th>
+            <% if user_signed_in? %> 
+              <th>Process Log</th>
+            <% end %>
           </tr>
 
           <% @datasources.each do |ds| %>
             <tr>
               <td><%= link_to ds.datafile_file_name, ds.datafile.url %></td>
               <th><%= ds.created_at.strftime("%FT%R") %></td>
-              <td><a href="/job_logs/project_<%= ds.project_id %>/<%= ds.datafile_file_name %>.log"><%= ds.datafile_file_name %>.log</a></td>
+              <% if user_signed_in? %> 
+                <td><a href="/job_logs/project_<%= ds.project_id %>/<%= ds.datafile_file_name %>.log"><%= ds.datafile_file_name %>.log</a></td>
+              <% end %>
             </tr>
           <% end %>
         </table>
@@ -60,13 +68,15 @@
       <% end %>
 
 
-      <% if not @log_file_names.empty? %>
-        <p>All log files</p>
-        <ul>
-          <% @log_file_names.each do |lf| %>
-            <li><a href="<%= root_url %>job_logs/project_<%= @project.id %>/<%= lf %>"><%= lf %></a>
-          <% end %>
-        </ul>
+      <% if user_signed_in? %> 
+        <% if not @log_file_names.empty? %>
+          <p>All log files</p>
+          <ul>
+            <% @log_file_names.each do |lf| %>
+              <li><a href="<%= root_url %>job_logs/project_<%= @project.id %>/<%= lf %>"><%= lf %></a>
+            <% end %>
+          </ul>
+        <% end %>
       <% end %>
     </div>
   </div>
