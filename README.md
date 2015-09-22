@@ -16,6 +16,10 @@ For example, some [dummy clinical trial data](https://github.com/davbre/dummy-sd
 
   [http://46.101.208.152/projects/5/api-details](http://46.101.208.152/projects/5/api-details)
 
+Some examles of interacting with a Mira API:
+
+  [http://davbre.github.io/mira-examples/](http://davbre.github.io/mira-examples/)
+
 
 ## Quick Start
 
