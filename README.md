@@ -2,7 +2,7 @@
 
 # Mira
 
-Mira is developed using Ruby on Rails. You upload CSV files to it and it *tries* to give you a read-only HTTP API (if it likes the files you upload ;)) 
+Mira is developed using Ruby on Rails. You upload CSV files to it and it *tries* to give you a read-only HTTP API (if it likes the files you upload ;))
 
 CSV files are uploaded to Mira along with a corresponding tabular data package (a datapackage.json file). The datapackage.json file provides the CSV file metadata, i.e. file names, columns, column-types, delimiters etc. See [here](http://data.okfn.org/doc/tabular-data-package) and [here](http://dataprotocols.org/tabular-data-package/) for more information on tabular data packages.
 
@@ -24,21 +24,11 @@ Some examles of interacting with a Mira API:
 ## Quick Start
 
 #### Pre-requisites
-- Ruby is installed (the version in Gemfile). Installing using RVM could be a good idea
+- You're familiar with [Ruby](https://www.ruby-lang.org/en/) and [Ruby on Rails](http://rubyonrails.org/).
 
-  [https://www.ruby-lang.org/en/] (https://www.ruby-lang.org/en/)
-
-  [https://rvm.io/] (https://rvm.io/)
-
-- postgresql is installed
+- PostgreSQL is installed
 
   [https://www.digitalocean.com/community/tutorials/how-to-use-postgresql-with-your-ruby-on-rails-application-on-ubuntu-14-04] (https://www.digitalocean.com/community/tutorials/how-to-use-postgresql-with-your-ruby-on-rails-application-on-ubuntu-14-04)
-
-  Suggest creating a user called "mira"
-
-- install the bundler gem
-
-  gem install bundler
 
 
 ---
@@ -49,7 +39,7 @@ Some examles of interacting with a Mira API:
 
         bundle install
 
-3. Update the config/database.yml file with your database credentials
+3. Update the config/database.yml file with your database credentials. Assuming you've created a user "mira" with full access to a database of the same name:
 
         default: &default
           adapter: postgresql
@@ -57,8 +47,16 @@ Some examles of interacting with a Mira API:
           pool: 5
           host: localhost
           port: 5432
-          **username: mira**
-          **password: your_password**
+          username: mira
+          password: **your_password_here**
+          
+        development:
+          <<: *default
+          database: mira_dev
+
+        test:
+          <<: *default
+          database: mira_test
 
 4. Create and migrate database, and seed database with a single admin user (email = admin@example.com and password = topsecret):
 
