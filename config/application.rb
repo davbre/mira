@@ -38,6 +38,8 @@ module Mira
     # DBR: job logs
     config.x.job_log_path = "#{Rails.root}/public/job_logs"
 
+    config.x.upload_path = "#{Rails.root}/public/uploads"
+
     # This is not exactly required but decided to make it explicit
     # as we can see below that we are :expose'ing some of these
     # headers in the rack-cors section

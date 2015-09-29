@@ -2,7 +2,7 @@ require 'test_helper'
 
 class ProjectsControllerTest < ActionController::TestCase
 
- include Devise::TestHelpers
+  include Devise::TestHelpers
 
   setup do
     sign_in users(:one)    
@@ -125,78 +125,15 @@ class ProjectsControllerTest < ActionController::TestCase
   end
 
 
-  # uploads
-  test "should detect when no files uploaded" do
-    Delayed::Worker.delay_jobs = false # turn off queuing
 
-    user = users(:one)
-    project = user.projects.build(name: "Upload test project", description: "Upload test project description")
-    project.save
-    post :upload_ds, id: project.id, :datafiles => [ ]
-    no_datapackage = assigns["project"].errors.messages[:uploads].include? "you must upload one or more csv files along with their datapackage.json file"
-    assert no_datapackage
+
+
+
+
+
+  test "should get clean log files when good files uploaded" do
   end
 
-  test "should detect when no datapackage.json is uploaded" do
-
-    Delayed::Worker.delay_jobs = false # turn off queuing
-
-    user = users(:one)
-    project = user.projects.build(name: "Upload test project", description: "Upload test project description")
-    project.save
-    upload1 = fixture_file_upload("uploads/upload1.csv", "text/csv")
-    upload2 = fixture_file_upload("uploads/upload2.csv", "text/csv")
-    # datapackage = fixture_file_upload("uploads/datapackage.json", "application/json")
-    post :upload_ds, id: project.id, :datafiles => [ upload1, upload2 ]
-    no_datapackage = assigns["project"].errors.messages[:uploads].include? "no datapackage.json was uploaded"
-    assert no_datapackage
-  end
-
-  test "should detect when no csv files are uploaded" do
-    Delayed::Worker.delay_jobs = false # turn off queuing
-
-    user = users(:one)
-    project = user.projects.build(name: "Upload test project", description: "Upload test project description")
-    project.save
-    upload1 = fixture_file_upload("uploads/upload1.txt", "text/plain")
-    upload2 = fixture_file_upload("uploads/upload2.txt", "text/plain")
-    datapackage = fixture_file_upload("uploads/datapackage.json", "application/json")
-    post :upload_ds, id: project.id, :datafiles => [ upload1, upload2, datapackage ]
-    no_datapackage = assigns["project"].errors.messages[:uploads].include? "no csv files were uploaded"
-    assert no_datapackage
-
-  end
-
-  test "should detect when a non-csv/non-datapackage.json file is uploaded" do
-    Delayed::Worker.delay_jobs = false # turn off queuing
-
-    user = users(:one)
-    project = user.projects.build(name: "Upload test project", description: "Upload test project description")
-    project.save
-    upload1 = fixture_file_upload("uploads/upload1.txt", "text/plain")
-    upload2 = fixture_file_upload("uploads/upload2.csv", "text/csv")
-    datapackage = fixture_file_upload("uploads/datapackage.json", "application/json")
-    post :upload_ds, id: project.id, :datafiles => [ upload1, upload2, datapackage ]
-    no_datapackage = assigns["project"].errors.messages[:uploads].include? "only csv files can be uploaded along with their datapackage.json file"
-    assert no_datapackage
-  end
-
-  test "should detect when datapackage.json does not contain a resource section for each csv file" do
-    skip
-  end
-
-  test "should be able to link to datapackage.json" do
-    skip
-  end
-
-  test "should be able to link to each csv file" do
-    skip
-  end
-
-  test "should be able to read log files..." do
-    skip
-  end
-  
   test "should handle other delimiters" do
     skip
   end

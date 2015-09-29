@@ -8,17 +8,17 @@
 <%= paginate @projects %>
 <table class="table">
   <thead>
-    <th>Project ID</th>
-    <th>Project Name</th>
+    <th>ID</th>
+    <th>Name</th>
     <th>Description</th>
     <th> </th>
   </thead>
   <% @projects.each do |proj| %>  
     <tr>
       <td><%= proj.id %></td>
-      <td><%= link_to proj.name, proj %></td>
+      <td><a href="/projects/<%= proj.id %>/api-details"><%= proj.name %></a></td>
       <td><%= proj.description %></td>
-      <td><a href="/projects/<%= proj.id %>/api-details">API details</a></td>
+      <td><%= link_to "Uploads", proj %></td>
       <% if user_signed_in? %>
         <td><%= link_to "Edit Project", edit_project_path(proj), :class => "btn btn-xs btn-info" %></td>
         <td><%= link_to "delete", proj, method: :delete,

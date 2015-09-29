@@ -7,4 +7,11 @@ class ActiveSupport::TestCase
   fixtures :all
 
   # Add more helper methods to be used by all tests here...
+  def log_dir
+    Rails.configuration.x.job_log_path
+  end
+
+  def upload_dir
+    Rails.configuration.x.upload_path
+  end
 end

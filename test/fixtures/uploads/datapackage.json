@@ -1,10 +1,13 @@
 {
-  "name": "Test",
-  "title": "Test project",
+  "name": "--NAME--",
+  "title": "--TITLE--",
   "resources": [
     {
       "path": "upload1.csv",
       "format": "csv",
+      "dialect": {
+        "delimiter": ","
+      },
       "mediatype": "text/csv",
       "schema": {
         "fields": [
@@ -58,6 +61,9 @@
     {
       "path": "upload2.csv",
       "format": "csv",
+      "dialect": {
+        "delimiter": ","
+      },
       "mediatype": "text/csv",
       "schema": {
         "fields": [
@@ -140,6 +146,58 @@
           {
             "name": "domain",
             "type": "string"
+          }
+        ]
+      }
+    },
+    {
+      "path": "good_upload.csv",
+      "format": "csv",
+      "dialect": {
+        "delimiter": ","
+      },
+      "mediatype": "text/csv",
+      "schema": {
+        "fields": [
+          {
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "name": "age",
+            "type": "integer",
+            "constraints": {
+              "minimum": "23",
+              "maximum": "89"
+            }
+          },
+          {
+            "name": "dob",
+            "type": "date",
+            "constraints": {
+              "minimum": "2015-12-01",
+              "maximum": "2015-12-16"
+            }
+          },
+          {
+            "name": "score",
+            "type": "number",
+            "constraints": {
+              "minimum": "1.123",
+              "maximum": "534.234"
+            }
+          },
+          {
+            "name": "longid",
+            "type": "integer",
+            "constraints": {
+              "minimum": "1000000000000000000000000000",
+              "maximum": "1000000000000000000000000000"
+            }
+          },
+          {
+            "name": "boolfl",
+            "type": "boolean"
           }
         ]
       }
