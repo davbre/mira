@@ -175,5 +175,8 @@ class LoadTable
     quote_char
   end
 
+  def self.type_map
+    @@type_map
+  end
 end
   
