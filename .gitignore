@@ -14,7 +14,7 @@
 # Ignore all logfiles and tempfiles.
 /log/*
 !/log/.keep
-/tmp
+#/tmp
 
 # DBR: ignore spring files. See https://www.railstutorial.org/book/static_pages#sec-getting_started_with_testing
 /spring

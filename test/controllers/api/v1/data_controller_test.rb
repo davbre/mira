@@ -35,13 +35,38 @@ class Api::V1::DataControllerTest < ActionController::TestCase
     end
   end
 
-  
-  def csv_row_count(csv_file)
-    row_count = File.open(csv_file,"r").readlines.size - 1
+
+  # HTTP JSON: {"id"=>1, "name"=>"John", "age"=>23, "dob"=>"2015-12-01", "score"=>12.145, "longid"=>1000000000000000000, "boolfl"=>true}
+  # CSV File:  {"name"=>"John", "age"=>"23", "dob"=>"2015-12-01", "score"=>"12.145", "longid"=>"1000000000000000000", "boolfl"=>"TRUE"}
+  # Type map:  {"name"=>"text", "age"=>"integer", "dob"=>"date", "score"=>"float", "longid"=>"integer", "boolfl"=>"boolean"}
+  def cell_to_type(text_cell,type_map)
+    # text_cell will look like ["column_name", "column_value"]
+    # type_map will look like {"column_name"=>"column_type", ... }
+    ret = nil
+    cell_type = type_map[text_cell[0]]
+    # binding.pry
+    if text_cell[1].blank?
+      ret = nil
+    elsif ["text","date","datetime","time"].include? cell_type
+      ret = text_cell[1]
+    elsif cell_type == "integer"
+      ret = text_cell[1].to_i
+    elsif ["float","number"].include? cell_type
+      ret = text_cell[1].to_f
+    elsif cell_type == "boolean"
+      if ActiveRecord::ConnectionAdapters::Column::TRUE_VALUES.include? text_cell[1]
+        ret = true
+      elsif ActiveRecord::ConnectionAdapters::Column::FALSE_VALUES.include? text_cell[1]
+        ret = false
+      end
+    end
+    ret = text_cell[1] if (ret.nil? && !text_cell[1].blank?)
+    ret
   end
 
-  def default_page_size
-    Rails.application.config.x.api_default_per_page
+ 
+  def csv_row_count(csv_file)
+    row_count = File.open(csv_file,"r").readlines.size - 1
   end
 
 
@@ -55,7 +80,7 @@ class Api::V1::DataControllerTest < ActionController::TestCase
     end
   end
 
-  test "API projects/:id/tables/:table_ref/data - with no query returns default number of rows" do
+  test "API projects/:id/tables/:table_ref/data - returns default number of rows" do
     @uploads.each do |upl|
       csv_file = fixture_file_upload("uploads/" + upl + ".csv", "text/plain")
       get :index, :id => @project.id, :table_ref => upl
@@ -64,7 +89,7 @@ class Api::V1::DataControllerTest < ActionController::TestCase
     end
   end
 
-  test "API projects/:id/tables/:table_ref/data - with no query returns correct variables" do
+  test "API projects/:id/tables/:table_ref/data - returns correct variables in every row" do
     @uploads.each do |upl|
       csv_file = fixture_file_upload("uploads/" + upl + ".csv", "text/plain")
       csv_header_columns = CSV.open(csv_file, 'r') { |csv| csv.first } # http://stackoverflow.com/a/18113090/1002140
@@ -81,6 +106,69 @@ class Api::V1::DataControllerTest < ActionController::TestCase
       assert_equal default_page_size, column_counts.values.uniq.first
       assert_equal csv_header_columns, column_counts.keys - ["id"]
     end
+  end
+
+
+  test "API projects/:id/tables/:table_ref/data - returns correct values in every cell" do
+    @uploads.each do |upl|
+      mapped_col_types = map_datapackage_column_types(@datapackage, upl + ".csv")
+      csv_file = fixture_file_upload("uploads/" + upl + ".csv", "text/plain")
+      csv_table = CSV.read(csv_file, headers: true) # read in whole file, returns a CSV::Table object
+      get :index, :id => @project.id, :table_ref => upl
+      json_response = JSON.parse(response.body)
+      # mimix the json response using csv file, then compare the two
+      csv_mimic_json = { "data" => []}
+      csv_table.each_with_index do |row,i|
+        mimic_row = { "id" => i+1 }
+        row_as_hash = row.to_hash
+        row_as_hash.each do |cell|
+          cell_typed = cell_to_type(cell,mapped_col_types)
+          mimic_row[cell[0]] = cell_typed
+        end
+        csv_mimic_json["data"] << mimic_row
+        break if (i+1) >= default_page_size # json response will contain only 1 page of data
+      end
+      assert_equal json_response, csv_mimic_json
+    end
+  end
+
+
+  test "API projects/:id/tables/:table_ref/data?[field=value] - field=value queries are working" do
+    @uploads.each do |upl|
+      mapped_col_types = map_datapackage_column_types(@datapackage, upl + ".csv")
+
+      csv_file = fixture_file_upload("uploads/" + upl + ".csv", "text/plain")
+      csv_table = CSV.read(csv_file, headers: true) # read in whole file, returns a CSV::Table object
+    
+
+      csv_table.headers.each_with_index do |col,i|
+
+        # Get indices of rows with non-empty values then pick one at random
+        # Query API using each the cell value and check that returned JSON matches our selected CSV row
+        non_empty_indices = []
+        csv_table.by_col[i].collect.with_index {|e,j| non_empty_indices << j if !e.nil?}
+        random_row_num = non_empty_indices.sample
+        random_row_data = csv_table[random_row_num].fields
+
+        get :index, :id => @project.id, :table_ref => upl, (col + "_eq").to_sym => random_row_data[i]
+        json_response = JSON.parse(response.body)
+        binding.pry
+      end
+
+    end
+  end
+
+
+  test "API projects/:id/tables/:table_ref/data - response should contain link headers" do
+    skip
+  end
+
+  test "API projects/:id/tables/:table_ref/data - response should contain Records-Per-Page and Records-Total headers" do
+    skip
+  end
+
+  test "API projects/:id/tables/:table_ref/data - response should contain CORS header" do
+    skip
   end
 
 end

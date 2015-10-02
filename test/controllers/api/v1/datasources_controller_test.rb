@@ -37,15 +37,6 @@ class Api::V1::DatasourcesControllerTest < ActionController::TestCase
     end
   end
 
-  def map_datapackage_column_types(datapackage, csv_name)
-    csv_dp_detail = datapackage["resources"].detect{ |a| a["path"] == csv_name }
-    dp_column_types = {}
-    csv_dp_detail["schema"]["fields"].each do |sf|
-      dp_column_types[sf["name"]] = LoadTable.type_map[sf["type"]]
-    end
-    dp_column_types
-  end
-
 
 
   # api/project/:id/tables
