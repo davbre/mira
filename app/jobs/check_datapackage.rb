@@ -21,6 +21,7 @@ class CheckDatapackage
   end
 
   def perform
+    # sleep 5
     extant_dp_file = @project.datasources.where(:datafile_file_name => "datapackage.json").first
     ds_archive("datapackage.json") unless extant_dp_file.nil?
 

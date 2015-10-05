@@ -23,6 +23,7 @@ class ProcessCsvUpload
   end
 
   def perform
+    # puts "About to process: " + @ds.datafile_file_name
     job_logger.info("About to process " + @ds.datafile_file_name)
     new_upload_table = LoadTable.new(@ds,@datapackage)
   end
