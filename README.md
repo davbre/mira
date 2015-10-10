@@ -10,15 +10,15 @@ CSV files are uploaded to Mira along with a corresponding tabular data package (
 
 A Mira instance is running here providing APIs to serveral datasets:
 
-    [http://178.62.193.189](http://178.62.193.189)
+[http://178.62.193.189](http://178.62.193.189)
 
 For example, some [dummy clinical trial data](https://github.com/davbre/dummy-sdtm/tree/master/output/mira_sample_data) has been uploaded and its API details are found here:
 
-    [http://178.62.193.189/projects/6/api-details](http://178.62.193.189/projects/6/api-details)
+[http://178.62.193.189/projects/6/api-details](http://178.62.193.189/projects/6/api-details)
 
 Some examles of interacting with a Mira API:
 
-    [http://davbre.github.io/mira-examples/](http://davbre.github.io/mira-examples/)
+[http://davbre.github.io/mira-examples/](http://davbre.github.io/mira-examples/)
 
 
 ## Quick Start
