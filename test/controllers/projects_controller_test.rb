@@ -5,7 +5,7 @@ class ProjectsControllerTest < ActionController::TestCase
   include Devise::TestHelpers
 
   setup do
-    sign_in users(:one)    
+    sign_in users(:one)
     @project = projects(:one)
   end
 
@@ -36,6 +36,13 @@ class ProjectsControllerTest < ActionController::TestCase
       post :create, project: { name: "New test project name", description: "New test project description" }
     end
     assert_redirected_to project_path(assigns(:project))
+  end
+
+  test "should create log and upload folders" do
+    post :create, project: { name: "New test project name", description: "New test project description" }
+    last_project = Project.last
+    assert File.directory?(last_project.job_log_path)
+    assert File.directory?(last_project.upload_path)
   end
 
   test "should not create project if signed out" do
@@ -102,7 +109,7 @@ class ProjectsControllerTest < ActionController::TestCase
 
   # destroy
   test "should destroy project if signed in and owner of project" do
-    assert_difference('Project.count', -1) do
+    assert_difference('users(:one).projects.count', -1) do
       delete :destroy, id: @project
     end
     assert_redirected_to projects_path
@@ -110,14 +117,21 @@ class ProjectsControllerTest < ActionController::TestCase
 
   test "should not destroy project if signed out" do
     sign_out users(:one)
-    assert_no_difference('Project.count') do
+    assert_no_difference('users(:one).projects.count') do
       delete :destroy, id: @project
     end
     assert_redirected_to new_user_session_path
   end
 
   test "should delete uploads and log files on delete" do
-    skip
+    user = users(:one)
+    project = user.projects.build(name: "Upload test project", description: "Upload test project description")
+    project.save
+    upload_files = ["upload1","upload2"]
+    upload_to_project(project,upload_files)
+    delete :destroy, id: Project.last.id
+    refute File.directory?(Project.last.job_log_path)
+    refute File.directory?(Project.last.upload_path)
   end
 
   test "should delete xy tables on delete" do
@@ -137,7 +151,7 @@ class ProjectsControllerTest < ActionController::TestCase
   test "should handle other delimiters" do
     skip
   end
-  
+
   test "datapackage should contain dialect -> delimiter for each table" do
     skip
   end
@@ -158,15 +172,7 @@ class ProjectsControllerTest < ActionController::TestCase
     skip
   end
 
-  test "deleting project deletes all files...datasources, logs, db tables, etc" do
-    skip
-  end
-
   test "datapackage with columns in RESERVED_COLUMN_NAMES should be rejected" do
-    skip
-  end
-
-  test "all scopes" do
     skip
   end
 

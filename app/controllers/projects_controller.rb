@@ -16,7 +16,7 @@ class ProjectsController < ApplicationController
 
   def show
   	@project = Project.find(params[:id])
-    @datasources = @project.datasources.where.not(datapackage_id: nil).order(:table_ref,:archived)    
+    @datasources = @project.datasources.where.not(datapackage_id: nil).order(:table_ref,:archived)
     @datapackages = @project.datasources.where(datapackage_id: nil).order(:archived,:datafile_file_name)
     log_files = Dir.glob(Rails.configuration.x.job_log_path + "/project_" + @project.id.to_s + '/*.log')
     @log_file_names = log_files.map { |l| l.split("/").last }
@@ -30,6 +30,8 @@ class ProjectsController < ApplicationController
   	@project = current_user.projects.build(project_params)
   	if @project.save
       flash[:success] = "New project created. Upload some files!"
+      Dir.mkdir(@project.job_log_path) unless File.directory?(@project.job_log_path)
+      Dir.mkdir(@project.upload_path) unless File.directory?(@project.upload_path)
       # same as: redirect_to project_url(@project)
       redirect_to @project
   	else
@@ -100,20 +102,10 @@ class ProjectsController < ApplicationController
 
   def destroy
     project = Project.find(params[:id])
-    project_db_tables = project.datasources.select { |ds| ds.db_table_name != nil }.map(&:db_table_name)
+    project.datasources.each do |ds|
+      ds.delete_associated_artefacts
+    end
     if project.destroy
-      # delete uploads and logs
-      logs_dir = Rails.root.join("public","job_logs","project_" + params[:id].to_s)
-      uploads_dir = Rails.root.join("public","uploads","project_" + params[:id].to_s)
-      FileUtils.rm_rf(logs_dir) if Dir.exists? logs_dir
-      FileUtils.rm_rf(uploads_dir) if Dir.exists? uploads_dir
-      Dir.exists? Rails.root.join("public","job_logs","project_" + params[:id].to_s)
-      # delete database tables
-      project_db_tables.each do |dbt|
-        if ActiveRecord::Base.connection.table_exists? dbt
-          ActiveRecord::Base.connection.drop_table(dbt)
-        end
-      end
       flash[:success] = "Project deleted"
     else
       flash[:error] = "Failed to delete project"
@@ -139,6 +131,6 @@ class ProjectsController < ApplicationController
     def correct_user
       @project = current_user.projects.find_by(id: params[:id])
       redirect_to root_url if @project.nil?
-    end    
+    end
 
 end
