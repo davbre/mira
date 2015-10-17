@@ -105,6 +105,8 @@ class ProjectsController < ApplicationController
     project.datasources.each do |ds|
       ds.delete_associated_artefacts
     end
+    FileUtils.rm_rf(project.job_log_path)
+    FileUtils.rm_rf(project.upload_path)
     if project.destroy
       flash[:success] = "Project deleted"
     else

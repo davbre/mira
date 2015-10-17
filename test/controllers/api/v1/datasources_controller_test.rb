@@ -8,7 +8,7 @@ class Api::V1::DatasourcesControllerTest < ActionController::TestCase
 
 
   setup do
-    sign_in users(:one)    
+    sign_in users(:one)
     # @project = projects(:one)
     @user = users(:one)
 
@@ -27,7 +27,7 @@ class Api::V1::DatasourcesControllerTest < ActionController::TestCase
     @uploads.each do |upl|
       csv_file = fixture_file_upload("uploads/" + upl + ".csv", "text/plain")
 
-      ds = @project.datasources.create(datafile: csv_file, datafile_file_name: upl + ".csv", datapackage_id: @dp.id) 
+      ds = @project.datasources.create(datafile: csv_file, datafile_file_name: upl + ".csv", datapackage_id: @dp.id)
       ds.save
       ds.db_table_name = Rails.configuration.x.db_table_prefix.downcase + ds.project_id.to_s + "_" + ds.id.to_s
       ds.save
@@ -43,22 +43,27 @@ class Api::V1::DatasourcesControllerTest < ActionController::TestCase
   test "API projects/:id/tables - response ok" do
     get :index, :id => @project.id
     assert_response :success
-  end  
+  end
 
   test "API projects/:id/tables - response contains same number of uploads" do
     get :index, :id => @project.id
     json_response = JSON.parse(response.body)
     assert json_response.length == @uploads.length
-  end  
+  end
 
-  test "API projects/:id/tables - response contains each upload" do
+  test "API projects/:id/tables - response contains each upload but not datapackage" do
     get :index, :id => @project.id
     json_response = JSON.parse(response.body)
-    @uploads.each do |upl|
-      upload_csv_search = json_response.detect{ |a| a["datafile_file_name"] == upl + ".csv" }
-      refute_nil upload_csv_search
-    end
-  end  
+    json_response_uploads = json_response.map { |a| a["table_ref"] }
+    assert_equal json_response_uploads.sort, @uploads.sort
+  end
+
+  test "API projects/:id/datapackages - response contains uploaded datapackages only" do
+    get :dp_index, :id => @project.id
+    json_response = JSON.parse(response.body)
+    json_response_uploads = json_response.map { |a| a["table_ref"] }
+    assert_equal ["datapackage"], json_response_uploads
+  end
 
   test "API's projects/:id/tables - each upload contains reference to correct datapackage" do
     get :index, :id => @project.id

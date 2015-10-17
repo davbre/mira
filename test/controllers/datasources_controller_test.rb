@@ -15,10 +15,12 @@ class DatasourcesControllerTest < ActionController::TestCase
 
   # destroy
   test "should destroy datasource if signed in and owner of project" do
+    destroy_csv = @upload_files[0]
+    relevant_datasource = @project.datasources.where(table_ref: destroy_csv).first
     assert_difference('Project.find(' + @project.id.to_s + ')' + '.datasources.count', -1) do
-      delete :destroy, project_id: @project, id: @project.datasources.where(table_ref: @upload_files[0]).first.id
+      delete :destroy, project_id: @project, id: relevant_datasource.id
     end
-    assert_redirected_to project_datasources_path
+    assert_empty Datasource.where(id: relevant_datasource.id)
   end
 
   test "should not destroy datasource if signed out" do
@@ -61,23 +63,7 @@ class DatasourcesControllerTest < ActionController::TestCase
   #   skip
   # end
   #
-  # test "should not return distinct values for non-text/string columns" do
-  #   skip
-  # end
+
   #
-  # test "should return a message in json saying distinct values not supported for column when not text/string" do
-  #   skip
-  # end
-  #
-  # test "should return paged distinct values for text/string columns" do
-  #   skip
-  # end
-  #
-  # test "table index should only return tables (and not datapackage files)" do
-  #   skip
-  # end
-  #
-  # test "datapackage index should only return datapackage files" do
-  #   skip
-  # end
+
 end

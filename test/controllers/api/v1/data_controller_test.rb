@@ -9,8 +9,9 @@ class Api::V1::DataControllerTest < ActionController::TestCase
     sign_in users(:one)
     # @project = projects(:one)
     @user = users(:one)
-
-    upload_to_project(["good_upload"])
+    @project = @user.projects.build(name: "Upload test project", description: "Upload test project description")
+    @project.save
+    upload_to_project(@project, ["good_upload"])
   end
 
 
@@ -75,7 +76,7 @@ class Api::V1::DataControllerTest < ActionController::TestCase
     end
   end
 
-  test "API projects/:id/tables/:table_ref/data - returns default number of rows" do
+  test "API request for page of data returns default number of rows" do
     @uploads.each do |upl|
       csv_file = fixture_file_upload("uploads/" + upl + ".csv", "text/plain")
       get :index, :id => @project.id, :table_ref => upl
@@ -315,23 +316,47 @@ class Api::V1::DataControllerTest < ActionController::TestCase
     end
   end
 
-  test "distinct values query is working" do
-    skip
+
+  test "should return paged distinct values for string columns" do
+    upl = @uploads.first
+    get :distinct, :id => @project.id, :table_ref => upl, :col_ref=> "name"
+    json_response = JSON.parse(response.body)
+    assert_equal Array, json_response.class
+    assert_equal Rails.configuration.x.api_default_per_page, json_response.length
+    assert response.header.has_key? "Link" # i.e. has header relating to paging
   end
 
 
-
-
-  test "API projects/:id/tables/:table_ref/data - response should contain link headers" do
-    skip
+  test "should not return distinct values for non-string columns" do
+    upl = @uploads.first
+    get :distinct, :id => @project.id, :table_ref => upl, :col_ref=> "age"
+    json_response = JSON.parse(response.body)
+    assert_equal Hash, json_response.class # The response to a valid distinct request will be an array. Otherwise it will be a Hash with a message.
   end
 
-  test "API projects/:id/tables/:table_ref/data - response should contain Records-Per-Page and Records-Total headers" do
-    skip
+
+  test "response to data request should contain link headers" do
+    upl = @uploads.first
+    get :index, :id => @project.id, :table_ref => upl
+    link_header = response.header["Link"]
+    assert_not_nil link_header # i.e. has header relating to paging
+    assert link_header.include? "\"last\""
+    assert link_header.include? "\"next\""
   end
 
-  test "API projects/:id/tables/:table_ref/data - response should contain CORS header" do
-    skip
+  test "response to data request should contain should contain Records-Per-Page and Records-Total headers" do
+    upl = @uploads.first
+    upl_row_count = File.open("test/fixtures/uploads/" + upl + ".csv","r").readlines.size - 1
+    get :index, :id => @project.id, :table_ref => upl
+    assert response.header.has_key? "Records-Per-Page"
+    assert response.header.has_key? "Records-Total"
+    assert_equal Rails.configuration.x.api_default_per_page, response.header["Records-Per-Page"].to_i
+    assert_equal upl_row_count, response.header["Records-Total"].to_i
   end
+
+  # can't test this locally
+  # test "API projects/:id/tables/:table_ref/data - response should contain CORS header" do
+  #   skip
+  # end
 
 end

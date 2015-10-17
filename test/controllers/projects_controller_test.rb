@@ -125,27 +125,36 @@ class ProjectsControllerTest < ActionController::TestCase
 
   test "should delete uploads and log files on delete" do
     user = users(:one)
-    project = user.projects.build(name: "Upload test project", description: "Upload test project description")
+    project = user.projects.build(name: "Testing deletion of uploads and logs", description: "Upload test project description")
     project.save
     upload_files = ["upload1","upload2"]
-    upload_to_project(project,upload_files)
-    delete :destroy, id: Project.last.id
-    refute File.directory?(Project.last.job_log_path)
-    refute File.directory?(Project.last.upload_path)
+    upload_to_project(project, upload_files)
+    relevant_project_id = Project.last.id
+    relevant_project_log_path = Project.last.job_log_path
+    relevant_project_upload_path = Project.last.upload_path
+    delete :destroy, id: relevant_project_id
+    refute File.directory?(relevant_project_log_path)
+    refute File.directory?(relevant_project_upload_path)
   end
 
   test "should delete xy tables on delete" do
-    skip
+    user = users(:one)
+    project = user.projects.build(name: "Testing deletion of uploads and logs", description: "Upload test project description")
+    project.save
+    upload_files = ["upload1","upload2"]
+    upload_to_project(project, upload_files)
+    db_table_names = []
+    upload_files.each do |ul|
+      db_table_names << project.datasources.where(table_ref: "upload2").first.db_table_name
+    end
+    delete :destroy, id: Project.last.id
+    db_table_names.each do |dbt|
+      refute ActiveRecord::Base.connection.table_exists? dbt
+    end
   end
 
-
-
-
-
-
-
-
   test "should get clean log files when good files uploaded" do
+    skip
   end
 
   test "should handle other delimiters" do
