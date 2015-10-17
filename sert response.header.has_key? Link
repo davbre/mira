@@ -1,0 +1,221 @@
+=> [32m#<ActionController::TestResponse:0x0000000458c088[0m
+ @blank[32m=[0m[1;36mfalse[0m,
+ @cache_control[32m=[0m{},
+ @charset[32m=[0m[31m[1;31m"[0m[31mutf-8[1;31m"[0m[31m[0m,
+ @committed[32m=[0m[1;36mfalse[0m,
+ @content_type[32m=[0m[31m[1;31m"[0m[31mapplication/json[1;31m"[0m[31m[0m,
+ @cv[32m=[0m[32m#<MonitorMixin::ConditionVariable:0x000000078a7b98[0m @cond[32m=[0m[32m#<Thread::ConditionVariable:0x000000078a7b70[0m[32m>[0m, @monitor[32m=[0m[32m#<ActionController::TestResponse:0x0000000458c088[0m ...[32m>[0m[32m>[0m,
+ @etag[32m=[0m[1;36mnil[0m,
+ @header[32m=[0m
+  {[31m[1;31m"[0m[31mX-Frame-Options[1;31m"[0m[31m[0m=>[31m[1;31m"[0m[31mSAMEORIGIN[1;31m"[0m[31m[0m,
+   [31m[1;31m"[0m[31mX-XSS-Protection[1;31m"[0m[31m[0m=>[31m[1;31m"[0m[31m1; mode=block[1;31m"[0m[31m[0m,
+   [31m[1;31m"[0m[31mX-Content-Type-Options[1;31m"[0m[31m[0m=>[31m[1;31m"[0m[31mnosniff[1;31m"[0m[31m[0m,
+   [31m[1;31m"[0m[31mLink[1;31m"[0m[31m[0m=>
+    [31m[1;31m"[0m[31m<http://test.host/api/projects/980190963/tables/good_upload/columns/name/distinct?page=2>; rel=[1;35m\"[0m[31mlast[1;35m\"[0m[31m, <http://test.host/api/projects/980190963/tables/good_upload/columns/name/distinct?page=2>; rel=[1;35m\"[0m[31mnext[1;35m\"[0m[31m[1;31m"[0m[31m[0m,
+   [31m[1;31m"[0m[31mRecords-Total[1;31m"[0m[31m[0m=>[31m[1;31m"[0m[31m29[1;31m"[0m[31m[0m,
+   [31m[1;31m"[0m[31mRecords-Per-Page[1;31m"[0m[31m[0m=>[31m[1;31m"[0m[31m25[1;31m"[0m[31m[0m,
+   [31m[1;31m"[0m[31mContent-Type[1;31m"[0m[31m[0m=>[31m[1;31m"[0m[31mapplication/json; charset=utf-8[1;31m"[0m[31m[0m},
+ @mon_count[32m=[0m[1;34m0[0m,
+ @mon_mutex[32m=[0m[32m#<Mutex:0x000000078a7c60[0m[32m>[0m,
+ @mon_owner[32m=[0m[1;36mnil[0m,
+ @request[32m=[0m
+  [32m#<ActionController::TestRequest:0x0000000458cdf8[0m
+   @cookies[32m=[0m{},
+   @env[32m=[0m
+    {[31m[1;31m"[0m[31mrack.version[1;31m"[0m[31m[0m=>[[1;34m1[0m, [1;34m3[0m],
+     [31m[1;31m"[0m[31mrack.input[1;31m"[0m[31m[0m=>[32m#<StringIO:0x000000078a9e20[0m[32m>[0m,
+     [31m[1;31m"[0m[31mrack.errors[1;31m"[0m[31m[0m=>[32m#<StringIO:0x00000005153e20[0m[32m>[0m,
+     [31m[1;31m"[0m[31mrack.multithread[1;31m"[0m[31m[0m=>[1;36mtrue[0m,
+     [31m[1;31m"[0m[31mrack.multiprocess[1;31m"[0m[31m[0m=>[1;36mtrue[0m,
+     [31m[1;31m"[0m[31mrack.run_once[1;31m"[0m[31m[0m=>[1;36mfalse[0m,
+     [31m[1;31m"[0m[31mREQUEST_METHOD[1;31m"[0m[31m[0m=>[31m[1;31m"[0m[31mGET[1;31m"[0m[31m[0m,
+     [31m[1;31m"[0m[31mSERVER_NAME[1;31m"[0m[31m[0m=>[31m[1;31m"[0m[31mexample.org[1;31m"[0m[31m[0m,
+     [31m[1;31m"[0m[31mSERVER_PORT[1;31m"[0m[31m[0m=>[31m[1;31m"[0m[31m80[1;31m"[0m[31m[0m,
+     [31m[1;31m"[0m[31mQUERY_STRING[1;31m"[0m[31m[0m=>[31m[1;31m"[0m[31m[1;31m"[0m[31m[0m,
+     [31m[1;31m"[0m[31mrack.url_scheme[1;31m"[0m[31m[0m=>[31m[1;31m"[0m[31mhttp[1;31m"[0m[31m[0m,
+     [31m[1;31m"[0m[31mHTTPS[1;31m"[0m[31m[0m=>[31m[1;31m"[0m[31moff[1;31m"[0m[31m[0m,
+     [31m[1;31m"[0m[31mSCRIPT_NAME[1;31m"[0m[31m[0m=>[1;36mnil[0m,
+     [31m[1;31m"[0m[31mCONTENT_LENGTH[1;31m"[0m[31m[0m=>[31m[1;31m"[0m[31m0[1;31m"[0m[31m[0m,
+     [31m[1;31m"[0m[31mHTTP_HOST[1;31m"[0m[31m[0m=>[31m[1;31m"[0m[31mtest.host[1;31m"[0m[31m[0m,
+     [31m[1;31m"[0m[31mREMOTE_ADDR[1;31m"[0m[31m[0m=>[31m[1;31m"[0m[31m0.0.0.0[1;31m"[0m[31m[0m,
+     [31m[1;31m"[0m[31mHTTP_USER_AGENT[1;31m"[0m[31m[0m=>[31m[1;31m"[0m[31mRails Testing[1;31m"[0m[31m[0m,
+     [31m[1;31m"[0m[31maction_dispatch.routes[1;31m"[0m[31m[0m=>[32m#<ActionDispatch::Routing::RouteSet:0x00000001cb6be0>[0m,
+     [31m[1;31m"[0m[31maction_dispatch.parameter_filter[1;31m"[0m[31m[0m=>[[33m:password[0m],
+     [31m[1;31m"[0m[31maction_dispatch.redirect_filter[1;31m"[0m[31m[0m=>[],
+     [31m[1;31m"[0m[31maction_dispatch.secret_token[1;31m"[0m[31m[0m=>[1;36mnil[0m,
+     [31m[1;31m"[0m[31maction_dispatch.secret_key_base[1;31m"[0m[31m[0m=>[31m[1;31m"[0m[31m5b9a665adb5aca00354dc334251d040c729e4cac3d60dc39dbd87645521e6a9d01eddeedfc31910ee174aaebcfe84beddbb2a23c67bc6767c706e2596822f68b[1;31m"[0m[31m[0m,
+     [31m[1;31m"[0m[31maction_dispatch.show_exceptions[1;31m"[0m[31m[0m=>[1;36mfalse[0m,
+     [31m[1;31m"[0m[31maction_dispatch.show_detailed_exceptions[1;31m"[0m[31m[0m=>[1;36mtrue[0m,
+     [31m[1;31m"[0m[31maction_dispatch.logger[1;31m"[0m[31m[0m=>
+      [32m#<ActiveSupport::Logger:0x00000001764a20[0m
+       @default_formatter[32m=[0m[32m#<Logger::Formatter:0x00000001764958[0m @datetime_format[32m=[0m[1;36mnil[0m[32m>[0m,
+       @formatter[32m=[0m[32m#<ActiveSupport::Logger::SimpleFormatter:0x00000002d39800[0m @datetime_format[32m=[0m[1;36mnil[0m[32m>[0m,
+       @level[32m=[0m[1;34m0[0m,
+       @logdev[32m=[0m
+        [32m#<Logger::LogDevice:0x00000001764818[0m
+         @dev[32m=[0m[32m#<File:/home/david/webdev/mira/log/test.log>[0m,
+         @filename[32m=[0m[1;36mnil[0m,
+         @mutex[32m=[0m[32m#<Logger::LogDevice::LogDeviceMutex:0x00000001764728[0m @mon_count[32m=[0m[1;34m0[0m, @mon_mutex[32m=[0m[32m#<Mutex:0x00000001764408[0m[32m>[0m, @mon_owner[32m=[0m[1;36mnil[0m[32m>[0m,
+         @shift_age[32m=[0m[1;36mnil[0m,
+         @shift_size[32m=[0m[1;36mnil[0m[32m>[0m,
+       @progname[32m=[0m[1;36mnil[0m[32m>[0m,
+     [31m[1;31m"[0m[31maction_dispatch.backtrace_cleaner[1;31m"[0m[31m[0m=>
+      [32m#<Rails::BacktraceCleaner:0x00000004c65c10[0m
+       @filters[32m=[0m
+        [[32m#<Proc:0x00000004c65850@/home/david/.rvm/gems/ruby-2.1.4/gems/railties-4.2.0/lib/rails/backtrace_cleaner.rb:14>[0m,
+         [32m#<Proc:0x00000004c65788@/home/david/.rvm/gems/ruby-2.1.4/gems/railties-4.2.0/lib/rails/backtrace_cleaner.rb:15>[0m,
+         [32m#<Proc:0x00000004c65698@/home/david/.rvm/gems/ruby-2.1.4/gems/railties-4.2.0/lib/rails/backtrace_cleaner.rb:16>[0m,
+         [32m#<Proc:0x00000004c64db0@/home/david/.rvm/gems/ruby-2.1.4/gems/railties-4.2.0/lib/rails/backtrace_cleaner.rb:29>[0m],
+       @root[32m=[0m[31m[1;31m"[0m[31m/home/david/webdev/mira/[1;31m"[0m[31m[0m,
+       @silencers[32m=[0m[[32m#<Proc:0x00000004c64d60@/home/david/.rvm/gems/ruby-2.1.4/gems/railties-4.2.0/lib/rails/backtrace_cleaner.rb:19>[0m][32m>[0m,
+     [31m[1;31m"[0m[31maction_dispatch.key_generator[1;31m"[0m[31m[0m=>
+      [32m#<ActiveSupport::CachingKeyGenerator:0x00000003128830[0m
+       @cache_keys[32m=[0m
+        [32m#<ThreadSafe::Cache:0x00000003128808[0m
+         @backend[32m=[0m
+          {[31m[1;31m"[0m[31msigned_global_ids64[1;31m"[0m[31m[0m=>
+            [31m[1;31m"[0m[31m[1;35m\xF0[0m[31m[1;35m\x8A[0m[31m_[1;35m\x89[0m[31m[1;35m\x1A[0m[31m[1;35m\x92[0m[31mFsv[1;35m\x7F[0m[31m[1;35m\x1F[0m[31m[1;35m\f[0m[31mawRZ[1;35m\xDC[0m[31m[1;35m\xBD[0m[31m[1;35m\xA3[0m[31m[1;35m\xBE[0m[31m[1;35m\xC2[0m[31m[1;35m\x11[0m[31m0[1;35m\x1F[0m[31mQo0kq[1;35m\xA3[0m[31m=o[1;35m\xFB[0m[31m[1;35m\x88[0m[31mv[1;35m\xDA[0m[31m[1;35m\x13[0m[31m,[1;35m\xA3[0m[31m[1;35m\f[0m[31m[1;35m\xC2[0m[31mj[1;35m\x8B[0m[31m[1;35m\xB0[0m[31m[1;35m\x8E[0m[31m[1;35m\xAB[0m[31m[1;35m\x19[0m[31mVOl[1;35m\xE7[0m[31m[1;35m\x98[0m[31m[1;35m\xC0[0m[31me04[1;35m\x88[0m[31m[1;35m\x17[0m[31m[1;35m\xC7[0m[31m[1;35m\xB9[0m[31m[1;35m\x91[0m[31m[1;35m\xF1[0m[31m[1;35m\xE0[0m[31m[1;35m\xD8[0m[31m[1;31m"[0m[31m[0m},
+         @default_proc[32m=[0m[1;36mnil[0m[32m>[0m,
+       @key_generator[32m=[0m
+        [32m#<ActiveSupport::KeyGenerator:0x00000003128858[0m
+         @iterations[32m=[0m[1;34m1000[0m,
+         @secret[32m=[0m[31m[1;31m"[0m[31m5b9a665adb5aca00354dc334251d040c729e4cac3d60dc39dbd87645521e6a9d01eddeedfc31910ee174aaebcfe84beddbb2a23c67bc6767c706e2596822f68b[1;31m"[0m[31m[0m[32m>[0m[32m>[0m,
+     [31m[1;31m"[0m[31maction_dispatch.http_auth_salt[1;31m"[0m[31m[0m=>[31m[1;31m"[0m[31mhttp authentication[1;31m"[0m[31m[0m,
+     [31m[1;31m"[0m[31maction_dispatch.signed_cookie_salt[1;31m"[0m[31m[0m=>[31m[1;31m"[0m[31msigned cookie[1;31m"[0m[31m[0m,
+     [31m[1;31m"[0m[31maction_dispatch.encrypted_cookie_salt[1;31m"[0m[31m[0m=>[31m[1;31m"[0m[31mencrypted cookie[1;31m"[0m[31m[0m,
+     [31m[1;31m"[0m[31maction_dispatch.encrypted_signed_cookie_salt[1;31m"[0m[31m[0m=>[31m[1;31m"[0m[31msigned encrypted cookie[1;31m"[0m[31m[0m,
+     [31m[1;31m"[0m[31maction_dispatch.cookies_serializer[1;31m"[0m[31m[0m=>[33m:json[0m,
+     [31m[1;31m"[0m[31maction_dispatch.cookies_digest[1;31m"[0m[31m[0m=>[1;36mnil[0m,
+     [31m[1;31m"[0m[31mrack.session[1;31m"[0m[31m[0m=>{[31m[1;31m"[0m[31mwarden.user.user.key[1;31m"[0m[31m[0m=>[[[1;34m980190962[0m], [31m[1;31m"[0m[31m$2a$04$ADElbHj/6ZM4kO5AkFttCu[1;31m"[0m[31m[0m]},
+     [31m[1;31m"[0m[31mrack.session.options[1;31m"[0m[31m[0m=>
+      {[33m:key[0m=>[31m[1;31m"[0m[31mrack.session[1;31m"[0m[31m[0m,
+       [33m:path[0m=>[31m[1;31m"[0m[31m/[1;31m"[0m[31m[0m,
+       [33m:domain[0m=>[1;36mnil[0m,
+       [33m:expire_after[0m=>[1;36mnil[0m,
+       [33m:secure[0m=>[1;36mfalse[0m,
+       [33m:httponly[0m=>[1;36mtrue[0m,
+       [33m:defer[0m=>[1;36mfalse[0m,
+       [33m:renew[0m=>[1;36mfalse[0m,
+       [33m:sidbits[0m=>[1;34m128[0m,
+       [33m:cookie_only[0m=>[1;36mtrue[0m,
+       [33m:secure_random[0m=>[1;34;4mSecureRandom[0m,
+       [33m:id[0m=>[31m[1;31m"[0m[31mecce5f58b0c97189651cf9b6702a1594[1;31m"[0m[31m[0m},
+     [31m[1;31m"[0m[31maction_controller.instance[1;31m"[0m[31m[0m=>
+      [32m#<Api::V1::DataController:0x0000000458cee8[0m
+       @_action_has_layout[32m=[0m[1;36mtrue[0m,
+       @_action_name[32m=[0m[31m[1;31m"[0m[31mdistinct[1;31m"[0m[31m[0m,
+       @_config[32m=[0m{},
+       @_db_runtime[32m=[0m[1;35m1.835743[0m,
+       @_env[32m=[0m{},
+       @_headers[32m=[0m{[31m[1;31m"[0m[31mContent-Type[1;31m"[0m[31m[0m=>[31m[1;31m"[0m[31mtext/html[1;31m"[0m[31m[0m},
+       @_lookup_context[32m=[0m
+        [32m#<ActionView::LookupContext:0x000000078a79e0[0m
+         @cache[32m=[0m[1;36mtrue[0m,
+         @details[32m=[0m{[33m:locale[0m=>[[33m:en[0m], [33m:formats[0m=>[[33m:html[0m], [33m:variants[0m=>[], [33m:handlers[0m=>[[33m:erb[0m, [33m:builder[0m, [33m:raw[0m, [33m:ruby[0m, [33m:coffee[0m]},
+         @details_key[32m=[0m[1;36mnil[0m,
+         @prefixes[32m=[0m[[31m[1;31m"[0m[31mapi/v1/data[1;31m"[0m[31m[0m],
+         @rendered_format[32m=[0m[1;36mnil[0m,
+         @skip_default_locale[32m=[0m[1;36mfalse[0m,
+         @view_paths[32m=[0m
+          [32m#<ActionView::PathSet:0x000000078a7968[0m
+           @paths[32m=[0m
+            [[32m#<ActionView::OptimizedFileSystemResolver:0x00000001c992c0[0m
+              @cache[32m=[0m
+               [32m#<ActionView::Resolver::Cache:0x00000001c99220[0m
+                @data[32m=[0m
+                 [32m#<ActionView::Resolver::Cache::SmallCache:0x00000001c991f8[0m
+                  @backend[32m=[0m{},
+                  @default_proc[32m=[0m[32m#<Proc:0x0000000359fa58@/home/david/.rvm/gems/ruby-2.1.4/gems/actionview-4.2.0/lib/action_view/template/resolver.rb:49 (lambda)>[0m[32m>[0m[32m>[0m,
+              @path[32m=[0m[31m[1;31m"[0m[31m/home/david/webdev/mira/app/views[1;31m"[0m[31m[0m,
+              @pattern[32m=[0m[31m[1;31m"[0m[31m:prefix/:action{.:locale,}{.:formats,}{+:variants,}{.:handlers,}[1;31m"[0m[31m[0m[32m>[0m,
+             [32m#<ActionView::OptimizedFileSystemResolver:0x00000001c9a508[0m
+              @cache[32m=[0m
+               [32m#<ActionView::Resolver::Cache:0x00000001c9a4e0[0m
+                @data[32m=[0m
+                 [32m#<ActionView::Resolver::Cache::SmallCache:0x00000001c9a4b8[0m
+                  @backend[32m=[0m{},
+                  @default_proc[32m=[0m[32m#<Proc:0x0000000359fa58@/home/david/.rvm/gems/ruby-2.1.4/gems/actionview-4.2.0/lib/action_view/template/resolver.rb:49 (lambda)>[0m[32m>[0m[32m>[0m,
+              @path[32m=[0m[31m[1;31m"[0m[31m/home/david/.rvm/gems/ruby-2.1.4/gems/devise-3.5.2/app/views[1;31m"[0m[31m[0m,
+              @pattern[32m=[0m[31m[1;31m"[0m[31m:prefix/:action{.:locale,}{.:formats,}{+:variants,}{.:handlers,}[1;31m"[0m[31m[0m[32m>[0m,
+             [32m#<ActionView::OptimizedFileSystemResolver:0x00000001c9bd90[0m
+              @cache[32m=[0m
+               [32m#<ActionView::Resolver::Cache:0x00000001c9bd68[0m
+                @data[32m=[0m
+                 [32m#<ActionView::Resolver::Cache::SmallCache:0x00000001c9ba98[0m
+                  @backend[32m=[0m{},
+                  @default_proc[32m=[0m[32m#<Proc:0x0000000359fa58@/home/david/.rvm/gems/ruby-2.1.4/gems/actionview-4.2.0/lib/action_view/template/resolver.rb:49 (lambda)>[0m[32m>[0m[32m>[0m,
+              @path[32m=[0m[31m[1;31m"[0m[31m/home/david/.rvm/gems/ruby-2.1.4/gems/kaminari-0.16.3/app/views[1;31m"[0m[31m[0m,
+              @pattern[32m=[0m[31m[1;31m"[0m[31m:prefix/:action{.:locale,}{.:formats,}{+:variants,}{.:handlers,}[1;31m"[0m[31m[0m[32m>[0m][32m>[0m[32m>[0m,
+       @_params[32m=[0m{[31m[1;31m"[0m[31mid[1;31m"[0m[31m[0m=>[31m[1;31m"[0m[31m980190963[1;31m"[0m[31m[0m, [31m[1;31m"[0m[31mtable_ref[1;31m"[0m[31m[0m=>[31m[1;31m"[0m[31mgood_upload[1;31m"[0m[31m[0m, [31m[1;31m"[0m[31mcol_ref[1;31m"[0m[31m[0m=>[31m[1;31m"[0m[31mname[1;31m"[0m[31m[0m, [31m[1;31m"[0m[31mcontroller[1;31m"[0m[31m[0m=>[31m[1;31m"[0m[31mapi/v1/data[1;31m"[0m[31m[0m, [31m[1;31m"[0m[31maction[1;31m"[0m[31m[0m=>[31m[1;31m"[0m[31mdistinct[1;31m"[0m[31m[0m},
+       @_request[32m=[0m[32m#<ActionController::TestRequest:0x0000000458cdf8[0m ...[32m>[0m,
+       @_response[32m=[0m[32m#<ActionController::TestResponse:0x0000000458c088[0m ...[32m>[0m,
+       @_response_body[32m=[0m
+        [[31m[1;31m"[0m[31m[[1;35m\"[0m[31mCath[1;35m\"[0m[31m,[1;35m\"[0m[31mCatieneh[1;35m\"[0m[31m,[1;35m\"[0m[31mDavid[1;35m\"[0m[31m,[1;35m\"[0m[31mJoey[1;35m\"[0m[31m,[1;35m\"[0m[31mJohn[1;35m\"[0m[31m,[1;35m\"[0m[31mKate[1;35m\"[0m[31m,[1;35m\"[0m[31mKatey[1;35m\"[0m[31m,[1;35m\"[0m[31mKathy[1;35m\"[0m[31m,[1;35m\"[0m[31mKatrina[1;35m\"[0m[31m,[1;35m\"[0m[31mKattienerina[1;35m\"[0m[31m,[1;35m\"[0m[31mMaire[1;35m\"[0m[31m,[1;35m\"[0m[31mMaria[1;35m\"[0m[31m,[1;35m\"[0m[31mMarie[1;35m\"[0m[31m,[1;35m\"[0m[31mMarina[1;35m\"[0m[31m,[1;35m\"[0m[31mMarinafin[1;35m\"[0m[31m,[1;35m\"[0m[31mMary[1;35m\"[0m[31m,[1;35m\"[0m[31mMary_fin[1;35m\"[0m[31m,[1;35m\"[0m[31mMiddle-of-the-road[1;35m\"[0m[31m,[1;35m\"[0m[31mPablo[1;35m\"[0m[31m,[1;35m\"[0m[31mPaul[1;35m\"[0m[31m,[1;35m\"[0m[31mPeter[1;35m\"[0m[31m,[1;35m\"[0m[31mPeterfin[1;35m\"[0m[31m,[1;35m\"[0m[31mPetieneer[1;35m\"[0m[31m,[1;35m\"[0m[31mprincipioJoey[1;35m\"[0m[31m,[1;35m\"[0m[31mprincipioMaria[1;35m\"[0m[31m][1;31m"[0m[31m[0m],
+       @_routes[32m=[0m[1;36mnil[0m,
+       @_status[32m=[0m[1;34m200[0m,
+       @_url_options[32m=[0m[1;36mnil[0m,
+       @_view_runtime[32m=[0m[1;35m0.288412[0m[32m>[0m,
+     [31m[1;31m"[0m[31mwarden[1;31m"[0m[31m[0m=>
+      [1;34;4mWarden[0m::[1;34;4mProxy[0m:[1;34m36462180[0m @config={[33m:default_scope[0m=>[33m:user[0m, [33m:scope_defaults[0m=>{}, [33m:default_strategies[0m=>{[33m:user[0m=>[[33m:rememberable[0m, [33m:database_authenticatable[0m]}, [33m:intercept_401[0m=>[1;36mfalse[0m, [33m:failure_app[0m=>[1;34m#<Devise::Delegator:0x00000000d5f9a8>}[0m,
+     [31m[1;31m"[0m[31maction_dispatch.request.query_parameters[1;31m"[0m[31m[0m=>{},
+     [31m[1;31m"[0m[31maction_dispatch.cookies[1;31m"[0m[31m[0m=>
+      [32m#<ActionDispatch::Cookies::CookieJar:0x00000007890150[0m
+       @committed[32m=[0m[1;36mfalse[0m,
+       @cookies[32m=[0m{},
+       @delete_cookies[32m=[0m{},
+       @host[32m=[0m[31m[1;31m"[0m[31mtest.host[1;31m"[0m[31m[0m,
+       @key_generator[32m=[0m
+        [32m#<ActiveSupport::CachingKeyGenerator:0x00000003128830[0m
+         @cache_keys[32m=[0m
+          [32m#<ThreadSafe::Cache:0x00000003128808[0m
+           @backend[32m=[0m
+            {[31m[1;31m"[0m[31msigned_global_ids64[1;31m"[0m[31m[0m=>
+              [31m[1;31m"[0m[31m[1;35m\xF0[0m[31m[1;35m\x8A[0m[31m_[1;35m\x89[0m[31m[1;35m\x1A[0m[31m[1;35m\x92[0m[31mFsv[1;35m\x7F[0m[31m[1;35m\x1F[0m[31m[1;35m\f[0m[31mawRZ[1;35m\xDC[0m[31m[1;35m\xBD[0m[31m[1;35m\xA3[0m[31m[1;35m\xBE[0m[31m[1;35m\xC2[0m[31m[1;35m\x11[0m[31m0[1;35m\x1F[0m[31mQo0kq[1;35m\xA3[0m[31m=o[1;35m\xFB[0m[31m[1;35m\x88[0m[31mv[1;35m\xDA[0m[31m[1;35m\x13[0m[31m,[1;35m\xA3[0m[31m[1;35m\f[0m[31m[1;35m\xC2[0m[31mj[1;35m\x8B[0m[31m[1;35m\xB0[0m[31m[1;35m\x8E[0m[31m[1;35m\xAB[0m[31m[1;35m\x19[0m[31mVOl[1;35m\xE7[0m[31m[1;35m\x98[0m[31m[1;35m\xC0[0m[31me04[1;35m\x88[0m[31m[1;35m\x17[0m[31m[1;35m\xC7[0m[31m[1;35m\xB9[0m[31m[1;35m\x91[0m[31m[1;35m\xF1[0m[31m[1;35m\xE0[0m[31m[1;35m\xD8[0m[31m[1;31m"[0m[31m[0m},
+           @default_proc[32m=[0m[1;36mnil[0m[32m>[0m,
+         @key_generator[32m=[0m
+          [32m#<ActiveSupport::KeyGenerator:0x00000003128858[0m
+           @iterations[32m=[0m[1;34m1000[0m,
+           @secret[32m=[0m[31m[1;31m"[0m[31m5b9a665adb5aca00354dc334251d040c729e4cac3d60dc39dbd87645521e6a9d01eddeedfc31910ee174aaebcfe84beddbb2a23c67bc6767c706e2596822f68b[1;31m"[0m[31m[0m[32m>[0m[32m>[0m,
+       @options[32m=[0m
+        {[33m:signed_cookie_salt[0m=>[31m[1;31m"[0m[31msigned cookie[1;31m"[0m[31m[0m,
+         [33m:encrypted_cookie_salt[0m=>[31m[1;31m"[0m[31mencrypted cookie[1;31m"[0m[31m[0m,
+         [33m:encrypted_signed_cookie_salt[0m=>[31m[1;31m"[0m[31msigned encrypted cookie[1;31m"[0m[31m[0m,
+         [33m:secret_token[0m=>[1;36mnil[0m,
+         [33m:secret_key_base[0m=>[31m[1;31m"[0m[31m5b9a665adb5aca00354dc334251d040c729e4cac3d60dc39dbd87645521e6a9d01eddeedfc31910ee174aaebcfe84beddbb2a23c67bc6767c706e2596822f68b[1;31m"[0m[31m[0m,
+         [33m:upgrade_legacy_signed_cookies[0m=>[1;36mfalse[0m,
+         [33m:serializer[0m=>[33m:json[0m,
+         [33m:digest[0m=>[1;36mnil[0m},
+       @secure[32m=[0m[1;36mfalse[0m,
+       @set_cookies[32m=[0m{}[32m>[0m,
+     [31m[1;31m"[0m[31mrack.request.cookie_hash[1;31m"[0m[31m[0m=>{},
+     [31m[1;31m"[0m[31maction_dispatch.request.path_parameters[1;31m"[0m[31m[0m=>{[33m:id[0m=>[31m[1;31m"[0m[31m980190963[1;31m"[0m[31m[0m, [33m:table_ref[0m=>[31m[1;31m"[0m[31mgood_upload[1;31m"[0m[31m[0m, [33m:col_ref[0m=>[31m[1;31m"[0m[31mname[1;31m"[0m[31m[0m, [33m:controller[0m=>[31m[1;31m"[0m[31mapi/v1/data[1;31m"[0m[31m[0m, [33m:action[0m=>[31m[1;31m"[0m[31mdistinct[1;31m"[0m[31m[0m},
+     [31m[1;31m"[0m[31maction_dispatch.request.content_type[1;31m"[0m[31m[0m=>[1;36mnil[0m,
+     [31m[1;31m"[0m[31maction_dispatch.request.request_parameters[1;31m"[0m[31m[0m=>{},
+     [31m[1;31m"[0m[31maction_dispatch.request.flash_hash[1;31m"[0m[31m[0m=>[32m#<ActionDispatch::Flash::FlashHash:0x000000078a9da8[0m @discard[32m=[0m[32m#<Set: {[0m}>, @flashes[32m=[0m{}, @now[32m=[0m[1;36mnil[0m[32m>[0m,
+     [31m[1;31m"[0m[31mPATH_INFO[1;31m"[0m[31m[0m=>[31m[1;31m"[0m[31m/api/projects/980190963/tables/good_upload/columns/name/distinct[1;31m"[0m[31m[0m,
+     [31m[1;31m"[0m[31maction_dispatch.request.parameters[1;31m"[0m[31m[0m=>{[31m[1;31m"[0m[31mid[1;31m"[0m[31m[0m=>[31m[1;31m"[0m[31m980190963[1;31m"[0m[31m[0m, [31m[1;31m"[0m[31mtable_ref[1;31m"[0m[31m[0m=>[31m[1;31m"[0m[31mgood_upload[1;31m"[0m[31m[0m, [31m[1;31m"[0m[31mcol_ref[1;31m"[0m[31m[0m=>[31m[1;31m"[0m[31mname[1;31m"[0m[31m[0m, [31m[1;31m"[0m[31mcontroller[1;31m"[0m[31m[0m=>[31m[1;31m"[0m[31mapi/v1/data[1;31m"[0m[31m[0m, [31m[1;31m"[0m[31maction[1;31m"[0m[31m[0m=>[31m[1;31m"[0m[31mdistinct[1;31m"[0m[31m[0m},
+     [31m[1;31m"[0m[31maction_dispatch.request.formats[1;31m"[0m[31m[0m=>[[32m#<Mime::Type:0x00000001c81da0[0m @string[32m=[0m[31m[1;31m"[0m[31mtext/html[1;31m"[0m[31m[0m, @symbol[32m=[0m[33m:html[0m, @synonyms[32m=[0m[[31m[1;31m"[0m[31mapplication/xhtml+xml[1;31m"[0m[31m[0m][32m>[0m]},
+   @filtered_env[32m=[0m[1;36mnil[0m,
+   @filtered_parameters[32m=[0m{[31m[1;31m"[0m[31mid[1;31m"[0m[31m[0m=>[31m[1;31m"[0m[31m980190963[1;31m"[0m[31m[0m, [31m[1;31m"[0m[31mtable_ref[1;31m"[0m[31m[0m=>[31m[1;31m"[0m[31mgood_upload[1;31m"[0m[31m[0m, [31m[1;31m"[0m[31mcol_ref[1;31m"[0m[31m[0m=>[31m[1;31m"[0m[31mname[1;31m"[0m[31m[0m, [31m[1;31m"[0m[31mcontroller[1;31m"[0m[31m[0m=>[31m[1;31m"[0m[31mapi/v1/data[1;31m"[0m[31m[0m, [31m[1;31m"[0m[31maction[1;31m"[0m[31m[0m=>[31m[1;31m"[0m[31mdistinct[1;31m"[0m[31m[0m},
+   @filtered_path[32m=[0m[1;36mnil[0m,
+   @formats[32m=[0m[1;36mnil[0m,
+   @fullpath[32m=[0m[31m[1;31m"[0m[31m/api/projects/980190963/tables/good_upload/columns/name/distinct[1;31m"[0m[31m[0m,
+   @ip[32m=[0m[1;36mnil[0m,
+   @method[32m=[0m[1;36mnil[0m,
+   @original_fullpath[32m=[0m[31m[1;31m"[0m[31m/api/projects/980190963/tables/good_upload/columns/name/distinct[1;31m"[0m[31m[0m,
+   @port[32m=[0m[1;34m80[0m,
+   @protocol[32m=[0m[31m[1;31m"[0m[31mhttp://[1;31m"[0m[31m[0m,
+   @remote_ip[32m=[0m[1;36mnil[0m,
+   @request_method[32m=[0m[31m[1;31m"[0m[31mGET[1;31m"[0m[31m[0m,
+   @set_cookies[32m=[0m{},
+   @uuid[32m=[0m[1;36mnil[0m[32m>[0m,
+ @sending[32m=[0m[1;36mtrue[0m,
+ @sending_file[32m=[0m[1;36mfalse[0m,
+ @sent[32m=[0m[1;36mtrue[0m,
+ @status[32m=[0m[1;34m200[0m,
+ @stream[32m=[0m
+  [32m#<ActionDispatch::Response::Buffer:0x0000000798f128[0m
+   @buf[32m=[0m
+    [[31m[1;31m"[0m[31m[[1;35m\"[0m[31mCath[1;35m\"[0m[31m,[1;35m\"[0m[31mCatieneh[1;35m\"[0m[31m,[1;35m\"[0m[31mDavid[1;35m\"[0m[31m,[1;35m\"[0m[31mJoey[1;35m\"[0m[31m,[1;35m\"[0m[31mJohn[1;35m\"[0m[31m,[1;35m\"[0m[31mKate[1;35m\"[0m[31m,[1;35m\"[0m[31mKatey[1;35m\"[0m[31m,[1;35m\"[0m[31mKathy[1;35m\"[0m[31m,[1;35m\"[0m[31mKatrina[1;35m\"[0m[31m,[1;35m\"[0m[31mKattienerina[1;35m\"[0m[31m,[1;35m\"[0m[31mMaire[1;35m\"[0m[31m,[1;35m\"[0m[31mMaria[1;35m\"[0m[31m,[1;35m\"[0m[31mMarie[1;35m\"[0m[31m,[1;35m\"[0m[31mMarina[1;35m\"[0m[31m,[1;35m\"[0m[31mMarinafin[1;35m\"[0m[31m,[1;35m\"[0m[31mMary[1;35m\"[0m[31m,[1;35m\"[0m[31mMary_fin[1;35m\"[0m[31m,[1;35m\"[0m[31mMiddle-of-the-road[1;35m\"[0m[31m,[1;35m\"[0m[31mPablo[1;35m\"[0m[31m,[1;35m\"[0m[31mPaul[1;35m\"[0m[31m,[1;35m\"[0m[31mPeter[1;35m\"[0m[31m,[1;35m\"[0m[31mPeterfin[1;35m\"[0m[31m,[1;35m\"[0m[31mPetieneer[1;35m\"[0m[31m,[1;35m\"[0m[31mprincipioJoey[1;35m\"[0m[31m,[1;35m\"[0m[31mprincipioMaria[1;35m\"[0m[31m][1;31m"[0m[31m[0m],
+   @closed[32m=[0m[1;36mfalse[0m,
+   @response[32m=[0m[32m#<ActionController::TestResponse:0x0000000458c088[0m ...[32m>[0m[32m>[0m[32m>[0m

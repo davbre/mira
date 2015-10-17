@@ -5,7 +5,7 @@ class ProjectsControllerTest < ActionController::TestCase
   include Devise::TestHelpers
 
   setup do
-    sign_in users(:one)    
+    sign_in users(:one)
     @project = projects(:one)
   end
 
@@ -36,6 +36,13 @@ class ProjectsControllerTest < ActionController::TestCase
       post :create, project: { name: "New test project name", description: "New test project description" }
     end
     assert_redirected_to project_path(assigns(:project))
+  end
+
+  test "should create log and upload folders" do
+    post :create, project: { name: "New test project name", description: "New test project description" }
+    last_project = Project.last
+    assert File.directory?(last_project.job_log_path)
+    assert File.directory?(last_project.upload_path)
   end
 
   test "should not create project if signed out" do
@@ -102,7 +109,7 @@ class ProjectsControllerTest < ActionController::TestCase
 
   # destroy
   test "should destroy project if signed in and owner of project" do
-    assert_difference('Project.count', -1) do
+    assert_difference('users(:one).projects.count', -1) do
       delete :destroy, id: @project
     end
     assert_redirected_to projects_path
@@ -110,34 +117,50 @@ class ProjectsControllerTest < ActionController::TestCase
 
   test "should not destroy project if signed out" do
     sign_out users(:one)
-    assert_no_difference('Project.count') do
+    assert_no_difference('users(:one).projects.count') do
       delete :destroy, id: @project
     end
     assert_redirected_to new_user_session_path
   end
 
   test "should delete uploads and log files on delete" do
-    skip
+    user = users(:one)
+    project = user.projects.build(name: "Testing deletion of uploads and logs", description: "Upload test project description")
+    project.save
+    upload_files = ["upload1","upload2"]
+    upload_to_project(project, upload_files)
+    relevant_project_id = Project.last.id
+    relevant_project_log_path = Project.last.job_log_path
+    relevant_project_upload_path = Project.last.upload_path
+    delete :destroy, id: relevant_project_id
+    refute File.directory?(relevant_project_log_path)
+    refute File.directory?(relevant_project_upload_path)
   end
 
   test "should delete xy tables on delete" do
-    skip
+    user = users(:one)
+    project = user.projects.build(name: "Testing deletion of uploads and logs", description: "Upload test project description")
+    project.save
+    upload_files = ["upload1","upload2"]
+    upload_to_project(project, upload_files)
+    db_table_names = []
+    upload_files.each do |ul|
+      db_table_names << project.datasources.where(table_ref: "upload2").first.db_table_name
+    end
+    delete :destroy, id: Project.last.id
+    db_table_names.each do |dbt|
+      refute ActiveRecord::Base.connection.table_exists? dbt
+    end
   end
 
-
-
-
-
-
-
-
   test "should get clean log files when good files uploaded" do
+    skip
   end
 
   test "should handle other delimiters" do
     skip
   end
-  
+
   test "datapackage should contain dialect -> delimiter for each table" do
     skip
   end
@@ -158,15 +181,7 @@ class ProjectsControllerTest < ActionController::TestCase
     skip
   end
 
-  test "deleting project deletes all files...datasources, logs, db tables, etc" do
-    skip
-  end
-
   test "datapackage with columns in RESERVED_COLUMN_NAMES should be rejected" do
-    skip
-  end
-
-  test "all scopes" do
     skip
   end
 

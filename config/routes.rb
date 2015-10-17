@@ -5,8 +5,10 @@ Rails.application.routes.draw do
   devise_for :users
   root "projects#index"
 
-  # UI routes  
-  resources :projects
+  # UI routes
+  resources :projects do
+    resources :datasources
+  end
   # custom project routes
   post "projects/:id/upload_ds" => "projects#upload_ds"
   get "projects/:id/api-details" => "projects#api_detail"

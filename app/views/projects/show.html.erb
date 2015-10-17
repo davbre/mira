@@ -3,18 +3,12 @@
     <h3 class="panel-title">Project Overview</h3>
   </div>
 
-  <%= render 'error_messages' %>    
+  <%= render 'error_messages' %>
 
   <div class="panel-body">
-    <div class="col-md-4">
-      <p>
-  	    <b>Project ID</b><br />
-  	    <%= @project.name %><br />
-        <b>Project Description</b><br />
-        <%= @project.description %>
-      </p>
-      <hr />
-    </div>
+
+    <%= render 'projects/partials/project_details' %><br />
+
     <div class="col-md-12">
 
 
@@ -31,7 +25,7 @@
             <tr>
               <td><%= link_to dp.datafile_file_name, dp.datafile.url %></td>
               <th><%= dp.created_at.strftime("%FT%R") %></td>
-              <% if user_signed_in? %>                
+              <% if user_signed_in? %>
                 <td><a href="/job_logs/project_<%= dp.project_id %>/<%= dp.datafile_file_name %>.log"><%= dp.datafile_file_name %>.log</a></td>
               <% end %>
             </tr>
@@ -48,7 +42,7 @@
           <tr>
             <th>Data source</th>
             <th>Created</th>
-            <% if user_signed_in? %> 
+            <% if user_signed_in? %>
               <th>Process Log</th>
             <% end %>
           </tr>
@@ -57,8 +51,10 @@
             <tr>
               <td><%= link_to ds.datafile_file_name, ds.datafile.url %></td>
               <th><%= ds.created_at.strftime("%FT%R") %></td>
-              <% if user_signed_in? %> 
+              <% if user_signed_in? %>
                 <td><a href="/job_logs/project_<%= ds.project_id %>/<%= ds.datafile_file_name %>.log"><%= ds.datafile_file_name %>.log</a></td>
+                <th><%= link_to "delete", project_datasource_path(ds.project_id, ds.id), method: :delete,
+                                data: { confirm: "You sure?" }, :class => "btn btn-xs btn-danger" %></th>
               <% end %>
             </tr>
           <% end %>
@@ -68,7 +64,7 @@
       <% end %>
 
 
-      <% if user_signed_in? %> 
+      <% if user_signed_in? %>
         <% if not @log_file_names.empty? %>
           <p>All log files</p>
           <ul>

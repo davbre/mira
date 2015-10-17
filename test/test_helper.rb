@@ -27,4 +27,28 @@ class ActiveSupport::TestCase
   def default_page_size
     Rails.application.config.x.api_default_per_page
   end
+
+
+  def upload_to_project(project,file_names)
+    Delayed::Worker.delay_jobs = false # turn off queuing
+    dp_file = fixture_file_upload("uploads/datapackage.json", "application/json")
+    @dp = project.datasources.create(datafile: File.open(dp_file), datafile_file_name: "datapackage.json")
+    @dp.save
+    @datapackage = JSON.parse(File.read(dp_file.tempfile.path))
+
+    @uploads = file_names
+
+    @uploads.each do |upl|
+      csv_file = fixture_file_upload("uploads/" + upl + ".csv", "text/plain")
+
+      ds = project.datasources.create(datafile: csv_file, datafile_file_name: upl + ".csv", datapackage_id: @dp.id)
+      ds.save
+      ds.db_table_name = Rails.configuration.x.db_table_prefix.downcase + ds.project_id.to_s + "_" + ds.id.to_s
+      ds.save
+
+      ProcessCsvUpload.new(ds.id,@datapackage).perform
+
+    end
+
+  end
 end
