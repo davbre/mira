@@ -12,7 +12,7 @@
     <div class="col-md-12">
 
 
-      <% if not @datapackages.empty? %>
+      <% if @datapackage.present? %>
         <table class="table">
           <tr>
             <th>Datapackage</th>
@@ -21,18 +21,16 @@
               <th>Process Log</th>
             <% end %>
           </tr>
-          <% @datapackages.each do |dp| %>
-            <tr>
-              <td><%= link_to dp.datafile_file_name, dp.datafile.url %></td>
-              <th><%= dp.created_at.strftime("%FT%R") %></td>
-              <% if user_signed_in? %>
-                <td><a href="/job_logs/project_<%= dp.project_id %>/<%= dp.datafile_file_name %>.log"><%= dp.datafile_file_name %>.log</a></td>
-              <% end %>
-            </tr>
-          <% end %>
+          <tr>
+            <td><%= link_to @datapackage.datapackage_file_name, @datapackage.datapackage.url %></td>
+            <th><%= @datapackage.created_at.strftime("%FT%R") %></td>
+            <% if user_signed_in? %>
+              <td><a href="/job_logs/project_<%= @datapackage.project_id %>/<%= @datapackage.datapackage_file_name %>.log"><%= @datapackage.datapackage_file_name %>.log</a></td>
+            <% end %>
+          </tr>
         </table>
       <% else %>
-        <p>A datapackage.json file has not been successfully uploaded and processed</p>
+        <p>A datapackage.json file has not yet been uploaded and processed.</p>
       <% end %>
 
 

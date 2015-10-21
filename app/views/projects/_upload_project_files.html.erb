@@ -1,21 +1,23 @@
 <div class="row">
   <div class="col-md-6 col-md-offset-3">
-    <%= form_for(@project, url: {action: "upload_ds"} , method: "post", :html => { multipart: true }) do |f| %>
+
+
+      <%= form_for(@project, url: {action: "upload_datapackage"} , method: "post", :html => { multipart: true }) do |f| %>
 
       <div class="control-group">
-        <%= f.label :datasources, :class => 'control-label' %>
+        <%= f.label :datapackage, :class => 'control-label' %>
         <div class="controls">
-        <!-- In relation to multiple file upload, this is the important part -->
-        <%= file_field_tag "datafiles[]", type: :file, multiple: true %>
+        <%= file_field_tag "datapackage", type: :file %>
         </div>
       </div>
 
       <div class="form-actions">
-        <%= f.submit "Add files", :class => 'btn btn-primary' %>
+        <%= f.submit "Upload datapackage.json", :class => 'btn btn-primary', id: 'submit_files' %>
         <%= link_to t('.cancel', :default => t("helpers.links.cancel")),
                     projects_path, :class => 'btn btn-mini' %>
       </div>
 
     <% end %>
+
   </div>
 </div>

@@ -11,10 +11,46 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150805203327) do
+ActiveRecord::Schema.define(version: 20151021130254) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "datapackage_resource_fields", force: :cascade do |t|
+    t.integer  "datapackage_resource_id"
+    t.text     "name"
+    t.text     "ftype"
+    t.integer  "order"
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
+  end
+
+  add_index "datapackage_resource_fields", ["datapackage_resource_id"], name: "index_datapackage_resource_fields_on_datapackage_resource_id", using: :btree
+
+  create_table "datapackage_resources", force: :cascade do |t|
+    t.integer  "datapackage_id"
+    t.text     "path"
+    t.text     "format"
+    t.text     "delimiter"
+    t.text     "mediatype"
+    t.text     "schema"
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
+  end
+
+  create_table "datapackages", force: :cascade do |t|
+    t.integer  "project_id"
+    t.text     "public_url"
+    t.text     "description"
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
+    t.string   "datapackage_file_name"
+    t.string   "datapackage_content_type"
+    t.integer  "datapackage_file_size"
+    t.datetime "datapackage_updated_at"
+  end
+
+  add_index "datapackages", ["project_id"], name: "index_datapackages_on_project_id", using: :btree
 
   create_table "datasources", force: :cascade do |t|
     t.string   "description"
@@ -80,5 +116,7 @@ ActiveRecord::Schema.define(version: 20150805203327) do
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
 
+  add_foreign_key "datapackage_resource_fields", "datapackage_resources"
+  add_foreign_key "datapackages", "projects"
   add_foreign_key "datasources", "projects"
 end

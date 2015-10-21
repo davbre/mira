@@ -8,9 +8,14 @@ Rails.application.routes.draw do
   # UI routes
   resources :projects do
     resources :datasources
+    resource :datapackage do
+      resources :datapackage_resources
+    end
   end
+
   # custom project routes
   post "projects/:id/upload_ds" => "projects#upload_ds"
+  post "projects/:id/upload_datapackage" => "projects#upload_datapackage"
   get "projects/:id/api-details" => "projects#api_detail"
 
 
