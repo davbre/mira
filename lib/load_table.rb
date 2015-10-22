@@ -21,28 +21,14 @@ class LoadTable
       "null" => "text"
     }
 
-  def initialize(datasource, datapackage)
+  def initialize(datasource)
 
     @ds = datasource
-
     load_logger.info("Initialising load of #{@ds.table_ref}")
-
-    # @options = { :delimiter => "," }
-
-    @load_errors = []
-
-    # @tmpfile = Tempfile.new('mira-load-table')
-
-    # s3 = Aws::S3::Client.new(:region => ENV['S3_REGION'])
-    # File.open(@tmpfile, 'wb') do |file|
-    #   reap = s3.get_object({ bucket: ENV['S3_BUCKET'], key: datasource.datafile.s3_object.key }, target: file)
-    # end
-    @tmpfile = File.open(@ds.datafile.path)
-
-    @datapackage_data = datapackage["resources"].select { |res| res["path"].split("/").last == datasource.datafile_file_name }[0]
-
-    load_logger.info("====>   Fetching column information from datapackage   <====")
-    @column_info = get_column_info
+    @datapackage_resources = DatapackageResource.where(datapackage_id: @ds.datapackage_id)
+    @table_metadata = @datapackage_resources.where(path: @ds.datafile_file_name).first
+    @column_metadata = DatapackageResourceField.where(datapackage_resource_id: @table_metadata.id)
+    @csv_file = File.open(@ds.datafile.path)
 
     load_logger.info("====>   Creating database table " + @ds.db_table_name + "   <====")
     create_db_table
@@ -50,14 +36,6 @@ class LoadTable
     load_logger.info("====>   Uploading " + @ds.datafile_file_name + " to " + @ds.db_table_name + "   <====")
     upload_to_db_table
 
-    # It is not really necessary to store the public url or the region in the
-    # database but it may be useful later on.
-    # The same information (more or less) could be obtained as follows:
-    #   Datasource.find(:id).datafile.url
-    #   Datasource.find(:id).s3_object.config.s3_region
-    #datasource.public_url = datasource.datafile.s3_object.public_url.to_s
-    #datasource.s3_region = datasource.datafile.s3_object.config.s3_region
-    #datasource.save
   end
 
   private
@@ -69,79 +47,46 @@ class LoadTable
   end
 
 
-  def get_column_info
-    column_info = {}
-
-    # get json table schema from datapackage data (http://dataprotocols.org/json-table-schema/)
-    jts_columns = @datapackage_data["schema"]["fields"]
-
-    jts_columns.each_with_index do |col,i|
-
-      begin
-        ar_type = @@type_map[col["type"]]
-        if ar_type.nil?
-          raise "Failed to map datapackage json column type --> " + col["type"] + " <-- to Active Record type!"
-        end
-      rescue StandardError => e
-        @load_logger.error(e)
-      end
-
-      column_info[i+1] = {
-        :name => col["name"].parameterize.underscore,
-        :jason_schema_table_type => col["type"],
-        :active_record_type => ar_type
-      }
-
-      column_info[i+1][:min] = col["constraints"]["minimum"] if col["constraints"] && col["constraints"]["minimum"]
-      column_info[i+1][:max] = col["constraints"]["maximum"] if col["constraints"] && col["constraints"]["maximum"]
-
-    end
-    column_info
-  end
-
-
   def create_db_table
     # Create table with columns
     begin
       ActiveRecord::Base.connection.create_table @ds.db_table_name.to_sym do |t|
-        @column_info.each do |colindex,colhash|
+        @column_metadata.each do |col|
           # The following mimics what is seen in migrations, e.g.:
           #   t.string :name
           #   t.text   :description
           # Cater for big integers
-          if colhash[:active_record_type] == "integer" && [colhash[:min].to_i.abs,colhash[:max].to_i.abs].max > 2147483647
-            t.send colhash[:active_record_type], colhash[:name], :limit => 8
+          if DATAPACKAGE_TYPE_MAP[col.ftype] == "integer" && col.big_integer == true
+            t.send DATAPACKAGE_TYPE_MAP[col.ftype], col.name, :limit => 8
           else
-            t.send colhash[:active_record_type], colhash[:name]
+            t.send DATAPACKAGE_TYPE_MAP[col.ftype], col.name
           end
         end
       end
 
       # Add an index for each column
-      @column_info.each do |colindex,colhash|
-        ActiveRecord::Base.connection.add_index @ds.db_table_name.to_sym, colhash[:name]
-      end    
+      @column_metadata.each do |col|
+        ActiveRecord::Base.connection.add_index @ds.db_table_name.to_sym, col.name
+      end
     rescue StandardError => e
       load_logger.error(e)
     end
-
   end
 
   def upload_to_db_table
 
     begin
-      delimiter = get_delimiter(@datapackage_data)
-      quote_char = get_quote_char(@datapackage_data)
-      column_names = @column_info.map { |k,v| v[:name] }
+      # columns in correct order
+      column_names = @column_metadata.sort{ |a,b| a.order <=> b.order }.map{ |c| c.name }
       column_string = "\"#{column_names.join('","')}\""
-      csv_options = "DELIMITER '#{delimiter}' CSV"
-      skip_header_line = @tmpfile.gets
+      csv_options = "DELIMITER '#{@table_metadata.delimiter}' CSV"
+      skip_header_line = @csv_file.gets
       # https://github.com/theSteveMitchell/postgres_upsert
-      ActiveRecord::Base.connection.raw_connection.copy_data "COPY #{@ds.db_table_name} (#{column_string}) FROM STDIN #{csv_options} QUOTE '#{quote_char}'" do
-        while line = @tmpfile.gets do
+      ActiveRecord::Base.connection.raw_connection.copy_data "COPY #{@ds.db_table_name} (#{column_string}) FROM STDIN #{csv_options} QUOTE '#{@table_metadata.quote_character}'" do
+        while line = @csv_file.gets do
           next if line.strip.size == 0
           ActiveRecord::Base.connection.raw_connection.put_copy_data line
-        end    
+        end
       end
     rescue StandardError => e
       load_logger.error(e)
@@ -151,32 +96,15 @@ class LoadTable
   end
 
 
-  def get_delimiter(dp_metadata)
+  # def get_quote_char(dp_metadata)
+  #   if dp_metadata.has_key?("dialect") && (dp_metadata["dialect"].has_key? "quote") then
+  #     quote_char = dp_metadata["dialect"]["quote"]
+  #     quote_char = "''" if quote_char == "'" # http://stackoverflow.com/a/12857090/1002140
+  #   else
+  #     load_logger.info("datapackage.json does not specify a quote characher (via ['dialect']['quote']). Defaulting to a double quote.")
+  #     quote_char = '"'
+  #   end
+  #   quote_char
+  # end
 
-    if dp_metadata.has_key?("dialect") && (dp_metadata["dialect"].has_key? "delimiter") then
-      delimiter = dp_metadata["dialect"]["delimiter"]
-    else
-      load_logger.info("datapackage.json does not specify the delimiter (via 'dialect': { 'delimiter': '?'}). Defaulting to a comma.")
-      delimiter = ','
-    end
-    delimiter
-
-  end
-
-
-  def get_quote_char(dp_metadata)
-    if dp_metadata.has_key?("dialect") && (dp_metadata["dialect"].has_key? "quote") then
-      quote_char = dp_metadata["dialect"]["quote"]
-      quote_char = "''" if quote_char == "'" # http://stackoverflow.com/a/12857090/1002140
-    else
-      load_logger.info("datapackage.json does not specify a quote characher (via ['dialect']['quote']). Defaulting to a double quote.")
-      quote_char = '"'
-    end
-    quote_char
-  end
-
-  def self.type_map
-    @@type_map
-  end
 end
-  

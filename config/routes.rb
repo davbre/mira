@@ -14,7 +14,7 @@ Rails.application.routes.draw do
   end
 
   # custom project routes
-  post "projects/:id/upload_ds" => "projects#upload_ds"
+  post "projects/:id/upload_datasources" => "projects#upload_datasources"
   post "projects/:id/upload_datapackage" => "projects#upload_datapackage"
   get "projects/:id/api-details" => "projects#api_detail"
 

@@ -24,6 +24,7 @@ if ActiveRecord::Base.connection.table_exists? 'projects'
 
 end
 
+# map datapackage types to activerecord types
 DATAPACKAGE_TYPE_MAP = {
     "boolean" => "boolean",
     "integer" => "integer",
