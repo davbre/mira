@@ -6,7 +6,6 @@ class CreateDatapackageResources < ActiveRecord::Migration
       t.text :format
       t.text :delimiter
       t.text :mediatype
-      t.text :schema
 
       t.timestamps null: false
     end

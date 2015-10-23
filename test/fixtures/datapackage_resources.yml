@@ -6,7 +6,6 @@ one:
   format: MyText
   delimiter: MyText
   mediatype: MyText
-  schema: MyText
 
 two:
   datapackage_id: 1
@@ -14,4 +13,3 @@ two:
   format: MyText
   delimiter: MyText
   mediatype: MyText
-  schema: MyText

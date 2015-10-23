@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151022153557) do
+ActiveRecord::Schema.define(version: 20151023084243) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -34,12 +34,14 @@ ActiveRecord::Schema.define(version: 20151022153557) do
     t.text     "format"
     t.text     "delimiter"
     t.text     "mediatype"
-    t.text     "schema"
     t.datetime "created_at",      null: false
     t.datetime "updated_at",      null: false
     t.integer  "datasource_id"
     t.text     "quote_character"
+    t.text     "table_ref"
   end
+
+  add_index "datapackage_resources", ["table_ref"], name: "index_datapackage_resources_on_table_ref", using: :btree
 
   create_table "datapackages", force: :cascade do |t|
     t.integer  "project_id"
@@ -65,15 +67,15 @@ ActiveRecord::Schema.define(version: 20151022153557) do
     t.integer  "datafile_file_size"
     t.datetime "datafile_updated_at"
     t.string   "db_table_name"
-    t.string   "table_ref"
+    t.text     "table_ref"
     t.text     "public_url"
-    t.string   "s3_region"
     t.boolean  "archived",              default: false
     t.integer  "datapackage_id"
   end
 
   add_index "datasources", ["db_table_name"], name: "index_datasources_on_db_table_name", using: :btree
   add_index "datasources", ["project_id"], name: "index_datasources_on_project_id", using: :btree
+  add_index "datasources", ["table_ref"], name: "index_datasources_on_table_ref", using: :btree
 
   create_table "delayed_jobs", force: :cascade do |t|
     t.integer  "priority",   default: 0, null: false

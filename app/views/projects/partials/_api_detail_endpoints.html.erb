@@ -18,20 +18,38 @@
       <td>GET</td>
       <td><a class="api-endpoint-link" href="<%= root_url %>api/projects/<%= @project.id %>"><%= root_url %>api/projects/<%= @project.id %></a></td>
     </tr>
-      <tr>
-        <td>Project tables</td>
-        <td>GET</td>
-        <td><a class="api-endpoint-link" href="<%= root_url %>api/projects/<%= @project.id %>/tables"><%= root_url %>api/projects/<%= @project.id %>/tables</a></td>
-      </tr>
-      <tr>
-        <td>Project datapackages</td>
-        <td>GET</td>
-        <td><a class="api-endpoint-link" href="<%= root_url %>api/projects/<%= @project.id %>/datapackages"><%= root_url %>api/projects/<%= @project.id %>/datapackages</a></td>
-      </tr>
-      <tr>
-        <td><strong>Tables</strong></td>
-        <td></td>
-      </tr>
+    <tr>
+      <td>Project datapackage</td>
+      <td>GET</td>
+      <td><a class="api-endpoint-link" href="<%= root_url %>api/projects/<%= @project.id %>/datapackage"><%= root_url %>api/projects/<%= @project.id %>/datapackage</a></td>
+    </tr>
+    <tr>
+      <td>Datapackage resources (this is just metadata - the actual resources may not have been uploaded yet)</td>
+      <td>GET</td>
+      <td><a class="api-endpoint-link" href="<%= root_url %>api/projects/<%= @project.id %>/datapackage/resources"><%= root_url %>api/projects/<%= @project.id %>/datapackage/resources</a></td>
+    </tr>
+    <tr>
+      <td>Individual datapackage resource</td>
+      <td>GET</td>
+      <td><%= root_url %>api/projects/<%= @project.id %>/datapackage/resources/<strong>[table_ref]</strong></td>
+    </tr>
+    <tr>
+      <td>Individual datapackage resource fields</td>
+      <td>GET</td>
+      <td><%= root_url %>api/projects/<%= @project.id %>/datapackage/resources/<strong>[table_ref]/fields</strong></td>
+    </tr>
+    <tr>
+      <td>Project tables</td>
+      <td>GET</td>
+      <td><a class="api-endpoint-link" href="<%= root_url %>api/projects/<%= @project.id %>/tables"><%= root_url %>api/projects/<%= @project.id %>/tables</a></td>
+    </tr>
+    <tr>
+      <td><strong>Tables</strong></td>
+      <td></td>
+    </tr>
+    <% if @datasources.empty? %>
+      <tr><td>No csv files have been uploaded yet<td></td><td></td></tr>
+    <% else %>
       <% @datasources.each do |ds| %>
         <tr>
           <td>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<%= ds.table_ref %></td>
@@ -48,7 +66,8 @@
           </td>
         </tr>
       <% end %>
-    </tbody>
+    <% end %>
+
   </table>
 
   <br /><br />

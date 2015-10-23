@@ -8,7 +8,7 @@ CSV files are uploaded to Mira along with a corresponding tabular data package (
 
 ## Demo
 
-A Mira instance is running here providing APIs to serveral datasets:
+A Mira instance is running here providing APIs to several datasets:
 
 [http://178.62.193.189](http://178.62.193.189)
 
@@ -49,7 +49,7 @@ Some examles of interacting with a Mira API:
           port: 5432
           username: mira
           password: **your_password_here**
-          
+
         development:
           <<: *default
           database: mira_dev

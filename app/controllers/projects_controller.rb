@@ -79,6 +79,46 @@ class ProjectsController < ApplicationController
   end
 
 
+  def upload_datapackage
+
+    @project = Project.find(params[:id])
+    @feedback = { errors: [], warnings: [], notes: [] }
+    if @project.datapackage.present?
+      @feedback[:errors] << "A datapackage already exists for this project"
+    else
+      datapackage = params[:datapackage]
+
+      json_dp = check_and_clean_datapackage(datapackage)
+
+      # overwrite the datapackage.json temporary file with a clean/trimmed version
+      File.open(datapackage.tempfile.path,"w") do |f|
+        f.write(json_dp.to_json)
+      end
+
+      if json_dp.present? and @feedback[:errors].empty?
+        @datapackage = Datapackage.new(project_id: @project.id,
+                                       datapackage: File.open(datapackage.tempfile.path),
+                                       datapackage_file_name: "datapackage.json")
+        if @datapackage.valid?
+          save_datapackage(@datapackage)
+        else
+          @feedback[:errors] += @datapackage.errors.to_a
+        end
+      end
+    end
+
+    if @feedback[:errors].any?
+      @project.errors.add(:datapackage, @feedback[:errors])
+      render 'edit'
+    else
+      flash[:success] = "datapackage.json uploaded"
+      extract_and_save_datapackage_resources(@datapackage,json_dp)
+      redirect_to @project
+    end
+
+  end
+
+
   def upload_datasources
     @project = Project.find(params[:id])
     @datapackage = @project.datapackage
@@ -105,42 +145,6 @@ class ProjectsController < ApplicationController
       # flash[:success] = "datapackage.json uploaded"
       redirect_to @project
     end
-  end
-
-
-  def upload_datapackage
-
-    @project = Project.find(params[:id])
-    @feedback = { errors: [], warnings: [], notes: [] }
-    datapackage = params[:datapackage]
-
-    json_dp = check_and_clean_datapackage(datapackage)
-
-    # overwrite the datapackage.json temporary file with a clean/trimmed version
-    File.open(datapackage.tempfile.path,"w") do |f|
-      f.write(json_dp.to_json)
-    end
-
-    if json_dp.present? and @feedback[:errors].empty?
-      @datapackage = Datapackage.new(project_id: @project.id,
-                                     datapackage: File.open(datapackage.tempfile.path),
-                                     datapackage_file_name: "datapackage.json")
-      if @datapackage.valid?
-        save_datapackage(@datapackage)
-      else
-        @feedback[:errors] += @datapackage.errors.to_a
-      end
-    end
-
-    if @feedback[:errors].any?
-      @project.errors.add(:datapackage, @feedback[:errors])
-      render 'edit'
-    else
-      flash[:success] = "datapackage.json uploaded"
-      extract_and_save_datapackage_resources(@datapackage,json_dp)
-      redirect_to @project
-    end
-
   end
 
 
@@ -253,10 +257,23 @@ class ProjectsController < ApplicationController
 
     def extract_and_save_datapackage_resources(dp_object,json_dp)
       json_dp["resources"].each do |res|
-        dp_res = DatapackageResource.new(datapackage_id: dp_object.id, path: res["path"], schema: res["schema"].to_json)
+        dp_res = DatapackageResource.new(datapackage_id: dp_object.id, path: res["path"], table_ref: File.basename(res["path"],".*"))
         dp_res.format = res["format"] if res.has_key? "format"
         dp_res.mediatype = res["mediatype"] if res.has_key? "mediatype"
-        dp_res.delimiter = res["dialect"]["delimiter"] if res.has_key? "dialect" and res["dialect"].has_key? "delimiter"
+        # delimiter
+        delimiter = ','
+        if res.has_key? "dialect" and res["dialect"].has_key? "delimiter"
+          dlm_len = res["dialect"]["delimiter"].length
+          if dlm_len > 1
+            @feedback[:errors] << "Delimiter character must be a single character."
+          elsif dlm_len != 0
+            delimiter = res["dialect"]["delimiter"]
+          end
+        else
+          @feedback[:notes] << "datapackage.json does not specify a delimiter character so it defaults to a comma."
+        end
+        dp_res.delimitier = delimiter
+        # quote character
         qchar = '"'
         if res.has_key? "dialect" and res["dialect"].has_key? "quote"
           qchar_len = res["dialect"]["quote"].length
@@ -272,7 +289,7 @@ class ProjectsController < ApplicationController
 
         if dp_res.valid? && @feedback[:errors].empty?
           dp_res.save
-          extract_and_save_resource_fields(dp_res)
+          extract_and_save_resource_fields(json_dp,dp_res)
         else
           @feedback[:errors] << "Datapackage resource not saved for " + res["path"] + ". ERRORS: " + dp_res.to_a.join(", ") + "."
         end
@@ -280,9 +297,9 @@ class ProjectsController < ApplicationController
     end
 
 
-    def extract_and_save_resource_fields(resource)
+    def extract_and_save_resource_fields(json_dp,resource)
       feedback = { errors: [], warnings: [], notes: []}
-      resource_schema = JSON.parse(resource.schema)
+      resource_schema = json_dp["resources"].find{ |r| r["path"] == resource.path }["schema"]
       resource_schema["fields"].each_with_index do |field,ndx|
         res_field = DatapackageResourceField.new(datapackage_resource_id: resource.id, name: field["name"], ftype: field["type"], order: ndx + 1)
         if field["constraints"].present?

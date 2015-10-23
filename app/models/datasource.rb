@@ -1,17 +1,13 @@
 class Datasource < ActiveRecord::Base
 
   belongs_to :project
+  has_one :datapackage_resource
   validates :project_id, presence: true
   validates :table_ref, uniqueness: { scope: :project,
                                       message: "Filenames must be unique (file extensions are ignored)" }
   has_attached_file :datafile,
-    #:s3_host_name => "s3-" + ENV['S3_REGION'] + ".amazonaws.com",
-    # :path => ":rails_root/tmp/temp_paperclip_uploads/:proj_id-:proj_name/:filename",
     :path => ":rails_root/public/uploads/project_:proj_id/:filename",
     :url  => "/uploads/project_:proj_id/:filename"
-
-    # :processors => [:custom],
-    # :styles => {:options => {:delimiter => ","}}
 
   # validates_attachment :datafile, :content_type => /\Atext\/csv/
   validates_attachment :datafile, content_type: { :content_type => [/\Atext\//, "application/json"] }

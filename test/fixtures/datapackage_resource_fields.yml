@@ -1,11 +1,11 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  DatapackageResource_id: 
+  datapackage_resource_id:
   name: MyText
-  type: MyText
+  ftype: MyText
 
 two:
-  DatapackageResource_id: 
+  datapackage_resource_id:
   name: MyText
-  type: MyText
+  ftype: MyText

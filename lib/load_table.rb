@@ -2,24 +2,9 @@ require 'csv'
 require 'tempfile'
 require 'load_dynamic_AR_class_with_scopes'
 
-# Bits and pieces from https://github.com/theSteveMitchell/postgres_upsert
 class LoadTable
 
   attr_reader :table_name, :column_list, :column_type_hash
-
-  # Mapping from JSON schema table types to Active Record types:
-  @@type_map = {
-      "boolean" => "boolean",
-      "integer" => "integer",
-      "number" => "float",
-      "float" => "float",
-      "geopoint" => "float",     # seen in airport-codes dataset although have not found any documentation for it!
-      "datetime" => "datetime",
-      "date" => "date",
-      "time" => "time",
-      "string" => "text",
-      "null" => "text"
-    }
 
   def initialize(datasource)
 
@@ -95,16 +80,5 @@ class LoadTable
 
   end
 
-
-  # def get_quote_char(dp_metadata)
-  #   if dp_metadata.has_key?("dialect") && (dp_metadata["dialect"].has_key? "quote") then
-  #     quote_char = dp_metadata["dialect"]["quote"]
-  #     quote_char = "''" if quote_char == "'" # http://stackoverflow.com/a/12857090/1002140
-  #   else
-  #     load_logger.info("datapackage.json does not specify a quote characher (via ['dialect']['quote']). Defaulting to a double quote.")
-  #     quote_char = '"'
-  #   end
-  #   quote_char
-  # end
 
 end

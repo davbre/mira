@@ -77,18 +77,6 @@ Rails.application.configure do
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
 
-
-  # DBR. Note the AWS_XXX variables have been set using heroku config:set.
-  # Run heroku config to see variables.
-  # config.paperclip_defaults = {
-  #   :storage => :s3,
-  #   :s3_credentials => {
-  #   :bucket => ENV['S3_BUCKET'],
-  #   :access_key_id => ENV['AWS_ACCESS_KEY_ID'],
-  #   :secret_access_key => ENV['AWS_SECRET_ACCESS_KEY']
-  #   }
-  # }
-
   # DBR trying to get delayed job to communicate back to server via GET request
   Rails.application.routes.default_url_options[:host] = 'localhost' # local to database, i.e. on same server
 

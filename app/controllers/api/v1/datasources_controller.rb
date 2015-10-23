@@ -7,20 +7,19 @@ module V1
     include ApplicationHelper
 
     def index
-      paginate json: Project.find(params[:id]).datasources.where.not(db_table_name: nil)
+      datasources = Project.find(params[:id]).datasources
+      response = datasources.as_json(:except => datasource_exclude_fields)
+      paginate json: response
     end
 
-    def dp_index
-      paginate json: Project.find(params[:id]).datasources.where(db_table_name: nil) # only datapackage files
-    end
 
     def show
       datasource = Project.find(params[:id]).datasources.where(table_ref: "#{params[:table_ref]}" ).first
-      ar_table = get_mira_ar_table(datasource.db_table_name)
-      numrows = ar_table.count
       render_hash = datasource.attributes
-      render_hash[:row_count] = numrows
-      render json: render_hash
+      ar_table = get_mira_ar_table(datasource.db_table_name)
+      render_hash[:row_count] = ar_table.count
+      response = render_hash.as_json(:except => datasource_exclude_fields)
+      render json: response
     end
 
 
@@ -39,6 +38,13 @@ module V1
       render_hash = { "name" => ar_object_col.name, "type" => ar_object_col.sql_type}
       render json: render_hash
     end
+
+    private
+
+      def datasource_exclude_fields
+        exclude = user_signed_in? ? [] : ["db_table_name", "archived"]
+        exclude
+      end
   end
 
 

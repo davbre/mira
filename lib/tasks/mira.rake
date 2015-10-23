@@ -13,6 +13,7 @@ namespace :mira do
       # remove empty directories
       system("find #{Rails.public_path.to_s}/uploads/ -depth -type d -empty -exec rmdir {} \\;")
       system("find #{Rails.public_path.to_s}/job_logs/ -depth -type d -empty -exec rmdir {} \\;")
+      system("> #{Rails.root}/log/development.log")
     end
 
   end

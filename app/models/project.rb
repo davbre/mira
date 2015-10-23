@@ -1,7 +1,7 @@
 class Project < ActiveRecord::Base
 
   belongs_to :user
-  has_one :datapackage, dependent: :destroy
+  has_one :datapackage, dependent: :destroy, validate: true
   has_many :datasources, dependent: :destroy
 
   validates :name,
