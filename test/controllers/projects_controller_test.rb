@@ -3,6 +3,8 @@ require 'test_helper'
 class ProjectsControllerTest < ActionController::TestCase
 
   include Devise::TestHelpers
+  include ApplicationHelper
+  include ProjectHelper
 
   setup do
     sign_in users(:one)

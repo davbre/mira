@@ -30,5 +30,12 @@ module ApplicationHelper
     rescue NameError => e
       load_dynamic_AR_class_with_scopes(table)
     end
-  end  
+  end
+
+
+  def custom_is_string_int?(str) # http://stackoverflow.com/a/1235990/1002140
+     /\A[-+]?\d+\z/ === str
+  end
+
+
 end

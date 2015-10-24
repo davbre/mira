@@ -1,0 +1,29 @@
+{
+  "name": "--NAME--",
+  "title": "--TITLE--",
+  "resources": [
+    {
+      "format": "csv",
+      "dialect": {
+        "delimiter": ","
+      },
+      "mediatype": "text/csv",
+      "schema": {
+        "fields": [
+          {
+            "name": "studyid",
+            "type": "string"
+          },
+          {
+            "name": "usubjid",
+            "type": "string"
+          },
+          {
+            "name": "aeterm",
+            "type": "string"
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,206 @@
+{
+  "name": "--NAME--",
+  "title": "--TITLE--",
+  "resources": [
+    {
+      "path": "upload1.csv",
+      "format": "csv",
+      "dialect": {
+        "delimiter": ","
+      },
+      "mediatype": "text/csv",
+      "schema": {
+        "fields": [
+          {
+            "name": "studyid",
+            "type": "string"
+          },
+          {
+            "name": "usubjid",
+            "type": "string"
+          },
+          {
+            "name": "aeterm",
+            "type": "string"
+          },
+          {
+            "name": "aedecod",
+            "type": "string"
+          },
+          {
+            "name": "aebodsys",
+            "type": "string"
+          },
+          {
+            "name": "aestdtc",
+            "type": "date",
+            "constraints": {
+              "minimum": "2014-02-24",
+              "maximum": "2015-01-21"
+            }
+          },
+          {
+            "name": "aeendtc",
+            "type": "date",
+            "constraints": {
+              "minimum": "2014-03-04",
+              "maximum": "2014-12-10"
+            }
+          },
+          {
+            "name": "aeseq",
+            "type": "integer",
+            "constraints": {
+              "minimum": "1",
+              "maximum": "241"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "path": "upload2.csv",
+      "format": "csv",
+      "dialect": {
+        "delimiter": ","
+      },
+      "mediatype": "text/csv",
+      "schema": {
+        "fields": [
+          {
+            "name": "studyid",
+            "type": "string"
+          },
+          {
+            "name": "siteid",
+            "type": "integer",
+            "constraints": {
+              "minimum": "101",
+              "maximum": "503"
+            }
+          },
+          {
+            "name": "subjid",
+            "type": "string"
+          },
+          {
+            "name": "usubjid",
+            "type": "string"
+          },
+          {
+            "name": "invnam",
+            "type": "string"
+          },
+          {
+            "name": "country",
+            "type": "string"
+          },
+          {
+            "name": "sex",
+            "type": "string"
+          },
+          {
+            "name": "armcd",
+            "type": "string"
+          },
+          {
+            "name": "arm",
+            "type": "string"
+          },
+          {
+            "name": "actarmcd",
+            "type": "string"
+          },
+          {
+            "name": "actarm",
+            "type": "string"
+          },
+          {
+            "name": "rfstdtc",
+            "type": "date",
+            "constraints": {
+              "minimum": "2014-03-01",
+              "maximum": "2014-11-29"
+            }
+          },
+          {
+            "name": "rfendtc",
+            "type": "date",
+            "constraints": {
+              "minimum": "2014-03-01",
+              "maximum": "2015-02-02"
+            }
+          },
+          {
+            "name": "age",
+            "type": "integer",
+            "constraints": {
+              "minimum": "20",
+              "maximum": "65"
+            }
+          },
+          {
+            "name": "ageu",
+            "type": "string"
+          },
+          {
+            "name": "domain",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
+      "path": "good_upload.csv",
+      "format": "csv",
+      "dialect": {
+        "delimiter": ","
+      },
+      "mediatype": "text/csv",
+      "schema": {
+        "fields": [
+          {
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "name": "age",
+            "type": "integer",
+            "constraints": {
+              "minimum": "23",
+              "maximum": "89"
+            }
+          },
+          {
+            "name": "dob",
+            "type": "date",
+            "constraints": {
+              "minimum": "2015-12-01",
+              "maximum": "2015-12-16"
+            }
+          },
+          {
+            "name": "score",
+            "type": "number",
+            "constraints": {
+              "minimum": "1.123",
+              "maximum": "534.234"
+            }
+          },
+          {
+            "name": "longid",
+            "type": "integer",
+            "constraints": {
+              "minimum": "1000000000000000000000000000",
+              "maximum": "1000000000000000000000000000"
+            }
+          },
+          {
+            "name": "boolfl",
+            "type": "boolean"
+          }
+        ]
+      }
+    }
+  ]
+}

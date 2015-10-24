@@ -5,10 +5,10 @@ class ProjectsControllerTest < ActionController::TestCase
   include Devise::TestHelpers
 
   setup do
-    sign_in users(:one)    
+    sign_in users(:one)
     # @project = projects(:one)
 
-    Delayed::Worker.delay_jobs = false # turn off queuing
+    # Delayed::Worker.delay_jobs = false # turn off queuing
 
     @user = users(:one)
     @project = @user.projects.build(name: "Upload test project", description: "Upload test project description")
@@ -19,7 +19,6 @@ class ProjectsControllerTest < ActionController::TestCase
 
   # uploads
   test "should detect when no files uploaded" do
-
     post :upload_ds, id: @project.id, :datafiles => [ ]
     no_datapackage = assigns["project"].errors.messages[:uploads].include? "you must upload one or more csv files along with their datapackage.json file"
     assert no_datapackage
@@ -84,9 +83,9 @@ class ProjectsControllerTest < ActionController::TestCase
 
     CheckDatapackage.new(@project.id, tempfile_location_hash).perform
 
-    expected_datapackage_path = Rails.public_path.to_s + "/" + @project.datasources.where(datafile_file_name: "datapackage.json").first.public_url 
-    expected_csv_path1 = Rails.public_path.to_s + "/" + @project.datasources.where(datafile_file_name: "upload1.csv").first.public_url 
-    expected_csv_path2 = Rails.public_path.to_s + "/" + @project.datasources.where(datafile_file_name: "upload2.csv").first.public_url 
+    expected_datapackage_path = Rails.public_path.to_s + "/" + @project.datasources.where(datafile_file_name: "datapackage.json").first.public_url
+    expected_csv_path1 = Rails.public_path.to_s + "/" + @project.datasources.where(datafile_file_name: "upload1.csv").first.public_url
+    expected_csv_path2 = Rails.public_path.to_s + "/" + @project.datasources.where(datafile_file_name: "upload2.csv").first.public_url
     assert File.file?(expected_datapackage_path)
     assert File.file?(expected_csv_path1)
     assert File.file?(expected_csv_path2)
@@ -98,8 +97,8 @@ class ProjectsControllerTest < ActionController::TestCase
     upload2 = fixture_file_upload("uploads/upload2.csv", "text/csv")
     datapackage = fixture_file_upload("uploads/datapackage.json", "application/json")
     post :upload_ds, id: @project.id, :datafiles => [ upload1, upload2, datapackage ]
-    assert Dir.exists? Rails.public_path.to_s + "/uploads/project_" + @project.id.to_s
-    assert Dir.exists? Rails.public_path.to_s + "/job_logs/project_" + @project.id.to_s
+    assert Dir.exists? @project.upload_path
+    assert Dir.exists? @project.job_log_path
   end
 
 
@@ -114,9 +113,9 @@ class ProjectsControllerTest < ActionController::TestCase
 
     CheckDatapackage.new(@project.id, tempfile_location_hash).perform
 
-    expected_dp_log_path = log_dir + "/project_" + @project.id.to_s + "/datapackage.json.log"
-    expected_csv_log_path1 = log_dir + "/project_" + @project.id.to_s + "/upload1.csv.log"
-    expected_csv_log_path2 = log_dir + "/project_" + @project.id.to_s + "/upload2.csv.log"
+    expected_dp_log_path = @project.job_log_path + "datapackage.json.log"
+    expected_csv_log_path1 = @project.job_log_path + "/upload1.csv.log"
+    expected_csv_log_path2 = @project.job_log_path + "/upload2.csv.log"
 
     assert File.file?(expected_dp_log_path)
     assert File.file?(expected_csv_log_path1)

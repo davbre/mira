@@ -35,7 +35,7 @@ class Datasource < ActiveRecord::Base
   end
 
 
-  def delete_associated_artefacts
+  def delete_associated_artifacts
     delete_db_table
     delete_log
     delete_upload

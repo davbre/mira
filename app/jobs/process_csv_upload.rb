@@ -13,7 +13,7 @@ class ProcessCsvUpload
   end
 
   def job_logger
-    log_dir = Rails.configuration.x.job_log_path + "/project_#{@ds.project.id}"
+    log_dir = Project.find(@ds.project_id).job_log_path
     Dir.mkdir(log_dir) unless File.directory?(log_dir)
     @job_logger ||= Logger.new("#{log_dir}/#{@ds.datafile_file_name}.log")
   end

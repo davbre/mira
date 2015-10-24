@@ -11,6 +11,7 @@ class DatasourcesControllerTest < ActionController::TestCase
     @project.save
     @upload_files = ["upload1","upload2"]
     upload_to_project(@project,@upload_files)
+    Delayed::Worker.delay_jobs = false # turn off queuing
   end
 
   # destroy
@@ -40,30 +41,32 @@ class DatasourcesControllerTest < ActionController::TestCase
     assert_redirected_to new_user_session_path
   end
 
-  test "should not delete datapackage.json if exists other associated csv files" do
-    datapackage_id = Datasource.where(table_ref: @upload_files[0]).first.datapackage_id
-    delete :destroy, project_id: @project, id: @project.datasources.where(table_ref: @upload_files[0]).first.id
-    assert_not_nil Datasource.where(id: datapackage_id).first
+  test "should drop associated database table" do
+    destroy_csv = @upload_files[0]
+    relevant_datasource = @project.datasources.where(table_ref: destroy_csv).first
+    relevant_db_table_name = relevant_datasource.db_table_name
+    assert ActiveRecord::Base.connection.table_exists? relevant_db_table_name
+    delete :destroy, project_id: @project, id: relevant_datasource.id
+    refute ActiveRecord::Base.connection.table_exists? relevant_db_table_name
   end
 
-  test "should delete datapackage.json if all associated csv files are deleted" do
-    datapackage_id = Datasource.where(table_ref: @upload_files[0]).first.datapackage_id
-    @upload_files.each do |u|
-      delete :destroy, project_id: @project, id: @project.datasources.where(table_ref: u).first.id
-    end
-    assert_nil Datasource.where(id: datapackage_id).first
+  test "should delete associated upload" do
+    destroy_csv = @upload_files[0]
+    relevant_datasource = @project.datasources.where(table_ref: destroy_csv).first
+    # assert file exists, delete, then refute it exists
+    assert File.file?(@project.upload_path + relevant_datasource.datafile_file_name)
+    delete :destroy, project_id: @project, id: relevant_datasource.id
+    refute File.file?(@project.job_log_path + relevant_datasource.datafile_file_name)
   end
 
+  test "should delete associated log file" do
+    destroy_csv = @upload_files[0]
+    relevant_datasource = @project.datasources.where(table_ref: destroy_csv).first
+    # assert file exists, delete, then refute it exists
+    assert File.file?(@project.job_log_path + relevant_datasource.datafile_file_name + ".log")
+    delete :destroy, project_id: @project, id: relevant_datasource.id
+    refute File.file?(@project.job_log_path + relevant_datasource.datafile_file_name + ".log")
+  end
 
-  # test "should log errors when wrong mime-type detected (use airport-codes.csv which contains html" do
-  #   skip
-  # end
-  #
-  # test "single and double quoting characters in upload" do
-  #   skip
-  # end
-  #
-
-  #
 
 end
