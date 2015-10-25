@@ -1,8 +1,11 @@
 require 'test_helper'
 
-class ProjectsControllerTest < ActionController::TestCase
+class ProjectsControllerUploadDatapackageTest < ActionController::TestCase
 
   setup do
+    @controller = ProjectsController.new # this is needed because we don't have a separate controller for datapackage!
+                                         # See http://stackoverflow.com/a/7743176. The tests work in isolation, but
+                                         # get errors when all tests run together.
     sign_in users(:one)
     @user = users(:one)
     @project = @user.projects.build(name: "Upload test project", description: "Upload test project description")
