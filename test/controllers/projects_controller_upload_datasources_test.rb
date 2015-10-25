@@ -9,7 +9,7 @@ class ProjectsControllerTest < ActionController::TestCase
     @project.save
   end
 
-  # datapackage upload
+  # datasources upload
   test "should detect when datapackage already uploaded" do
     good_datapackage = fixture_file_upload("uploads/datapackage/good/datapackage.json", "application/json")
     post :upload_datapackage, id: @project.id, :datapackage => good_datapackage
@@ -127,70 +127,5 @@ class ProjectsControllerTest < ActionController::TestCase
     assert expected_error
   end
 
-  # datapackage database table insertion
-  test "bad datapackage should not add record to datapackage datapackage_resource or datapackage_resource_field tables" do
-    # upload bad datapackage. Observation counts should be the same after as before.
-    bad_datapackage = fixture_file_upload("uploads/datapackage/bad_not_json/datapackage.json", "application/json")
-    before_dp_count = Datapackage.count
-    before_dp_res_count = DatapackageResource.count
-    before_dp_res_fld_count = DatapackageResourceField.count
-    post :upload_datapackage, id: @project.id, :datapackage => bad_datapackage
-    assert_equal before_dp_count, Datapackage.count
-    assert_equal before_dp_res_count, Datapackage.count
-    assert_equal before_dp_res_fld_count, Datapackage.count
-  end
-
-  test "good datapackage should add record correctly to datapackage table" do
-    good_datapackage = fixture_file_upload("uploads/datapackage/good/datapackage.json", "application/json")
-    assert_difference('Datapackage.count',1) do
-      post :upload_datapackage, id: @project.id, :datapackage => good_datapackage
-    end
-    last_dp = Datapackage.last
-    assert_equal @project.id, last_dp.project_id
-    assert_equal "/uploads/project_" + @project.id.to_s + "/datapackage.json", last_dp.public_url
-    assert_equal "datapackage.json", last_dp.datapackage_file_name
-  end
-
-  test "good datapackage should add rows correctly to datapackage_resources table" do
-    good_datapackage = fixture_file_upload("uploads/datapackage/good/datapackage.json", "application/json")
-    before_dp_res_count = DatapackageResource.count
-    post :upload_datapackage, id: @project.id, :datapackage => good_datapackage
-    dp_json = JSON.parse(File.read(good_datapackage))
-    dp_json_resource_names = dp_json["resources"].map { |r| r["path"] }
-    # correct number of resources added to DB table
-    assert_equal dp_json["resources"].length + before_dp_res_count, DatapackageResource.count
-    # each new resource has correct path
-    assert_equal dp_json_resource_names.sort, Project.find(@project.id).datapackage.datapackage_resources.map { |r| r["path"] }.sort
-    # table_ref as expected
-    assert_equal dp_json_resource_names.map { |r| r.split(".").first }.sort, Project.find(@project.id).datapackage.datapackage_resources.map { |r| r["table_ref"] }.sort
-    # delimiter and quote character are populated in all new resources
-    assert_equal false, Project.find(@project.id).datapackage.datapackage_resources.map { |r| r["delimiter"] }.include?(nil)
-    assert_equal false, Project.find(@project.id).datapackage.datapackage_resources.map { |r| r["quote_character"] }.include?(nil)
-  end
-
-  test "good datapackage should add rows correctly to datapackage_resource_fields table" do
-    good_datapackage = fixture_file_upload("uploads/datapackage/good/datapackage.json", "application/json")
-    before_dp_res_field_count = DatapackageResourceField.count
-    post :upload_datapackage, id: @project.id, :datapackage => good_datapackage
-    dp_json = JSON.parse(File.read(good_datapackage))
-    # correct number of resource fields added to DB table
-    new_field_count = 0
-    @project.datapackage.datapackage_resources.each do |res|
-      dp_json_res = dp_json["resources"].find{ |r| r["path"] == res.path }
-      # same number of fields
-      assert_equal dp_json_res["schema"]["fields"].length, res.datapackage_resource_fields.length
-      # same field name, type and order
-      dp_json_res["schema"]["fields"].each_with_index do |f,ndx|
-        db_field = res.datapackage_resource_fields.select{|s| s.name == f["name"]}.first
-        assert_not_nil db_field
-        assert_equal ndx + 1, db_field.order
-        assert_equal f["name"], db_field.name
-        assert_equal f["type"], db_field.ftype
-      end
-      # keep count of fields for last test
-      new_field_count += dp_json_res["schema"]["fields"].length
-    end
-    assert_equal before_dp_res_field_count + new_field_count, DatapackageResourceField.count
-  end
 
 end

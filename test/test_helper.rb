@@ -6,7 +6,6 @@ class ActiveSupport::TestCase
   # Setup all fixtures in test/fixtures/*.yml for all tests in alphabetical order.
   fixtures :all
 
-  include Devise::TestHelpers
   include ApplicationHelper
   include ProjectHelper
 
@@ -55,4 +54,8 @@ class ActiveSupport::TestCase
     end
 
   end
+end
+
+class ActionController::TestCase
+  include Devise::TestHelpers
 end

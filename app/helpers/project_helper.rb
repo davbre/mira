@@ -5,14 +5,30 @@ module ProjectHelper
       already_uploaded: "A datapackage already exists for this project.",
       no_upload: "You must upload a datapackage.json file.",
       bad_json: "Failed to parse datapackage.json.",
-      no_resources: "datapackage.json must contain a 'resources' array.",
-      non_array_resources: "datapackage.json must contain a 'resources' array.",
-      empty_resources: "datapackage.json must contain a non-empty 'resources' array.",
+      resources_missing: "datapackage.json must contain a 'resources' array.",
+      resources_not_array: "datapackage.json must contain a 'resources' array.",
+      resources_empty: "datapackage.json must contain a non-empty 'resources' array.",
       missing_path: "Each resource must have a path.",
-      missing_schema: "Each resource must have a schema."
+      missing_schema: "Each resource must have a schema.",
+      path_not_string: "Resource path must be a String, e.g. 'mydata.csv'",
+      path_empty: "Resource 'path' is empty.",
+      path_not_csv: "Resource 'path' should refer to a csv file.",
+      schema_not_hash: "Resource 'schema' must be a Hash.",
+      schema_no_fields: "Resource 'schema' must contain 'fields'.",
+      schema_not_array: "Resource schema 'fields' must be an Array.",
+      field_not_name_and_type: "Each resource schema field must contain 'name' and 'type' keys.",
+      field_invalid_name: "Field name is not valid.",
+      field_invalid_type: "Field type is not valid."
     }
   end
 
+  def add_path_to_feedback(resource)
+    @feedback[:errors] << "Path: " + resource["path"].to_s + "."
+  end
+
+  def add_field_to_feedback(field)
+    @feedback[:errors] << "Field: " + field.to_s + "."
+  end
 
   def check_and_clean_datapackage(dp)
     dp_path = dp.tempfile.path
@@ -23,9 +39,9 @@ module ProjectHelper
     rescue => e
       @feedback[:errors] << datapackage_errors[:bad_json]
     else
-      @feedback[:errors] << datapackage_errors[:no_resources] if !json_dp.has_key? "resources"
-      @feedback[:errors] << datapackage_errors[:non_array_resources] if (json_dp.has_key? "resources") && (json_dp["resources"].class != Array)
-      @feedback[:errors] << datapackage_errors[:empty_resources] if (json_dp.has_key? "resources") && (json_dp["resources"].empty?)
+      @feedback[:errors] << datapackage_errors[:resources_missing] if !json_dp.has_key? "resources"
+      @feedback[:errors] << datapackage_errors[:resources_not_array] if (json_dp.has_key? "resources") && (json_dp["resources"].class != Array)
+      @feedback[:errors] << datapackage_errors[:resources_empty] if (json_dp.has_key? "resources") && (json_dp["resources"].empty?)
     end
 
     json_dp = trim_datapackage(json_dp)
@@ -34,35 +50,47 @@ module ProjectHelper
       json_dp["resources"].each do |resource|
         @feedback[:errors] << datapackage_errors[:missing_path] if !resource.has_key? "path"
         @feedback[:errors] << datapackage_errors[:missing_schema] if !resource.has_key? "schema"
-
         if resource.has_key? "path"
+          extension = (resource["path"].to_s.split("/").last.to_s.split(".").length > 1) ? resource["path"].to_s.split("/").last.to_s.split(".").last.downcase : ""
           if resource["path"].class != String
-            @feedback[:errors] << "Resource path must be a String, e.g. 'path/to/mydata.csv' (" + resource["path"].to_s + ")."
+            @feedback[:errors] << datapackage_errors[:path_not_string]
+            add_path_to_feedback resource
           elsif [nil, ""].include? resource["path"]
-            @feedback[:errors] << "Resource 'path' is empty."
-          elsif resource["path"].split("/").last.downcase == "csv"
-            @feedback[:errors] << "Resource 'path' should refer to a csv file (" + resource["path"].to_s + ")."
+            @feedback[:errors] << datapackage_errors[:path_empty]
+            add_path_to_feedback resource
+          elsif extension != "csv"
+            @feedback[:errors] << datapackage_errors[:path_not_csv]
+            add_path_to_feedback resource
           end
         end
 
         if resource.has_key? "path" and resource.has_key? "schema"
           if resource["schema"].class != Hash
-            @feedback[:errors] << "Resource 'schema' must be a Hash (path: " + resource["path"].to_s + ")."
+            @feedback[:errors] << datapackage_errors[:schema_not_hash]
+            add_path_to_feedback resource
           elsif !resource["schema"].has_key? "fields"
-            @feedback[:errors] << "Resource 'schema' must contain 'fields' (path: " + resource["path"].to_s + ")."
+            @feedback[:errors] << datapackage_errors[:schema_no_fields]
+            add_path_to_feedback resource
           elsif resource["schema"]["fields"].class != Array
-            @feedback[:errors] << "Resource schema 'fields' must be an Array (" + resource["path"].to_s + ")."
+            @feedback[:errors] << datapackage_errors[:schema_not_array]
+            add_path_to_feedback resource
           else
             resource["schema"]["fields"].each do |field|
               if not (field.has_key? "name" and field.has_key? "type")
-                @feedback[:errors] << "Each resource schema field must contain 'name' and 'type' keys (path: " + resource["path"].to_s + ")."
+                @feedback[:errors] << datapackage_errors[:field_not_name_and_type]
+                add_path_to_feedback resource
+                add_field_to_feedback field
               else
                 if (field["name"] =~ /^[a-zA-Z_][a-zA-Z0-9_]*$/) == nil
-                  @feedback[:errors] << "Field name is not valid: " + field["name"] + "."
+                  @feedback[:errors] << datapackage_errors[:field_invalid_name]
+                  add_path_to_feedback resource
+                  add_field_to_feedback field
                 end
                 unless DATAPACKAGE_TYPE_MAP.keys.include? field["type"].downcase
-                  @feedback[:errors] << "Field type is not valid. Field: " + field["name"] + ", type: " + field["type"] + ". " +
-                                       "Valid types are " + DATAPACKAGE_TYPE_MAP.keys.join(", ") + "."
+                  @feedback[:errors] << datapackage_errors[:field_invalid_type]
+                  add_path_to_feedback resource
+                  add_field_to_feedback field
+                  @feedback[:errors] << "Valid types are " + DATAPACKAGE_TYPE_MAP.keys.join(", ") + "."
                 end
               end
             end

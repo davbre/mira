@@ -2,8 +2,6 @@ require 'test_helper'
 
 class DatasourcesControllerTest < ActionController::TestCase
 
-  include Devise::TestHelpers
-
   setup do
     sign_in users(:one)
     @user = users(:one)

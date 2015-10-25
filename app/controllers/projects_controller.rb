@@ -65,7 +65,6 @@ class ProjectsController < ApplicationController
 
 
   def destroy
-    binding.pry
     project = Project.find(params[:id])
     project.datasources.each do |ds|
       ds.delete_associated_artifacts
@@ -85,6 +84,7 @@ class ProjectsController < ApplicationController
 
     @project = Project.find(params[:id])
     @feedback = { errors: [], warnings: [], notes: [] }
+
     if @project.datapackage.present?
       @feedback[:errors] << datapackage_errors[:already_uploaded]
     elsif params[:datapackage].blank?
