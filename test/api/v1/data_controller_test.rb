@@ -11,13 +11,14 @@ class Api::V1::DataControllerTest < ActionController::TestCase
     @user = users(:one)
     @project = @user.projects.build(name: "Upload test project", description: "Upload test project description")
     @project.save
-    upload_to_project(@project, ["good_upload"])
+    @uploads = ["good_upload"]
+    upload_to_project(@project, @uploads, "uploads/datapackage/good/datapackage.json") # just upload datapackage file
+    @dp_file_json = JSON.parse(File.read(@dp_file))
   end
 
 
-
   def csv_row_to_json(datapackage_upload_name,id,row) # row is CSV row object
-    mapped_col_types = map_datapackage_column_types(@datapackage, datapackage_upload_name)
+    mapped_col_types = map_datapackage_column_types(@dp_file_json, datapackage_upload_name)
     mimic_json = { "id" => id }
     row_as_hash = row.to_hash
     row_as_hash.each do |cell|
@@ -28,7 +29,7 @@ class Api::V1::DataControllerTest < ActionController::TestCase
   end
 
   def csv_column_type(csv_upload_name, column)
-    mapped_col_types = map_datapackage_column_types(@datapackage, csv_upload_name)
+    mapped_col_types = map_datapackage_column_types(@dp_file_json, csv_upload_name)
     mapped_col_types[column]
   end
 

@@ -11,14 +11,14 @@ class ActiveSupport::TestCase
 
   # Add more helper methods to be used by all tests here...
 
-  # def map_datapackage_column_types(datapackage, csv_name)
-  #   csv_dp_detail = datapackage["resources"].detect{ |a| a["path"] == csv_name }
-  #   dp_column_types = {}
-  #   csv_dp_detail["schema"]["fields"].each do |sf|
-  #     dp_column_types[sf["name"]] = LoadTable.type_map[sf["type"]]
-  #   end
-  #   dp_column_types
-  # end
+  def map_datapackage_column_types(datapackage_json, csv_name)
+    csv_dp_detail = datapackage_json["resources"].detect{ |a| a["path"] == csv_name }
+    dp_column_types = {}
+    csv_dp_detail["schema"]["fields"].each do |sf|
+      dp_column_types[sf["name"]] = DATAPACKAGE_TYPE_MAP[sf["type"]]
+    end
+    dp_column_types
+  end
 
   def default_page_size
     Rails.application.config.x.api_default_per_page
