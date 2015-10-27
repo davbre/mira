@@ -2,8 +2,6 @@ require 'test_helper'
 
 class ProjectsControllerTest < ActionController::TestCase
 
-  include Devise::TestHelpers
-
   setup do
     sign_in users(:one)
     @project = projects(:one)
@@ -153,39 +151,5 @@ class ProjectsControllerTest < ActionController::TestCase
     end
   end
 
-  test "should get clean log files when good files uploaded" do
-    skip
-  end
 
-  test "should handle other delimiters" do
-    skip
-  end
-
-  test "datapackage should contain dialect -> delimiter for each table" do
-    skip
-  end
-
-  test "renaming datapackage.json" do
-    skip
-  end
-
-  test "archiving works properly - datapackage, csv files, log files (?)" do
-    skip
-  end
-
-  test "datapackage_id is working properly...i.e. reference the correct datapackage file" do
-    skip
-  end
-
-  test "archived boolean is flagged correctly, i.e. on first load = false and subsequent loads = true" do
-    skip
-  end
-
-  test "datapackage with columns in RESERVED_COLUMN_NAMES should be rejected" do
-    skip
-  end
-
-  test "distinct endpoint working after upload" do
-    skip
-  end
 end

@@ -12,32 +12,46 @@
     <div class="col-md-12">
 
 
-      <% if not @datapackages.empty? %>
+      <% if @datapackage.present? %>
         <table class="table">
           <tr>
             <th>Datapackage</th>
             <th>Created</th>
-            <% if user_signed_in? %>
-              <th>Process Log</th>
-            <% end %>
           </tr>
-          <% @datapackages.each do |dp| %>
-            <tr>
-              <td><%= link_to dp.datafile_file_name, dp.datafile.url %></td>
-              <th><%= dp.created_at.strftime("%FT%R") %></td>
-              <% if user_signed_in? %>
-                <td><a href="/job_logs/project_<%= dp.project_id %>/<%= dp.datafile_file_name %>.log"><%= dp.datafile_file_name %>.log</a></td>
-              <% end %>
-            </tr>
-          <% end %>
+          <tr>
+            <td><%= link_to @datapackage.datapackage_file_name, @datapackage.datapackage.url %></td>
+            <th><%= @datapackage.created_at.strftime("%FT%R") %></td>
+          </tr>
         </table>
+
+
+        <table class="table">
+          <tr>
+            <th>Datasources listed <br />in datapackage.json</th>
+            <th>Status</th>
+          </tr>
+          <% @datapackage.datapackage_resources.each do |res| %>
+            <tr>
+              <td><%= res.path %></td>
+              <td>
+                <% if res.datasource_id.present? %>
+                  Yippee...something uploaded. Update this!
+                <% else %>
+                  Not uploaded yet
+                <% end %>
+              </td>
+            </tr>
+            <% end %>
+        </table>
+
+
       <% else %>
-        <p>A datapackage.json file has not been successfully uploaded and processed</p>
+        <p>A datapackage.json file has not yet been uploaded and processed.</p>
       <% end %>
 
 
       <br />
-      <% if not @datasources.empty? %>
+      <% if @datasources.present? %>
         <table class="table">
           <tr>
             <th>Data source</th>
@@ -59,13 +73,11 @@
             </tr>
           <% end %>
         </table>
-      <% else %>
-        <p>No csv files have been uploaded</p>
       <% end %>
 
 
       <% if user_signed_in? %>
-        <% if not @log_file_names.empty? %>
+        <% if @log_file_names.present? %>
           <p>All log files</p>
           <ul>
             <% @log_file_names.each do |lf| %>
@@ -79,5 +91,9 @@
 </div>
 
 <% if user_signed_in? %>
-  <%= render :partial => 'upload_project_files' %>
+  <% if !@datapackage %>
+    <%= render :partial => 'upload_datapackage' %>
+  <% else %>
+    <%= render :partial => 'upload_datasources' %>
+  <% end %>
 <% end %>

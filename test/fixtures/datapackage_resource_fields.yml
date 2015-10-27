@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  datapackage_resource_id: 1
+  name: MyText
+  ftype: MyText
+
+two:
+  datapackage_resource_id: 1
+  name: MyText
+  ftype: MyText

@@ -1,0 +1,19 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  datapackage_id: 1
+  path: MyText
+  format: MyText
+  delimiter: ","
+  mediatype: MyText
+  quote_character: '"'
+  table_ref: MyText
+
+two:
+  datapackage_id: 1
+  path: MyText
+  format: MyText
+  delimiter: ","
+  mediatype: MyText
+  quote_character: '"'
+  table_ref: MyText

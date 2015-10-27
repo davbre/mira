@@ -1,0 +1,26 @@
+{
+  "name": "--NAME--",
+  "title": "--TITLE--",
+  "resources": [
+    {
+      "path": "upload1.csv",
+      "format": "csv",
+      "dialect": {
+        "delimiter": ","
+      },
+      "mediatype": "text/csv",
+      "schema": {
+        "felds": [
+          {
+            "name": "studyid",
+            "type": "string"
+          },
+          {
+            "name": "usubjid",
+            "type": "string"
+          }
+        ]
+      }
+    }
+  ]
+}

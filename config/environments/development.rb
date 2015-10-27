@@ -39,19 +39,6 @@ Rails.application.configure do
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
 
-  # DBR: have added the AWS_XXX variables below to .bash_profile.
-  # See http://stackoverflow.com/questions/11760597/s3-paperclip-working-on-heroku-but-not-localhost
-  # Paperclip.options[:command_path] = "/usr/local/bin/"
-  # config.paperclip_defaults = {
-  #   :storage => :s3,
-  #   :s3_credentials => {
-  #     :bucket => ENV['S3_BUCKET'],
-  #     :access_key_id => ENV['AWS_ACCESS_KEY_ID'],
-  #     :secret_access_key => ENV['AWS_SECRET_ACCESS_KEY']
-  #   }
-  # }
-
-
   # DBR: whitelist private network. Couldn't access from other local machine....
   # http://stackoverflow.com/questions/29417328/how-to-disable-cannot-render-console-from-on-rails
   config.web_console.whitelisted_ips = '192.168.0.0/16'

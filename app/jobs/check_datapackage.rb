@@ -11,7 +11,7 @@ class CheckDatapackage
    # separate log for each job
    # http://stackoverflow.com/questions/337739/how-to-log-something-in-rails-in-an-independent-log-file
   def job_logger
-    log_dir = Rails.configuration.x.job_log_path + "/project_#{@project.id}"
+    log_dir = Project.find(@ds.project_id).job_log_path
     Dir.mkdir(log_dir) unless File.directory?(log_dir)
     @job_logger ||= Logger.new("#{log_dir}/datapackage.json.log")
   end
@@ -67,7 +67,7 @@ class CheckDatapackage
       # save and process csv files
       @tempfile_locations.sort.each do |csv,path|
 
-        ds_archive(csv) if extant_csv_files.include? csv        
+        ds_archive(csv) if extant_csv_files.include? csv
 
         cfile = File.open(path)
         job_logger.info("Queuing job to process " + csv)
@@ -123,8 +123,8 @@ class CheckDatapackage
 
       # Change actual filename, and its log filename
       begin
-        project_upload_path = Rails.public_path.to_s + Pathname(extant_ds.public_url).dirname.to_s + "/"
-        project_job_log_path = Rails.configuration.x.job_log_path + "/project_" +  extant_ds.project_id.to_s + "/"
+        project_upload_path = Project.find(@project.id).upload_path
+        project_job_log_path = Project.find(@project.id).job_log_path
         File.rename project_upload_path + orig_ds_filename, project_upload_path + new_ds_filename
         File.rename project_job_log_path + orig_ds_filename + ".log", project_job_log_path + new_ds_filename + ".log"
       rescue StandardError => e

@@ -23,3 +23,17 @@ if ActiveRecord::Base.connection.table_exists? 'projects'
   end
 
 end
+
+# map datapackage types to activerecord types
+DATAPACKAGE_TYPE_MAP = {
+    "boolean" => "boolean",
+    "integer" => "integer",
+    "number" => "float",
+    "float" => "float",
+    "geopoint" => "float",     # seen in airport-codes dataset although have not found any documentation for it!
+    "datetime" => "datetime",
+    "date" => "date",
+    "time" => "time",
+    "string" => "text",
+    "null" => "text"
+  }

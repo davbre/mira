@@ -1,0 +1,22 @@
+{
+  "name": "--NAME--",
+  "title": "--TITLE--",
+  "resources": [
+    {
+      "path": { "not_string": 1},
+      "format": "csv",
+      "dialect": {
+        "delimiter": ","
+      },
+      "mediatype": "text/csv",
+      "schema": {
+        "fields": [
+          {
+            "name": "studyid",
+            "type": "string"
+          }
+        ]
+      }
+    }
+  ]
+}

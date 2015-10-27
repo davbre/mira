@@ -6,20 +6,16 @@ class ActiveSupport::TestCase
   # Setup all fixtures in test/fixtures/*.yml for all tests in alphabetical order.
   fixtures :all
 
+  include ApplicationHelper
+  include ProjectHelper
+
   # Add more helper methods to be used by all tests here...
-  def log_dir
-    Rails.configuration.x.job_log_path
-  end
 
-  def upload_dir
-    Rails.configuration.x.upload_path
-  end
-
-  def map_datapackage_column_types(datapackage, csv_name)
-    csv_dp_detail = datapackage["resources"].detect{ |a| a["path"] == csv_name }
+  def map_datapackage_column_types(datapackage_json, csv_name)
+    csv_dp_detail = datapackage_json["resources"].detect{ |a| a["path"] == csv_name }
     dp_column_types = {}
     csv_dp_detail["schema"]["fields"].each do |sf|
-      dp_column_types[sf["name"]] = LoadTable.type_map[sf["type"]]
+      dp_column_types[sf["name"]] = DATAPACKAGE_TYPE_MAP[sf["type"]]
     end
     dp_column_types
   end
@@ -29,26 +25,37 @@ class ActiveSupport::TestCase
   end
 
 
-  def upload_to_project(project,file_names)
+  def upload_to_project(project,file_names,datapackage_file = "uploads/datapackage.json")
     Delayed::Worker.delay_jobs = false # turn off queuing
-    dp_file = fixture_file_upload("uploads/datapackage.json", "application/json")
-    @dp = project.datasources.create(datafile: File.open(dp_file), datafile_file_name: "datapackage.json")
-    @dp.save
-    @datapackage = JSON.parse(File.read(dp_file.tempfile.path))
+    @dp_file = fixture_file_upload(datapackage_file, "application/json")
+    @datapackage = Datapackage.new(project_id: project.id,
+                                   datapackage: File.open(@dp_file.path),
+                                   datapackage_file_name: "datapackage.json")
+    # project.datapackage.create(datapackage: File.open(dp_file), datapackage_file_name: "datapackage.json")
+    # @dp = project.datasources.create(datafile: File.open(dp_file), datafile_file_name: "datapackage.json")
+    @datapackage.save
+    # mimic what happens in controller
+    @feedback = { errors: [], warnings: [], notes: []}
+    json_dp = check_and_clean_datapackage(@dp_file)
+    save_datapackage(@datapackage)
+    extract_and_save_datapackage_resources(@datapackage,json_dp)
 
     @uploads = file_names
 
     @uploads.each do |upl|
       csv_file = fixture_file_upload("uploads/" + upl + ".csv", "text/plain")
 
-      ds = project.datasources.create(datafile: csv_file, datafile_file_name: upl + ".csv", datapackage_id: @dp.id)
+      ds = project.datasources.create(datafile: csv_file, datafile_file_name: upl + ".csv", datapackage_id: @datapackage.id)
       ds.save
       ds.db_table_name = Rails.configuration.x.db_table_prefix.downcase + ds.project_id.to_s + "_" + ds.id.to_s
       ds.save
-
-      ProcessCsvUpload.new(ds.id,@datapackage).perform
+      ProcessCsvUpload.new(ds.id).perform
 
     end
 
   end
+end
+
+class ActionController::TestCase
+  include Devise::TestHelpers
 end
