@@ -31,6 +31,7 @@ Rails.application.routes.draw do
       # Datapackage resources
       get "projects/:id/datapackage/resources" => "datapackage_resources#index"
       get "projects/:id/datapackage/resources/:table_ref" => "datapackage_resources#show"
+      # Datapackage resource fields
       get "projects/:id/datapackage/resources/:table_ref/fields" => "datapackage_resource_fields#index"
       # Data sources
       get "projects/:id/tables" => "datasources#index"

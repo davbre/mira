@@ -25,18 +25,18 @@ class ActiveSupport::TestCase
   end
 
 
-  def upload_to_project(project,file_names)
+  def upload_to_project(project,file_names,datapackage_file = "uploads/datapackage.json")
     Delayed::Worker.delay_jobs = false # turn off queuing
-    dp_file = fixture_file_upload("uploads/datapackage.json", "application/json")
+    @dp_file = fixture_file_upload(datapackage_file, "application/json")
     @datapackage = Datapackage.new(project_id: project.id,
-                                   datapackage: File.open(dp_file.path),
+                                   datapackage: File.open(@dp_file.path),
                                    datapackage_file_name: "datapackage.json")
     # project.datapackage.create(datapackage: File.open(dp_file), datapackage_file_name: "datapackage.json")
     # @dp = project.datasources.create(datafile: File.open(dp_file), datafile_file_name: "datapackage.json")
     @datapackage.save
     # mimic what happens in controller
     @feedback = { errors: [], warnings: [], notes: []}
-    json_dp = check_and_clean_datapackage(dp_file)
+    json_dp = check_and_clean_datapackage(@dp_file)
     save_datapackage(@datapackage)
     extract_and_save_datapackage_resources(@datapackage,json_dp)
 

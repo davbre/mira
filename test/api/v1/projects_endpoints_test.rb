@@ -1,8 +1,9 @@
 require 'test_helper'
 
-class Api::V1::ProjectsControllerTest < ActionController::TestCase
+class Api::V1::ProjectsEndpointsTest < ActionController::TestCase
 
   setup do
+    @controller = Api::V1::ProjectsController.new # See http://stackoverflow.com/a/7743176
     sign_in users(:one)
     # @project = projects(:one)
     @user = users(:one)

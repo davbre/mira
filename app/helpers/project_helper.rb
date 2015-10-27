@@ -18,7 +18,20 @@ module ProjectHelper
       schema_not_array: "Resource schema 'fields' must be an Array.",
       field_not_name_and_type: "Each resource schema field must contain 'name' and 'type' keys.",
       field_invalid_name: "Field name is not valid.",
-      field_invalid_type: "Field type is not valid."
+      field_invalid_type: "Field type is not valid.",
+      delimiter_too_long: "Delimiter character must be a single character.",
+      quote_char_too_long: "Quote character must be a single character."
+    }
+  end
+
+  def datasource_errors
+    @datasource_errors = {
+      no_upload: "You must upload one or more csv files.",
+      no_datapackage: "This project has no associated datapackage.",
+      missing_resource_metadata: "This project's datapackage has no resource metadata.",
+      non_csv: "Only csv files can be uploaded.",
+      no_resource_metadata: "This project's datapackage has no metadata for uploaded file.",
+      field_missing_metadata: "This project's datapackage has metadata for the uploaded file but none for its fields."
     }
   end
 
@@ -112,7 +125,7 @@ module ProjectHelper
       if res.has_key? "dialect" and res["dialect"].has_key? "delimiter"
         dlm_len = res["dialect"]["delimiter"].length
         if dlm_len > 1
-          @feedback[:errors] << "Delimiter character must be a single character."
+          @feedback[:errors] << datapackage_errors[:delimiter_too_long]
         elsif dlm_len != 0
           delimiter = res["dialect"]["delimiter"]
         end
@@ -125,7 +138,7 @@ module ProjectHelper
       if res.has_key? "dialect" and res["dialect"].has_key? "quote"
         qchar_len = res["dialect"]["quote"].length
         if qchar_len > 1
-          @feedback[:errors] << "Quote character must be a single character."
+          @feedback[:errors] << datapackage_errors[:quote_char_too_long]
         elsif qchar_len != 0
           qchar = res["dialect"]["quote"]
         end
@@ -161,24 +174,28 @@ module ProjectHelper
 
   def check_datasources
     if @datapackage.nil?
-      @feedback[:errors] << "This project has no associated datapackage."
+      @feedback[:errors] << datasource_errors[:no_datapackage]
     elsif @csv_uploads.nil? || @csv_uploads.empty?
-      @feedback[:errors] << "You must upload one or more csv files."
+      @feedback[:errors] << datasource_errors[:no_upload]
     elsif @datapackage.datapackage_resources.nil?
-      @feedback[:errors] << "This project's datapackage has no resource metadata."
+      @feedback[:errors] << datasource_errors[:missing_resource_metadata]
     else
       datasource_filenames = @csv_uploads.map { |u| u.original_filename }
       datapackage_filenames = @datapackage.datapackage_resources.map { |ds| ds.path }
       @csv_uploads.each do |csv|
         if csv.original_filename !~ /\.csv/i
-          @feedback[:errors] << "Only csv files should be uploaded. You uploaded " + csv.original_filename + "."
+          @feedback[:errors] << datasource_errors[:non_csv]
+          @feedback[:errors] << "Upload: " + csv.original_filename + "."
         elsif datapackage_filenames.exclude? csv.original_filename
-          @feedback[:errors] << "This project's datapackage has no metadata for " + csv.original_filename + "."
+          @feedback[:errors] << datasource_errors[:no_resource_metadata]
+          @feedback[:errors] << "Upload: " + csv.original_filename + "."
         else
           dp_res = @datapackage.datapackage_resources.where(path: csv.original_filename).first
           dp_res_fields = dp_res.datapackage_resource_fields
           if dp_res_fields.empty?
-            @feedback[:errors] << "This project's datapackage has metadata for " + csv.original_filename + " but not for its fields!" # shouldn't reach here (bug otherwise)
+            # shouldn't ever reach here...but just in case
+            @feedback[:errors] << datasource_errors[:field_missing_metadata]
+            @feedback[:errors] << "Upload: " + csv.original_filename
           else
             # At this point we know we have metadata for all uploaded files (via
             # the processing of the uploaded datapackage.json file).

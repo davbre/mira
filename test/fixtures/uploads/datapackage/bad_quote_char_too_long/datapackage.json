@@ -6,14 +6,15 @@
       "path": "upload1.csv",
       "format": "csv",
       "dialect": {
-        "delimiter": ","
+        "delimiter": ",",
+        "quote": "''",
       },
       "mediatype": "text/csv",
       "schema": {
         "fields": [
           {
-            "nombre": "studyid",
-            "typo": "string"
+            "name": "studyid",
+            "type": "string"
           },
           {
             "name": "usubjid",

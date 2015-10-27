@@ -152,6 +152,7 @@ class ProjectsController < ApplicationController
   end
 
 
+
   def api_detail
     @project = Project.find(params[:id])
     @datasources = @project.datasources.where.not(db_table_name: nil).order(:table_ref)

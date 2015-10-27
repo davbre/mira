@@ -196,4 +196,16 @@ class ProjectsControllerUploadDatapackageTest < ActionController::TestCase
     assert_equal before_dp_res_field_count + new_field_count, DatapackageResourceField.count
   end
 
+  test "should detect a delimiter of more than a single character" do
+    long_dlm_dp = fixture_file_upload("uploads/datapackage/bad_delimiter_too_long/datapackage.json", "application/json")
+    post :upload_datapackage, id: @project.id, :datapackage => long_dlm_dp
+    expected_error = assigns["project"].errors.messages[:datapackage].flatten.include? datapackage_errors[:delimiter_too_long]
+  end
+
+  test "should detect a quote character of more than a single character" do
+    long_quote_dp = fixture_file_upload("uploads/datapackage/bad_quote_char_too_long/datapackage.json", "application/json")
+    post :upload_datapackage, id: @project.id, :datapackage => long_quote_dp
+    expected_error = assigns["project"].errors.messages[:datapackage].flatten.include? datapackage_errors[:quote_char_too_long]
+  end
+
 end
