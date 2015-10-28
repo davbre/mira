@@ -18,7 +18,7 @@ class ProjectsController < ApplicationController
   end
 
   def show
-  	@project = Project.find(params[:id])
+    @project = Project.find(params[:id])
     @datasources = @project.datasources
     @datapackage = @project.datapackage
     @datapackage_resources = @datapackage.present? ?  @datapackage.datapackage_resources : nil
@@ -31,20 +31,20 @@ class ProjectsController < ApplicationController
   end
 
   def new
-  	@project = Project.new
+    @project = Project.new
   end
 
   def create
-  	@project = current_user.projects.build(project_params)
-  	if @project.save
+    @project = current_user.projects.build(project_params)
+    if @project.save
       flash[:success] = "New project created. Now upload a datapackage.json file."
       Dir.mkdir(@project.job_log_path) unless File.directory?(@project.job_log_path)
       Dir.mkdir(@project.upload_path) unless File.directory?(@project.upload_path)
       # same as: redirect_to project_url(@project)
       redirect_to @project
-  	else
-  	  render 'new'
-  	end
+    else
+      render 'new'
+    end
   end
 
 
@@ -54,13 +54,13 @@ class ProjectsController < ApplicationController
 
 
   def update
-  	@project = Project.find(params[:id])
-  	if @project.update_attributes(project_params)
-  	  flash[:success] = "Project updated"
-  	  redirect_to @project
-  	else
-  	  render 'edit'
-  	end
+    @project = Project.find(params[:id])
+    if @project.update_attributes(project_params)
+      flash[:success] = "Project updated"
+      redirect_to @project
+    else
+      render 'edit'
+    end
   end
 
 

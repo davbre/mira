@@ -3,13 +3,13 @@ require 'test_helper'
 class DatasourcesControllerTest < ActionController::TestCase
 
   setup do
+    Delayed::Worker.delay_jobs = false # turn off queuing
     sign_in users(:one)
     @user = users(:one)
     @project = @user.projects.build(name: "Upload test project", description: "Upload test project description")
     @project.save
     @upload_files = ["upload1","upload2"]
     upload_to_project(@project,@upload_files)
-    Delayed::Worker.delay_jobs = false # turn off queuing
   end
 
   # destroy
@@ -66,5 +66,12 @@ class DatasourcesControllerTest < ActionController::TestCase
     refute File.file?(@project.job_log_path + relevant_datasource.datafile_file_name + ".log")
   end
 
-
+  test "should unset datasource_id in datapackage_resource table" do
+    destroy_csv = @upload_files[0]
+    relevant_datasource = @project.datasources.where(table_ref: destroy_csv).first
+    # assert file exists, delete, then refute it exists
+    assert_equal 1, DatapackageResource.where(datasource_id: relevant_datasource.id).length
+    delete :destroy, project_id: @project, id: relevant_datasource.id
+    # refute File.file?(@project.job_log_path + relevant_datasource.datafile_file_name + ".log")
+  end
 end

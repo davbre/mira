@@ -28,18 +28,24 @@
         <table class="table">
           <tr>
             <th>Datasources listed <br />in datapackage.json</th>
-            <th>Status</th>
+            <th>Uploaded</th>
+            <th>Upload Log</th>
+            <th> </th>
           </tr>
           <% @datapackage.datapackage_resources.each do |res| %>
             <tr>
-              <td><%= res.path %></td>
-              <td>
-                <% if res.datasource_id.present? %>
-                  Yippee...something uploaded. Update this!
-                <% else %>
-                  Not uploaded yet
-                <% end %>
-              </td>
+              <% if res.datasource_id.present? %>
+                <td><%= link_to @datasources.find(res.datasource_id).datafile_file_name, @datasources.find(res.datasource_id).datafile.url %></td>
+                <td><%= @datasources.find(res.datasource_id).created_at.strftime("%FT%R") %></td>
+                <td><a href="/job_logs/project_<%= @datasources.find(res.datasource_id).project_id %>/<%= @datasources.find(res.datasource_id).datafile_file_name %>.log"><%= @datasources.find(res.datasource_id).datafile_file_name %>.log</a></td>
+                <td><%= link_to "delete", project_datasource_path(@datasources.find(res.datasource_id).project_id, @datasources.find(res.datasource_id).id), method: :delete,
+                                                data: { confirm: "You sure?" }, :class => "btn btn-xs btn-danger" %></td>
+              <% else %>
+                <td><%= res.path %></td>
+                <td>-- Not uploaded yet --</td>
+                <td> </td>
+                <td> </td>
+              <% end %>
             </tr>
             <% end %>
         </table>
@@ -50,42 +56,7 @@
       <% end %>
 
 
-      <br />
-      <% if @datasources.present? %>
-        <table class="table">
-          <tr>
-            <th>Data source</th>
-            <th>Created</th>
-            <% if user_signed_in? %>
-              <th>Process Log</th>
-            <% end %>
-          </tr>
 
-          <% @datasources.each do |ds| %>
-            <tr>
-              <td><%= link_to ds.datafile_file_name, ds.datafile.url %></td>
-              <th><%= ds.created_at.strftime("%FT%R") %></td>
-              <% if user_signed_in? %>
-                <td><a href="/job_logs/project_<%= ds.project_id %>/<%= ds.datafile_file_name %>.log"><%= ds.datafile_file_name %>.log</a></td>
-                <th><%= link_to "delete", project_datasource_path(ds.project_id, ds.id), method: :delete,
-                                data: { confirm: "You sure?" }, :class => "btn btn-xs btn-danger" %></th>
-              <% end %>
-            </tr>
-          <% end %>
-        </table>
-      <% end %>
-
-
-      <% if user_signed_in? %>
-        <% if @log_file_names.present? %>
-          <p>All log files</p>
-          <ul>
-            <% @log_file_names.each do |lf| %>
-              <li><a href="<%= root_url %>job_logs/project_<%= @project.id %>/<%= lf %>"><%= lf %></a>
-            <% end %>
-          </ul>
-        <% end %>
-      <% end %>
     </div>
   </div>
 </div>

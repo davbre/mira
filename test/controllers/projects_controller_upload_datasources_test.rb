@@ -60,5 +60,9 @@ class ProjectsControllerUploadDatasourceTest < ActionController::TestCase
     assert expected_error
   end
 
+  test "should set correct datasource_id in datapackage_resource table when same file uploaded to two projects" do
+    skip
+  end
+
 
 end

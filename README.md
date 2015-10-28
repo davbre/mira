@@ -82,7 +82,7 @@ Some examles of interacting with a Mira API:
     or
     [mira_sample_data.zip] (https://github.com/davbre/dummy-sdtm/blob/master/output/mira_sample_data/mira_sample_data.zip)
 
-9. Log in, create a new project, upload the sample csv files + datapackage.json file (from previous step)
+9. Log in, create a new project, first upload the datapackage.json file, then the sample csv files
 
 10. Navigate to the following address for the project's API details:
 

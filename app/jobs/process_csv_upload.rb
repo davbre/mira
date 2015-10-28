@@ -9,7 +9,8 @@ class ProcessCsvUpload
 
   def initialize(datasource_id)
     @ds = Datasource.find(datasource_id)
-    @datapackage_resource = DatapackageResource.where(table_ref: @ds.table_ref).first
+    @datapackage_resource = DatapackageResource.where(datapackage_id: @ds.datapackage_id,
+                                                      table_ref: @ds.table_ref).first
   end
 
   def job_logger

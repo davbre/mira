@@ -36,9 +36,19 @@ class Datasource < ActiveRecord::Base
 
 
   def delete_associated_artifacts
+    unset_dp_datasource_id(self.id)
     delete_db_table
     delete_log
     delete_upload
+  end
+
+  def unset_dp_datasource_id(ds_id)
+    dp_res = DatapackageResource.where(datasource_id: ds_id)
+    # should only be one
+    dp_res.each do |r|
+      r.datasource_id = nil
+      r.save
+    end
   end
 
   # delete_db_table called when destroying datasource

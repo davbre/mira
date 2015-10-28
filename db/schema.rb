@@ -46,7 +46,6 @@ ActiveRecord::Schema.define(version: 20151023084243) do
   create_table "datapackages", force: :cascade do |t|
     t.integer  "project_id"
     t.text     "public_url"
-    t.text     "description"
     t.datetime "created_at",               null: false
     t.datetime "updated_at",               null: false
     t.string   "datapackage_file_name"

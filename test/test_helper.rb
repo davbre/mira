@@ -49,7 +49,7 @@ class ActiveSupport::TestCase
       ds.save
       ds.db_table_name = Rails.configuration.x.db_table_prefix.downcase + ds.project_id.to_s + "_" + ds.id.to_s
       ds.save
-      ProcessCsvUpload.new(ds.id).perform
+      Delayed::Job.enqueue ProcessCsvUpload.new(ds.id)
 
     end
 
