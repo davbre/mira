@@ -144,7 +144,7 @@ class ProjectsController < ApplicationController
 
     if @feedback[:errors].any?
       @project.errors.add(:csv, @feedback[:errors])
-      render 'show'
+      redirect_to @project, :flash => { error: @project.errors }
     else
       # flash[:success] = "datapackage.json uploaded"
       redirect_to @project

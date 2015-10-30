@@ -34,51 +34,41 @@ class LoadTable
 
   def create_db_table
     # Create table with columns
-    begin
-      ActiveRecord::Base.connection.create_table @ds.db_table_name.to_sym do |t|
-        @column_metadata.each do |col|
-          # The following mimics what is seen in migrations, e.g.:
-          #   t.string :name
-          #   t.text   :description
-          # Cater for big integers
-          if DATAPACKAGE_TYPE_MAP[col.ftype] == "integer" && col.big_integer == true
-            t.send DATAPACKAGE_TYPE_MAP[col.ftype], col.name, :limit => 8
-          else
-            t.send DATAPACKAGE_TYPE_MAP[col.ftype], col.name
-          end
+    ActiveRecord::Base.connection.create_table @ds.db_table_name.to_sym do |t|
+      @column_metadata.each do |col|
+        # The following mimics what is seen in migrations, e.g.:
+        #   t.string :name
+        #   t.text   :description
+        # Cater for big integers
+        if DATAPACKAGE_TYPE_MAP[col.ftype] == "integer" && col.big_integer == true
+          t.send DATAPACKAGE_TYPE_MAP[col.ftype], col.name, :limit => 8
+        else
+          t.send DATAPACKAGE_TYPE_MAP[col.ftype], col.name
         end
       end
+    end
 
-      # Add an index for each column
-      @column_metadata.each do |col|
-        ActiveRecord::Base.connection.add_index @ds.db_table_name.to_sym, col.name
-      end
-    rescue StandardError => e
-      load_logger.error(e)
+    # Add an index for each column
+    @column_metadata.each do |col|
+      ActiveRecord::Base.connection.add_index @ds.db_table_name.to_sym, col.name
     end
   end
 
   def upload_to_db_table
 
-    begin
-      # columns in correct order
-      column_names = @column_metadata.sort{ |a,b| a.order <=> b.order }.map{ |c| c.name }
-      column_string = "\"#{column_names.join('","')}\""
-      csv_options = "DELIMITER '#{@table_metadata.delimiter}' CSV"
-      skip_header_line = @csv_file.gets
-      # https://github.com/theSteveMitchell/postgres_upsert
-      ActiveRecord::Base.connection.raw_connection.copy_data "COPY #{@ds.db_table_name} (#{column_string}) FROM STDIN #{csv_options} QUOTE '#{@table_metadata.quote_character}'" do
-        while line = @csv_file.gets do
-          next if line.strip.size == 0
-          ActiveRecord::Base.connection.raw_connection.put_copy_data line
-        end
+    # columns in correct order
+    column_names = @column_metadata.sort{ |a,b| a.order <=> b.order }.map{ |c| c.name }
+    column_string = "\"#{column_names.join('","')}\""
+    csv_options = "DELIMITER '#{@table_metadata.delimiter}' CSV"
+    skip_header_line = @csv_file.gets
+    # https://github.com/theSteveMitchell/postgres_upsert
+    ActiveRecord::Base.connection.raw_connection.copy_data "COPY #{@ds.db_table_name} (#{column_string}) FROM STDIN #{csv_options} QUOTE '#{@table_metadata.quote_character}'" do
+      while line = @csv_file.gets do
+        next if line.strip.size == 0
+        ActiveRecord::Base.connection.raw_connection.put_copy_data line
       end
-    rescue StandardError => e
-      load_logger.error(e)
-      raise e
     end
 
   end
-
 
 end

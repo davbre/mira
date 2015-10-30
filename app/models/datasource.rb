@@ -15,6 +15,8 @@ class Datasource < ActiveRecord::Base
 
   process_in_background :datafile # delayed_paperclip
 
+  enum import_status: [ :ok, :note, :warning, :error ]
+
   before_create :set_table_ref
 
   # Some helper methods, useful for linking to log file

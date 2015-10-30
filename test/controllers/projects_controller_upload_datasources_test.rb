@@ -10,7 +10,7 @@ class ProjectsControllerUploadDatasourceTest < ActionController::TestCase
     @user = users(:one)
     @project = @user.projects.build(name: "Upload test project", description: "Upload test project description")
     @project.save
-    upload_to_project(@project, [], "uploads/datapackage/good/datapackage.json") # just upload datapackage file
+    upload_to_project(@project, [], "uploads/datapackage.json") # just upload datapackage file
   end
 
   def teardown
@@ -58,6 +58,33 @@ class ProjectsControllerUploadDatasourceTest < ActionController::TestCase
     post :upload_datasources, id: @project.id, :datafiles => [good_upload]
     expected_error = assigns["project"].errors.messages[:csv].flatten.include? datasource_errors[:field_missing_metadata]
     assert expected_error
+  end
+
+  test "should detect when same file uploaded again" do
+    good_upload = fixture_file_upload("uploads/upload1.csv")
+    post :upload_datasources, id: @project.id, :datafiles => [good_upload]
+    post :upload_datasources, id: @project.id, :datafiles => [good_upload]
+    expected_error = assigns["project"].errors.messages[:csv].flatten.include? datasource_errors[:already_uploaded]
+    assert expected_error
+  end
+
+  test "should set import status to error when bad file uploaded" do
+    # Wasn't able to complete this test. When the import fails, it is in the middle of a database transaction.
+    # Not sure what's going on but it's related to this question: http://stackoverflow.com/q/21138207/1002140
+    # Can't catch the error I want to because another error crops up further on and it is due to trying to
+    # execute another query on the database:
+    # ActiveRecord::StatementInvalid: PG::InFailedSqlTransaction: ERROR:  current transaction is aborted, commands ignored until end of transaction block
+    skip
+    upl = "bad_upload.csv"
+    bad_upload = fixture_file_upload("uploads/" + upl)
+    assert_raises ActiveRecord::StatementInvalid do
+      post :upload_datasources, id: @project.id, :datafiles => [bad_upload]
+    end
+    assert_equal "error",bad_datasource.import_status
+  end
+
+  test "should upload when all ok" do
+    skip
   end
 
   test "should set correct datasource_id in datapackage_resource table when same file uploaded to two projects" do

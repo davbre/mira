@@ -101,7 +101,7 @@ class Api::V1::DataControllerTest < ActionController::TestCase
       assert column_counts.key? "id"
       assert_equal 1, column_counts.values.uniq.length  # count the keys across "rows". At the end of count, should have same number for each column
       assert_equal default_page_size, column_counts.values.uniq.first
-      assert_equal csv_header_columns, column_counts.keys - ["id"]
+      assert_equal csv_header_columns.sort, (column_counts.keys - ["id"]).sort
     end
   end
 

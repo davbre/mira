@@ -95,7 +95,7 @@ class Api::V1::DatasourcesEndpointsTest < ActionController::TestCase
       csv_file = fixture_file_upload("uploads/" + upl + ".csv", "text/plain")
       csv_header_columns = CSV.open(csv_file, 'r') { |csv| csv.first } # http://stackoverflow.com/a/18113090/1002140
       json_columns = json_response.except("id").keys # remove id before assert equal
-      assert_equal csv_header_columns, json_columns
+      assert_equal csv_header_columns.sort, json_columns.sort
     end
   end
 

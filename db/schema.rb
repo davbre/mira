@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151023084243) do
+ActiveRecord::Schema.define(version: 20151030073834) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -59,8 +59,8 @@ ActiveRecord::Schema.define(version: 20151023084243) do
   create_table "datasources", force: :cascade do |t|
     t.string   "description"
     t.integer  "project_id"
-    t.datetime "created_at",                            null: false
-    t.datetime "updated_at",                            null: false
+    t.datetime "created_at",            null: false
+    t.datetime "updated_at",            null: false
     t.string   "datafile_file_name"
     t.string   "datafile_content_type"
     t.integer  "datafile_file_size"
@@ -68,8 +68,8 @@ ActiveRecord::Schema.define(version: 20151023084243) do
     t.string   "db_table_name"
     t.text     "table_ref"
     t.text     "public_url"
-    t.boolean  "archived",              default: false
     t.integer  "datapackage_id"
+    t.integer  "import_status"
   end
 
   add_index "datasources", ["db_table_name"], name: "index_datasources_on_db_table_name", using: :btree

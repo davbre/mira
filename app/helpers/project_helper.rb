@@ -30,6 +30,7 @@ module ProjectHelper
       no_datapackage: "This project has no associated datapackage.",
       missing_resource_metadata: "This project's datapackage has no resource metadata.",
       non_csv: "Only csv files can be uploaded.",
+      already_uploaded: "A file of this name has been uploaded already",
       no_resource_metadata: "This project's datapackage has no metadata for uploaded file.",
       field_missing_metadata: "This project's datapackage has metadata for the uploaded file but none for its fields."
     }
@@ -182,12 +183,16 @@ module ProjectHelper
     else
       datasource_filenames = @csv_uploads.map { |u| u.original_filename }
       datapackage_filenames = @datapackage.datapackage_resources.map { |ds| ds.path }
+      existing_uploads = @project.datasources.map { |ds| ds.datafile_file_name }
       @csv_uploads.each do |csv|
         if csv.original_filename !~ /\.csv/i
           @feedback[:errors] << datasource_errors[:non_csv]
           @feedback[:errors] << "Upload: " + csv.original_filename + "."
         elsif datapackage_filenames.exclude? csv.original_filename
           @feedback[:errors] << datasource_errors[:no_resource_metadata]
+          @feedback[:errors] << "Upload: " + csv.original_filename + "."
+        elsif existing_uploads.include? csv.original_filename
+          @feedback[:errors] << datasource_errors[:already_uploaded]
           @feedback[:errors] << "Upload: " + csv.original_filename + "."
         else
           dp_res = @datapackage.datapackage_resources.where(path: csv.original_filename).first

@@ -201,6 +201,26 @@
           }
         ]
       }
+    },
+    {
+      "path": "bad_upload.csv",
+      "format": "csv",
+      "dialect": {
+        "delimiter": ","
+      },
+      "mediatype": "text/csv",
+      "schema": {
+        "fields": [
+          {
+            "name": "a_string",
+            "type": "string"
+          },
+          {
+            "name": "an_integer",
+            "type": "integer"
+          }
+        ]
+      }
     }
   ]
 }
