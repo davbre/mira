@@ -14,9 +14,9 @@ namespace :test do
     t.pattern = "test/models/*_test.rb"
   end
 
-  Rails::TestTask.new("all") do
-    Rake::Task["test:api"].invoke
-    Rake::Task["test:controllers"].invoke
-    Rake::Task["test:models"].invoke
-  end
+  # Rails::TestTask.new("all") do
+    # Rake::Task["test:api"].invoke
+    # Rake::Task["test:controllers"].invoke
+    # Rake::Task["test:models"].invoke
+  # end
 end
