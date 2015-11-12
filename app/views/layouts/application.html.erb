@@ -18,12 +18,12 @@
       </ul>
 
       <% flash.each do |message_type, message| %>
-        <div class="alert alert-<%= message_type %>"><%= message %></div>
+        <div class="alert <%= bootstrap_class_for(message_type) %> fade in"><%= message %></div>
       <% end %>
-      
+
       <%= yield %>
     </div>
     <%= render 'layouts/footer' %>
-    <%= debug(params) if Rails.env.development? %>    
+    <%= debug(params) if Rails.env.development? %>
   </body>
 </html>

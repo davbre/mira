@@ -29,22 +29,27 @@
           <tr>
             <th>Datasources listed <br />in datapackage.json</th>
             <th>Upload<br />Datetime</th>
-            <th>Upload Log</th>
-            <th>Import<br />Status</th>
-            <th> </th>
+            <% if user_signed_in? %>
+              <th>Upload Log</th>
+              <th>Import<br />Status</th>
+              <th> </th>
+            <% end %>
           </tr>
           <% @datapackage.datapackage_resources.each do |res| %>
             <tr>
               <% if res.datasource_id.present? %>
                 <td><%= link_to @datasources.find(res.datasource_id).datafile_file_name, @datasources.find(res.datasource_id).datafile.url %></td>
                 <td><%= @datasources.find(res.datasource_id).created_at.strftime("%FT%R") %></td>
-                <td><a href="/job_logs/project_<%= @datasources.find(res.datasource_id).project_id %>/<%= @datasources.find(res.datasource_id).datafile_file_name %>.log"><%= @datasources.find(res.datasource_id).datafile_file_name %>.log</a></td>
-                <td><%= @datasources.find(res.datasource_id).import_status %></td>
-                <td><%= link_to "delete", project_datasource_path(@datasources.find(res.datasource_id).project_id, @datasources.find(res.datasource_id).id), method: :delete,
-                                                data: { confirm: "You sure?" }, :class => "btn btn-xs btn-danger" %></td>
+                <% if user_signed_in? %>
+                  <td><a href="/job_logs/project_<%= @datasources.find(res.datasource_id).project_id %>/<%= @datasources.find(res.datasource_id).datafile_file_name %>.log"><%= @datasources.find(res.datasource_id).datafile_file_name %>.log</a></td>
+                  <td><%= @datasources.find(res.datasource_id).import_status %></td>
+                  <td><%= link_to "delete", project_datasource_path(@datasources.find(res.datasource_id).project_id, @datasources.find(res.datasource_id).id), method: :delete,
+                                                  data: { confirm: "You sure?" }, :class => "btn btn-xs btn-danger" %></td>
+              <% end %>
               <% else %>
                 <td><%= res.path %></td>
                 <td>-- Not uploaded yet --</td>
+                <td> </td>
                 <td> </td>
                 <td> </td>
               <% end %>

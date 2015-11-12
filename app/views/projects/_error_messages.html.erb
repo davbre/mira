@@ -1,7 +1,7 @@
 <% if @project.errors.any? %>
   <div id="error_explanation">
     <div class="alert alert-danger">
-      There are <%= pluralize(@project.errors.count, "error") %>.
+      There is <%= pluralize(@project.errors.count, "error") %>.
     </div>
     <ul>
     <% @project.errors.full_messages.each do |msg| %>

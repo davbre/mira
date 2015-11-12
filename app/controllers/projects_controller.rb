@@ -18,6 +18,7 @@ class ProjectsController < ApplicationController
   end
 
   def show
+    # binding.pry
     @project = Project.find(params[:id])
     @datasources = @project.datasources
     @datapackage = @project.datapackage
@@ -125,7 +126,9 @@ class ProjectsController < ApplicationController
 
   def upload_datasources
     @project = Project.find(params[:id])
+    @datasources = @project.datasources # needed in case we render 'show' (when error)
     @datapackage = @project.datapackage
+    @datapackage_resources = @datapackage.present? ?  @datapackage.datapackage_resources : nil
     @feedback = { errors: [], warnings: [], notes: [] }
     @csv_uploads = params[:datafiles]
     @log_file_name = nil
@@ -144,9 +147,9 @@ class ProjectsController < ApplicationController
 
     if @feedback[:errors].any?
       @project.errors.add(:csv, @feedback[:errors])
-      redirect_to @project, :flash => { error: @project.errors }
+      render 'show'
     else
-      # flash[:success] = "datapackage.json uploaded"
+      flash[:success] = "Files uploaded and are being processed. Refresh page for progress..."
       redirect_to @project
     end
   end
