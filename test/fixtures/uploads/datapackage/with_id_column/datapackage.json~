@@ -1,0 +1,263 @@
+{
+  "name": "--NAME--",
+  "title": "--TITLE--",
+  "resources": [
+    {
+      "path": "cmoa.csv",
+      "format": "csv",
+      "dialect": {
+        "delimiter": ",",
+        "quote": "\""
+      },
+      "mediatype": "text/csv",
+      "schema": {
+        "fields": [
+          {
+            "name": "title",
+            "type": "string"
+          },
+          {
+            "name": "creation_date",
+            "type": "string"
+          },
+          {
+            "name": "creation_date_earliest",
+            "type": "string"
+          },
+          {
+            "name": "creation_date_latest",
+            "type": "string"
+          },
+          {
+            "name": "medium",
+            "type": "string"
+          },
+          {
+            "name": "accession_number",
+            "type": "string"
+          },
+          {
+            "name": "id",
+            "type": "string"
+          },
+          {
+            "name": "credit_line",
+            "type": "string"
+          },
+          {
+            "name": "date_acquired",
+            "type": "string"
+          },
+          {
+            "name": "department",
+            "type": "string"
+          },
+          {
+            "name": "physical_location",
+            "type": "string"
+          },
+          {
+            "name": "item_width",
+            "type": "string"
+          },
+          {
+            "name": "item_height",
+            "type": "string"
+          },
+          {
+            "name": "item_depth",
+            "type": "string"
+          },
+          {
+            "name": "item_diameter",
+            "type": "string"
+          },
+          {
+            "name": "web_url",
+            "type": "string"
+          },
+          {
+            "name": "provenance_text",
+            "type": "string"
+          },
+          {
+            "name": "classification",
+            "type": "string"
+          },
+          {
+            "name": "image_url",
+            "type": "string"
+          },
+          {
+            "name": "artist_id",
+            "type": "string"
+          },
+          {
+            "name": "party_type",
+            "type": "string"
+          },
+          {
+            "name": "full_name",
+            "type": "string"
+          },
+          {
+            "name": "cited_name",
+            "type": "string"
+          },
+          {
+            "name": "role",
+            "type": "string"
+          },
+          {
+            "name": "nationality",
+            "type": "string"
+          },
+          {
+            "name": "birth_date",
+            "type": "string"
+          },
+          {
+            "name": "death_date",
+            "type": "string"
+          },
+          {
+            "name": "birth_place",
+            "type": "string"
+          },
+          {
+            "name": "death_place",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
+      "path": "teenie.csv",
+      "format": "csv",
+      "dialect": {
+        "delimiter": ","
+      },
+      "mediatype": "text/csv",
+      "schema": {
+        "fields": [
+          {
+            "name": "title",
+            "type": "string"
+          },
+          {
+            "name": "creation_date",
+            "type": "string"
+          },
+          {
+            "name": "creation_date_earliest",
+            "type": "date"
+          },
+          {
+            "name": "creation_date_latest",
+            "type": "string"
+          },
+          {
+            "name": "medium",
+            "type": "string"
+          },
+          {
+            "name": "accession_number",
+            "type": "string"
+          },
+          {
+            "name": "id",
+            "type": "string"
+          },
+          {
+            "name": "credit_line",
+            "type": "string"
+          },
+          {
+            "name": "date_acquired",
+            "type": "date"
+          },
+          {
+            "name": "department",
+            "type": "string"
+          },
+          {
+            "name": "physical_location",
+            "type": "string"
+          },
+          {
+            "name": "item_width",
+            "type": "number"
+          },
+          {
+            "name": "item_height",
+            "type": "number"
+          },
+          {
+            "name": "item_depth",
+            "type": "number"
+          },
+          {
+            "name": "item_diameter",
+            "type": "number"
+          },
+          {
+            "name": "web_url",
+            "type": "string"
+          },
+          {
+            "name": "provenance_text",
+            "type": "string"
+          },
+          {
+            "name": "classification",
+            "type": "string"
+          },
+          {
+            "name": "image_url",
+            "type": "string"
+          },
+          {
+            "name": "artist_id",
+            "type": "string"
+          },
+          {
+            "name": "party_type",
+            "type": "string"
+          },
+          {
+            "name": "full_name",
+            "type": "string"
+          },
+          {
+            "name": "cited_name",
+            "type": "string"
+          },
+          {
+            "name": "role",
+            "type": "string"
+          },
+          {
+            "name": "nationality",
+            "type": "string"
+          },
+          {
+            "name": "birth_date",
+            "type": "string"
+          },
+          {
+            "name": "death_date",
+            "type": "string"
+          },
+          {
+            "name": "birth_place",
+            "type": "string"
+          },
+          {
+            "name": "death_place",
+            "type": "string"
+          }
+        ]
+      }
+    }
+  ]
+}

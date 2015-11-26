@@ -4,13 +4,13 @@
   def load_dynamic_AR_class_with_scopes(table)
 
     ds = Datasource.where(:db_table_name => "#{table}").first
-    
+
     if ds.nil?
       return nil
     else
       proj_name = Project.find(ds.project_id).name
     end
-    
+
     # logger.info("Project #{proj_name}: creating ActiveRecord class " + table +
     #      " which maps to " + ds.table_ref)
 
@@ -43,7 +43,7 @@
           eval(lt_scope)
           eval(le_scope)
           eval(gt_scope)
-          eval(ge_scope)          
+          eval(ge_scope)
         end
 
         # if a text column then add a "contains" scope
@@ -76,6 +76,6 @@
       end
 
     end
-    
+
     Object.const_set "#{table}".capitalize, new_klass
   end

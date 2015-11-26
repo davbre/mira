@@ -83,6 +83,11 @@ class ProjectsControllerUploadDatasourceTest < ActionController::TestCase
     assert_equal "error",bad_datasource.import_status
   end
 
+  test "should be able to import csv file with ID column" do
+    # see with_id_column fixture.
+    skip
+  end
+
   test "should upload when all ok" do
     skip
   end

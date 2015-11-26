@@ -112,7 +112,7 @@ class Api::V1::DataControllerTest < ActionController::TestCase
       csv_table = CSV.read(csv_file, headers: true) # read in whole file, returns a CSV::Table object
       get :index, :id => @project.id, :table_ref => upl
       json_response = JSON.parse(response.body)
-      # mimix the json response using csv file, then compare the two
+      # mimics the json response using csv file, then compare the two
       csv_mimic_json = { "data" => []}
       csv_table.each_with_index do |row,i|
         csv_mimic_json["data"] << csv_row_to_json(upl  + ".csv",i+1,row)

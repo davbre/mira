@@ -34,7 +34,7 @@ class LoadTable
 
   def create_db_table
     # Create table with columns
-    ActiveRecord::Base.connection.create_table @ds.db_table_name.to_sym do |t|
+    ActiveRecord::Base.connection.create_table @ds.db_table_name.to_sym, id: false do |t|
       @column_metadata.each do |col|
         # The following mimics what is seen in migrations, e.g.:
         #   t.string :name
