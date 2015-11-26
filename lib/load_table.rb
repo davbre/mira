@@ -34,7 +34,12 @@ class LoadTable
 
   def create_db_table
     # Create table with columns
-    ActiveRecord::Base.connection.create_table @ds.db_table_name.to_sym, id: false do |t|
+    # If "id" already exists in the csv file, then we don't want ActiveRecord to create this variable
+    # (which it does by default)
+    create_table_options = @column_metadata.map { |a| a.name }.exclude?("id") ? {} : {id: false}
+    load_logger.info("'id' column already exists so ActiveRecord's default 'id' column will not be added to the table") unless create_table_options == { id: false }
+
+    ActiveRecord::Base.connection.create_table(@ds.db_table_name.to_sym, create_table_options) do |t|
       @column_metadata.each do |col|
         # The following mimics what is seen in migrations, e.g.:
         #   t.string :name
