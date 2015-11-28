@@ -112,6 +112,11 @@ class Api::V1::DataControllerTest < ActionController::TestCase
       csv_table = CSV.read(csv_file, headers: true) # read in whole file, returns a CSV::Table object
       get :index, :id => @project.id, :table_ref => upl
       json_response = JSON.parse(response.body)
+      # binding.pry
+      # replace any missing values with nil (this is just reversing what happens when data is uploaded, i.e. missing values are forced to NULL)
+      # json_response["data"].each do |jrow|
+      #   jrow.update(jrow){|key,v1| (v1 == "") ? nil : v1 }
+      # end
       # mimics the json response using csv file, then compare the two
       csv_mimic_json = { "data" => []}
       csv_table.each_with_index do |row,i|

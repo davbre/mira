@@ -25,6 +25,17 @@
       #   "This error is raised because the column 'type' is reserved for storing the class in case of inheritance."
       self.inheritance_column = nil
 
+      # http://stackoverflow.com/a/7202438/1002140
+      # added before_save callback as sometimes empty strings were being saved as ""
+      # and other times as NULL, depending on the quoting character
+      before_save :normalize_blank_values
+
+      def normalize_blank_values
+        attributes.each do |column, value|
+          self[column].present? || self[column] = nil
+        end
+      end
+
       self.column_names.each do |sv|
 
 
