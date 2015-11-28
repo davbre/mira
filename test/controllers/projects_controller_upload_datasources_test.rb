@@ -96,5 +96,12 @@ class ProjectsControllerUploadDatasourceTest < ActionController::TestCase
     skip
   end
 
+  test "should index column by default" do
+    skip
+  end
+
+  test "should not index where field has mira['index']: false" do
+    skip
+  end
 
 end

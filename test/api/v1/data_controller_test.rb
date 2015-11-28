@@ -112,11 +112,10 @@ class Api::V1::DataControllerTest < ActionController::TestCase
       csv_table = CSV.read(csv_file, headers: true) # read in whole file, returns a CSV::Table object
       get :index, :id => @project.id, :table_ref => upl
       json_response = JSON.parse(response.body)
-      # binding.pry
-      # replace any missing values with nil (this is just reversing what happens when data is uploaded, i.e. missing values are forced to NULL)
-      # json_response["data"].each do |jrow|
-      #   jrow.update(jrow){|key,v1| (v1 == "") ? nil : v1 }
-      # end
+      # replace any missing values with nil. This is a hack but is needed because values can be either missing or null
+      json_response["data"].each do |jrow|
+        jrow.update(jrow){|key,v1| (v1 == "") ? nil : v1 }
+      end
       # mimics the json response using csv file, then compare the two
       csv_mimic_json = { "data" => []}
       csv_table.each_with_index do |row,i|
@@ -147,6 +146,9 @@ class Api::V1::DataControllerTest < ActionController::TestCase
         get :index, :id => @project.id, :table_ref => upl, (col + "_eq").to_sym => random_csv_row_json[col]
         json_response = JSON.parse(response.body)
         json_response_row = json_response["data"].detect { |e| e["id"] == random_row_num + 1 }
+        # replace any missing values with nil. This is a hack but is needed because values can be either missing or null
+        json_response_row.update(json_response_row){|key,v1| (v1 == "") ? nil : v1 }
+
         assert_equal random_csv_row_json, json_response_row
 
         # "_ne" assert response does not have row
@@ -168,7 +170,7 @@ class Api::V1::DataControllerTest < ActionController::TestCase
       csv_table.headers.each_with_index do |col,i|
         # '_blank' assert response has same number of rows with blank column as does the csv (not checking data)
         # re-read csv file here as was unable to clone and subset csv_table
-        blank_csv = CSV.read(csv_file, headers: true).delete_if { |r| r[col] != nil }
+        blank_csv = CSV.read(csv_file, headers: true).delete_if { |r| r[col] != nil && r[col] != ""}
         get :index, :id => @project.id, :table_ref => upl, (col + "_blank").to_sym => nil # "_blank" scopes have no value, so use nil here
         json_response = JSON.parse(response.body)
         assert_equal json_response["data"].length, blank_csv.count
@@ -177,7 +179,7 @@ class Api::V1::DataControllerTest < ActionController::TestCase
       csv_table.headers.each_with_index do |col,i|
         # '_not_blank' assert response has same number of rows with non-blank column as does the csv (not checking data)
         # re-read csv file here as was unable to clone and subset csv_table
-        blank_csv = CSV.read(csv_file, headers: true).delete_if { |r| r[col] == nil }
+        blank_csv = CSV.read(csv_file, headers: true).delete_if { |r| r[col] == nil || r[col] == '' }
         get :index, :id => @project.id, :table_ref => upl, (col + "_not_blank").to_sym => nil, :per_page => 100
         json_response = JSON.parse(response.body)
         assert_equal json_response["data"].length, blank_csv.count

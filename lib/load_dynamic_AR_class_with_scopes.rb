@@ -25,19 +25,7 @@
       #   "This error is raised because the column 'type' is reserved for storing the class in case of inheritance."
       self.inheritance_column = nil
 
-      # http://stackoverflow.com/a/7202438/1002140
-      # added before_save callback as sometimes empty strings were being saved as ""
-      # and other times as NULL, depending on the quoting character
-      before_save :normalize_blank_values
-
-      def normalize_blank_values
-        attributes.each do |column, value|
-          self[column].present? || self[column] = nil
-        end
-      end
-
       self.column_names.each do |sv|
-
 
         # !! NB: when a new scope is added, update data_controller, specifically the datatables section!!
         # using "_eq" suffix as without it we run the risk of conflicting with existing methods, e.g. "name", "time" etc.
@@ -65,8 +53,8 @@
           not_begins_scope = "scope :#{sv}_not_begins, -> (#{sv}) { where(\"#{sv} NOT like ?\", \"\#{#{sv}}%\") }"
           ends_scope = "scope :#{sv}_ends, -> (#{sv}) { where(\"#{sv} like ?\", \"%\#{#{sv}}\") }"
           not_ends_scope = "scope :#{sv}_not_ends, -> (#{sv}) { where(\"#{sv} NOT like ?\", \"%\#{#{sv}}\") }"
-          text_blank_scope = "scope :#{sv}_blank, -> (#{sv}) { where #{sv}: nil }"
-          text_not_blank_scope = "scope :#{sv}_not_blank, -> (#{sv}) { where.not #{sv}: nil }"
+          text_blank_scope = "scope :#{sv}_blank, -> (#{sv}) { where(\"#{sv} = '' OR #{sv} IS NULL\") }"
+          text_not_blank_scope = "scope :#{sv}_not_blank, -> (#{sv}) { where(\"#{sv} != '' AND #{sv} IS NOT NULL\") }"
           eval(contains_scope)
           eval(not_contains_scope)
           eval(begins_scope)
@@ -89,4 +77,5 @@
     end
 
     Object.const_set "#{table}".capitalize, new_klass
+
   end
