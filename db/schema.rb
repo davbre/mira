@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151030073834) do
+ActiveRecord::Schema.define(version: 20151128084949) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -21,9 +21,10 @@ ActiveRecord::Schema.define(version: 20151030073834) do
     t.text     "name"
     t.text     "ftype"
     t.integer  "order"
-    t.datetime "created_at",              null: false
-    t.datetime "updated_at",              null: false
+    t.datetime "created_at",                             null: false
+    t.datetime "updated_at",                             null: false
     t.boolean  "big_integer"
+    t.boolean  "add_index",               default: true
   end
 
   add_index "datapackage_resource_fields", ["datapackage_resource_id"], name: "index_datapackage_resource_fields_on_datapackage_resource_id", using: :btree

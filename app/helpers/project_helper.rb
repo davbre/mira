@@ -168,6 +168,15 @@ module ProjectHelper
         field_max = custom_is_string_int?(field["constraints"]["maximum"]) ? field["constraints"]["maximum"].to_i : 0
         res_field.big_integer = true if [field_min.abs, field_max.abs].max > 2147483647 # 2^31-1
       end
+      if field["mira"].present?
+        if field["mira"]["index"].to_s.present?
+          if field["mira"]["index"].to_s.downcase.to_sym == :false
+            res_field.add_index = false
+          else
+            res_field.add_index = true
+          end
+        end
+      end
       res_field.save
     end
   end

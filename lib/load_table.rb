@@ -55,7 +55,7 @@ class LoadTable
 
     # Add an index for each column
     @column_metadata.each do |col|
-      ActiveRecord::Base.connection.add_index @ds.db_table_name.to_sym, col.name
+      ActiveRecord::Base.connection.add_index @ds.db_table_name.to_sym, col.name if col.add_index
     end
   end
 
@@ -73,7 +73,6 @@ class LoadTable
         ActiveRecord::Base.connection.raw_connection.put_copy_data line
       end
     end
-
   end
 
 end
