@@ -8,11 +8,13 @@ module ProjectHelper
       resources_missing: "datapackage.json must contain a 'resources' array.",
       resources_not_array: "datapackage.json must contain a 'resources' array.",
       resources_empty: "datapackage.json must contain a non-empty 'resources' array.",
+      resource_not_hash: "resource metadata must be a hash.",
       missing_path: "Each resource must have a path.",
       missing_schema: "Each resource must have a schema.",
       path_not_string: "Resource path must be a String, e.g. 'mydata.csv'",
       path_empty: "Resource 'path' is empty.",
       path_not_csv: "Resource 'path' should refer to a csv file.",
+      schemas_missing: "Expected a 'schemas' hash as 'schema' string is given.",
       schema_not_hash: "Resource 'schema' must be a Hash.",
       schema_no_fields: "Resource 'schema' must contain 'fields'.",
       schema_not_array: "Resource schema 'fields' must be an Array.",
@@ -44,6 +46,24 @@ module ProjectHelper
     @feedback[:errors] << "Field: " + field.to_s + "."
   end
 
+  def extract_schema(json_dp,resource)
+    # at this point we know that the resource has a "schema"
+    if resource["schema"].class == Hash
+      schema = resource["schema"]
+    elsif resource["schema"].class == String
+      if resource["schema"].empty?
+        @feedback[:errors] << "Resource schema is empty! (Resource " + resource["path"] + ")"
+      elsif !json_dp.has_key? "schemas"
+        @feedback[:errors] << datapackage_errors[:schemas_missing]
+      elsif !json_dp["schemas"][resource["schema"]]
+        @feedback[:errors] << "The " + resource["schema"] + " is not present in the datapackage's 'schemas' object."
+      else
+        schema = json_dp["schemas"][resource["schema"]]
+      end
+    end
+    schema
+  end
+
   def check_and_clean_datapackage(dp)
     dp_path = dp.tempfile.path
     dp_file = File.read(dp_path)
@@ -62,6 +82,7 @@ module ProjectHelper
 
     if @feedback[:errors].empty?
       json_dp["resources"].each do |resource|
+        @feedback[:errors] << datapackage_errors[:resource_not_hash] if resource.class != Hash
         @feedback[:errors] << datapackage_errors[:missing_path] if !resource.has_key? "path"
         @feedback[:errors] << datapackage_errors[:missing_schema] if !resource.has_key? "schema"
         if resource.has_key? "path"
@@ -79,17 +100,20 @@ module ProjectHelper
         end
 
         if resource.has_key? "path" and resource.has_key? "schema"
-          if resource["schema"].class != Hash
+
+          schema = extract_schema(json_dp,resource)
+
+          if schema.class != Hash
             @feedback[:errors] << datapackage_errors[:schema_not_hash]
             add_path_to_feedback resource
-          elsif !resource["schema"].has_key? "fields"
+          elsif !schema.has_key? "fields"
             @feedback[:errors] << datapackage_errors[:schema_no_fields]
             add_path_to_feedback resource
-          elsif resource["schema"]["fields"].class != Array
+          elsif schema["fields"].class != Array
             @feedback[:errors] << datapackage_errors[:schema_not_array]
             add_path_to_feedback resource
           else
-            resource["schema"]["fields"].each do |field|
+            schema["fields"].each do |field|
               if not (field.has_key? "name" and field.has_key? "type")
                 @feedback[:errors] << datapackage_errors[:field_not_name_and_type]
                 add_path_to_feedback resource
@@ -160,7 +184,9 @@ module ProjectHelper
 
   def extract_and_save_resource_fields(json_dp,resource)
     feedback = { errors: [], warnings: [], notes: []}
-    resource_schema = json_dp["resources"].find{ |r| r["path"] == resource.path }["schema"]
+    json_resource = json_dp["resources"].find{ |r| r["path"] == resource.path }
+    resource_schema = extract_schema(json_dp,json_resource)
+    # resource_schema = json_dp["resources"].find{ |r| r["path"] == resource.path }["schema"]
     resource_schema["fields"].each_with_index do |field,ndx|
       res_field = DatapackageResourceField.new(datapackage_resource_id: resource.id, name: field["name"], ftype: field["type"], order: ndx + 1)
       if field["constraints"].present?
@@ -241,7 +267,7 @@ module ProjectHelper
     # because embedded html spooks the server. It detects content-spoofing and getting the
     # error "Datapackage has contents that are not what they are reported to be"
     json_dp.each do |k,v|
-      if !["name","title","description","resources"].include? k
+      if !["name","title","description","resources","schemas"].include? k
         @feedback[:notes] << "Trimming '" + k + "' attribute from datapackage.json"
         json_dp.delete(k)
       end

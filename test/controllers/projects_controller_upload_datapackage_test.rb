@@ -53,11 +53,23 @@ class ProjectsControllerUploadDatapackageTest < ActionController::TestCase
     expected_error = assigns["project"].errors.messages[:datapackage].flatten.include? datapackage_errors[:resources_missing]
   end
 
+  test "should detect when individual resource metadata is not a hash" do
+    # @datapackage_errors:
+    #   resource_not_hash: "resource metadata must be a hash.",
+    skip
+  end
+
   test "should detect when path is missing" do
     no_path_datapackage = fixture_file_upload("uploads/datapackage/bad_path_missing/datapackage.json", "application/json")
     post :upload_datapackage, id: @project.id, :datapackage => no_path_datapackage
     expected_error = assigns["project"].errors.messages[:datapackage].flatten.include? datapackage_errors[:missing_path]
     assert expected_error
+  end
+
+  test "when 'schema' is a string should detect when 'schemas' hash is missing" do
+    # @datapackage_errors:
+    # schemas_missing: "Expected a 'schemas' hash as 'schema' string is given.",
+    skip
   end
 
   test "should detect when schema is missing" do
