@@ -81,6 +81,7 @@ module ProjectHelper
     json_dp = trim_datapackage(json_dp)
 
     if @feedback[:errors].empty?
+
       json_dp["resources"].each do |resource|
         @feedback[:errors] << datapackage_errors[:resource_not_hash] if resource.class != Hash
         @feedback[:errors] << datapackage_errors[:missing_path] if !resource.has_key? "path"
@@ -101,6 +102,9 @@ module ProjectHelper
 
         if resource.has_key? "path" and resource.has_key? "schema"
 
+          # keep only the filename in "path"
+          resource["path"] = resource["path"].split("/").last if resource.has_key? "path" and resource["path"].class == String
+
           schema = extract_schema(json_dp,resource)
 
           if schema.class != Hash
@@ -119,7 +123,7 @@ module ProjectHelper
                 add_path_to_feedback resource
                 add_field_to_feedback field
               else
-                if (field["name"] =~ /^[a-zA-Z_][a-zA-Z0-9_]*$/) == nil
+                if (field["name"].parameterize.underscore =~ /^[a-zA-Z_][a-zA-Z0-9_]*$/) == nil
                   @feedback[:errors] << datapackage_errors[:field_invalid_name]
                   add_path_to_feedback resource
                   add_field_to_feedback field

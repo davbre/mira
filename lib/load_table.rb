@@ -37,7 +37,7 @@ class LoadTable
     # If "id" already exists in the csv file, then we don't want ActiveRecord to create this variable
     # (which it does by default)
     create_table_options = @column_metadata.map { |a| a.name }.exclude?("id") ? {} : {id: false}
-    load_logger.info("'id' column already exists so ActiveRecord's default 'id' column will not be added to the table") unless create_table_options == { id: false }
+    load_logger.info("'id' column already exists so ActiveRecord's default 'id' column will not be added to the table") if create_table_options == { id: false }
 
     ActiveRecord::Base.connection.create_table(@ds.db_table_name.to_sym, create_table_options) do |t|
       @column_metadata.each do |col|
@@ -45,24 +45,29 @@ class LoadTable
         #   t.string :name
         #   t.text   :description
         # Cater for big integers
+        col_name = new_col_name(col.name)
         if DATAPACKAGE_TYPE_MAP[col.ftype] == "integer" && col.big_integer == true
-          t.send DATAPACKAGE_TYPE_MAP[col.ftype], col.name, :limit => 8
+          t.send DATAPACKAGE_TYPE_MAP[col.ftype], col_name, :limit => 8
         else
-          t.send DATAPACKAGE_TYPE_MAP[col.ftype], col.name
+          t.send DATAPACKAGE_TYPE_MAP[col.ftype], col_name
         end
       end
     end
 
     # Add an index for each column
     @column_metadata.each do |col|
-      ActiveRecord::Base.connection.add_index @ds.db_table_name.to_sym, col.name if col.add_index
+      ActiveRecord::Base.connection.add_index @ds.db_table_name.to_sym, new_col_name(col.name) if col.add_index
     end
+  end
+
+  def new_col_name(name)
+    name.parameterize.underscore
   end
 
   def upload_to_db_table
 
     # columns in correct order
-    column_names = @column_metadata.sort{ |a,b| a.order <=> b.order }.map{ |c| c.name }
+    column_names = @column_metadata.sort{ |a,b| a.order <=> b.order }.map{ |c| new_col_name(c.name) }
     column_string = "\"#{column_names.join('","')}\""
     csv_options = "DELIMITER '#{@table_metadata.delimiter}' CSV"
     skip_header_line = @csv_file.gets

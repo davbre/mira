@@ -104,4 +104,9 @@ class ProjectsControllerUploadDatasourceTest < ActionController::TestCase
     skip
   end
 
+  test "should rename columns appropriately" do
+    # for example if there are spaces in the column name they should be replaced by underscores
+    skip
+  end
+
 end

@@ -129,10 +129,13 @@ class ProjectsControllerUploadDatapackageTest < ActionController::TestCase
   end
 
   test "should detect invalid field name" do
-    field_invalid_name_dp = fixture_file_upload("uploads/datapackage/bad_field_invalid_name/datapackage.json", "application/json")
-    post :upload_datapackage, id: @project.id, :datapackage => field_invalid_name_dp
-    expected_error = assigns["project"].errors.messages[:datapackage].flatten.include? datapackage_errors[:field_invalid_name]
-    assert expected_error
+
+    skip # this is no longer valid as the parameterize method is used to change the column name to be more database friendly
+
+    # field_invalid_name_dp = fixture_file_upload("uploads/datapackage/bad_field_invalid_name/datapackage.json", "application/json")
+    # post :upload_datapackage, id: @project.id, :datapackage => field_invalid_name_dp
+    # expected_error = assigns["project"].errors.messages[:datapackage].flatten.include? datapackage_errors[:field_invalid_name]
+    # assert expected_error
   end
 
   test "should detect invalid field type" do
@@ -220,4 +223,8 @@ class ProjectsControllerUploadDatapackageTest < ActionController::TestCase
     expected_error = assigns["project"].errors.messages[:datapackage].flatten.include? datapackage_errors[:quote_char_too_long]
   end
 
+  test "should keep only the filename from the path value" do
+    # i.e. only keep "keepme.csv" from /do/not/keep/this/keepme.csv
+    skip
+  end
 end
