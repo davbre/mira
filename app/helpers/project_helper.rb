@@ -179,10 +179,37 @@ module ProjectHelper
       if dp_res.valid? && @feedback[:errors].empty?
         dp_res.save
         extract_and_save_resource_fields(json_dp,dp_res)
+        create_table(dp_res)
       else
         @feedback[:errors] << "Datapackage resource not saved for " + res["path"] + ". ERRORS: " + dp_res.to_a.join(", ") + "."
       end
     end
+  end
+
+  def create_table(resource)
+    column_metadata = DatapackageResourceField.where(datapackage_resource_id: resource.id)
+    create_table_options = column_metadata.map { |a| a.name }.exclude?("id") ? {} : {id: false}
+    dp_project_id = Datapackage.find(resource.datapackage_id).project_id
+    db_table_name = Rails.configuration.x.db_table_prefix.downcase + dp_project_id.to_s + "_" + resource.id.to_s
+    ActiveRecord::Base.connection.create_table(db_table_name.to_sym, create_table_options) do |t|
+      column_metadata.each do |col|
+        # The following mimics what is seen in migrations, e.g.:
+        #   t.string :name
+        #   t.text   :description
+        # Cater for big integers
+        col_name = new_col_name(col.name)
+        if DATAPACKAGE_TYPE_MAP[col.ftype] == "integer" && col.big_integer == true
+          t.send DATAPACKAGE_TYPE_MAP[col.ftype], col_name, :limit => 8
+        else
+          t.send DATAPACKAGE_TYPE_MAP[col.ftype], col_name
+        end
+      end
+    end
+  end
+
+
+  def new_col_name(name)
+    name.parameterize.underscore
   end
 
 

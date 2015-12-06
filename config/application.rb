@@ -26,10 +26,10 @@ module Mira
 
     ###########################################################
     ###########################################################
-    
+
     # DBR: as per https://github.com/collectiveidea/delayed_job
     config.active_job.queue_adapter = :delayed_job
-    config.x.db_table_prefix = 'Xy'
+    config.x.db_table_prefix = 'Mira'
 
     # DBR: paging max
     config.x.api_default_per_page = 25;
