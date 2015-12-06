@@ -6,12 +6,13 @@ module Api
 
       def index
 
-        project_datasources = Project.find(params[:id]).datasources
-        datasource = project_datasources.where(table_ref: "#{params[:table_ref]}" ).first
+        project = Project.find(params[:id])
+        resource = DatapackageResource.where(datapackage_id: project.datapackage.id,table_ref: "#{params[:table_ref]}").first
         query_params = request.query_parameters
 
         # create active record table with scopes
-        table_with_scopes = get_mira_ar_table("#{datasource.db_table_name}")
+        # binding.pry
+        table_with_scopes = get_mira_ar_table("#{resource.db_table_name}")
         scope = table_with_scopes.unscoped
 
         # extract the sort order column
@@ -57,13 +58,11 @@ module Api
 
       def datatables
 
-        project_datasources = Project.find(params[:id]).datasources
-        datasource = project_datasources.where(table_ref: "#{params[:table_ref]}" ).first
-
-# binding.pry
+        project = Project.find(params[:id])
+        resource = DatapackageResource.where(datapackage_id: project.datapackage.id,table_ref: "#{params[:table_ref]}").first
 
         # create active record table with scopes
-        table_with_scopes = get_mira_ar_table("#{datasource.db_table_name}")
+        table_with_scopes = get_mira_ar_table("#{resource.db_table_name}")
         scope = table_with_scopes.unscoped
 
         per_page_num = @_params["length"].to_i
@@ -82,7 +81,7 @@ module Api
         # as we get this information from the 'lower_range_values' and 'upper_range_values')
         contains_filters = {} # hash with column names => search strings
         @_params["columns"].each do |k,v|
-          if !range_filter_columns.include?(v["data"]) && v["search"]["value"].length > 0 
+          if !range_filter_columns.include?(v["data"]) && v["search"]["value"].length > 0
             contains_filters[v["data"]] = v["search"]["value"]
           end
         end
@@ -122,7 +121,7 @@ module Api
         @_params["order"].each do |k,v| # e.g. {"0"=>{"column"=>"0", "dir"=>"asc"}}
           sort_column_key = v["column"]
           sort_column = @_params["columns"][sort_column_key]["data"]
-          sort_direction = v["dir"] 
+          sort_direction = v["dir"]
           scope = scope.order(sort_column => sort_direction) unless sort_column.nil?
         end
 
@@ -139,8 +138,9 @@ module Api
 
 
       def distinct
-        project_datasources = Project.find(params[:id]).datasources
-        datasource = project_datasources.where(table_ref: "#{params[:table_ref]}" ).first
+        project = Project.find(params[:id])
+        resource = DatapackageResource.where(datapackage_id: project.datapackage.id,table_ref: "#{params[:table_ref]}").first
+
         query_params = request.query_parameters
         per_page_num = query_params.delete(:per_page).to_i || Rails.configuration.x.api_default_per_page
         per_page_num = [Rails.configuration.x.api_max_per_page, per_page_num].min
@@ -151,8 +151,8 @@ module Api
 
         column = params[:col_ref].parameterize
         uniq_method = "#{column}_uniq".to_sym
-        table_const = get_mira_ar_table("#{datasource.db_table_name}")
-        # table_const = Mira::Application.const_get(datasource.db_table_name.capitalize)
+        table_const = get_mira_ar_table("#{resource.db_table_name}")
+
         if table_const.respond_to? uniq_method
           distinct_values = paginate table_const.order(column.to_sym => order.to_sym).send(uniq_method), per_page: per_page_num
           render json: distinct_values
@@ -167,14 +167,14 @@ module Api
 
         def get_query_string_params(params)
           query_params = params.select do |k,v|
-            ksplit = k.split("_")  
-            if ksplit.length > 1  
-              true if ["eq", "ne", "contains", "ends", "begins", "le", "lt", "ge", "gt"].include? ksplit.last    
+            ksplit = k.split("_")
+            if ksplit.length > 1
+              true if ["eq", "ne", "contains", "ends", "begins", "le", "lt", "ge", "gt"].include? ksplit.last
             end
           end
         end
 
-      
+
     end
   end
 end

@@ -179,14 +179,24 @@ module ProjectHelper
       if dp_res.valid? && @feedback[:errors].empty?
         dp_res.save
         extract_and_save_resource_fields(json_dp,dp_res)
-        create_table(dp_res)
       else
         @feedback[:errors] << "Datapackage resource not saved for " + res["path"] + ". ERRORS: " + dp_res.to_a.join(", ") + "."
       end
     end
   end
 
-  def create_table(resource)
+
+  def create_dp_db_tables(datapackage)
+    dp_resources = DatapackageResource.where(datapackage_id: datapackage.id)
+    dp_resources.each do |res|
+      create_table_for_resource(res)
+      res.db_table_name = Rails.configuration.x.db_table_prefix.downcase + datapackage.project_id.to_s + "_" + res.id.to_s
+      res.save
+    end
+  end
+
+
+  def create_table_for_resource(resource)
     column_metadata = DatapackageResourceField.where(datapackage_resource_id: resource.id)
     create_table_options = column_metadata.map { |a| a.name }.exclude?("id") ? {} : {id: false}
     dp_project_id = Datapackage.find(resource.datapackage_id).project_id
@@ -210,6 +220,14 @@ module ProjectHelper
 
   def new_col_name(name)
     name.parameterize.underscore
+  end
+
+
+  def open_read_api(datapackage)
+    dp_resources = DatapackageResource.where(datapackage_id: datapackage.id)
+    dp_resources.each do |res|
+      load_dynamic_AR_class_with_scopes(res.db_table_name)
+    end
   end
 
 

@@ -4,21 +4,20 @@ require 'load_dynamic_AR_class_with_scopes'
 
 class LoadTable
 
+  include ApplicationHelper
+
   attr_reader :table_name, :column_list, :column_type_hash
 
-  def initialize(datasource)
+  def initialize(datasource, datapackage_resource)
 
     @ds = datasource
-    load_logger.info("Initialising load of #{@ds.table_ref}")
     @datapackage_resources = DatapackageResource.where(datapackage_id: @ds.datapackage_id)
-    @table_metadata = @datapackage_resources.where(path: @ds.datafile_file_name).first
+    @table_metadata = datapackage_resource
+    load_logger.info("Initialising load of #{@table_metadata.table_ref}")
     @column_metadata = DatapackageResourceField.where(datapackage_resource_id: @table_metadata.id)
     @csv_file = File.open(@ds.datafile.path)
 
-    load_logger.info("====>   Creating database table " + @ds.db_table_name + "   <====")
-    create_db_table
-
-    load_logger.info("====>   Uploading " + @ds.datafile_file_name + " to " + @ds.db_table_name + "   <====")
+    load_logger.info("====>   Uploading " + @ds.datafile_file_name + " to " + @table_metadata.db_table_name + "   <====")
     upload_to_db_table
 
   end
@@ -32,52 +31,33 @@ class LoadTable
   end
 
 
-  def create_db_table
-    # Create table with columns
-    # If "id" already exists in the csv file, then we don't want ActiveRecord to create this variable
-    # (which it does by default)
-    create_table_options = @column_metadata.map { |a| a.name }.exclude?("id") ? {} : {id: false}
-    load_logger.info("'id' column already exists so ActiveRecord's default 'id' column will not be added to the table") if create_table_options == { id: false }
-
-    ActiveRecord::Base.connection.create_table(@ds.db_table_name.to_sym, create_table_options) do |t|
-      @column_metadata.each do |col|
-        # The following mimics what is seen in migrations, e.g.:
-        #   t.string :name
-        #   t.text   :description
-        # Cater for big integers
-        col_name = new_col_name(col.name)
-        if DATAPACKAGE_TYPE_MAP[col.ftype] == "integer" && col.big_integer == true
-          t.send DATAPACKAGE_TYPE_MAP[col.ftype], col_name, :limit => 8
-        else
-          t.send DATAPACKAGE_TYPE_MAP[col.ftype], col_name
-        end
-      end
-    end
-
-    # Add an index for each column
-    @column_metadata.each do |col|
-      ActiveRecord::Base.connection.add_index @ds.db_table_name.to_sym, new_col_name(col.name) if col.add_index
-    end
-  end
-
   def new_col_name(name)
     name.parameterize.underscore
   end
 
   def upload_to_db_table
 
-    # columns in correct order
-    column_names = @column_metadata.sort{ |a,b| a.order <=> b.order }.map{ |c| new_col_name(c.name) }
-    column_string = "\"#{column_names.join('","')}\""
-    csv_options = "DELIMITER '#{@table_metadata.delimiter}' CSV"
-    skip_header_line = @csv_file.gets
-    # https://github.com/theSteveMitchell/postgres_upsert
-    ActiveRecord::Base.connection.raw_connection.copy_data "COPY #{@ds.db_table_name} (#{column_string}) FROM STDIN #{csv_options} QUOTE '#{@table_metadata.quote_character}'" do
-      while line = @csv_file.gets do
-        next if line.strip.size == 0
-        ActiveRecord::Base.connection.raw_connection.put_copy_data line
-      end
+    ar_table_klass = get_mira_ar_table(@table_metadata.db_table_name)
+    # binding.pry
+    CSV.foreach(@csv_file, headers: true) do |row|
+
+      ar_table_klass.create! row.to_hash
+
     end
+    # columns in correct order
+
+    # column_names = @column_metadata.sort{ |a,b| a.order <=> b.order }.map{ |c| new_col_name(c.name) }
+    # column_string = "\"#{column_names.join('","')}\""
+    # csv_options = "DELIMITER '#{@table_metadata.delimiter}' CSV"
+    # skip_header_line = @csv_file.gets
+
+    # https://github.com/theSteveMitchell/postgres_upsert
+    # ActiveRecord::Base.connection.raw_connection.copy_data "COPY #{@table_metadata.db_table_name} (#{column_string}) FROM STDIN #{csv_options} QUOTE '#{@table_metadata.quote_character}'" do
+      # while line = @csv_file.gets do
+        # next if line.strip.size == 0
+        # ActiveRecord::Base.connection.raw_connection.put_copy_data line
+      # end
+    # end
   end
 
 end

@@ -26,7 +26,7 @@ class ProcessCsvUpload
   def perform
     # puts "About to process: " + @ds.datafile_file_name
     job_logger.info("About to process " + @ds.datafile_file_name)
-    new_upload_table = LoadTable.new(@ds)
+    LoadTable.new(@ds, @datapackage_resource)
   end
 
   def success
@@ -48,7 +48,7 @@ class ProcessCsvUpload
     @datapackage_resource.datasource_id = @ds.id
     if @datapackage_resource.save
       job_logger.info("Saved the datasource_id to the datapackage_resource table")
-    end    
+    end
     job_logger.error("Something went wrong while loading " + @ds.datafile_file_name + " into the database...")
     job_logger.error(exception)
     @ds.error!

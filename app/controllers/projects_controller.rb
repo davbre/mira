@@ -118,6 +118,8 @@ class ProjectsController < ApplicationController
     else
       flash[:success] = "datapackage.json uploaded"
       extract_and_save_datapackage_resources(@datapackage,json_dp)
+      create_dp_db_tables(@datapackage) if @feedback[:errors].empty?
+      open_read_api(@datapackage)
       redirect_to @project
     end
 

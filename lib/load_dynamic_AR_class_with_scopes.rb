@@ -3,17 +3,6 @@
   # method to create dynamic activerecord class with all the scopes required for the API
   def load_dynamic_AR_class_with_scopes(table)
 
-    ds = Datasource.where(:db_table_name => "#{table}").first
-
-    if ds.nil?
-      return nil
-    else
-      proj_name = Project.find(ds.project_id).name
-    end
-
-    # logger.info("Project #{proj_name}: creating ActiveRecord class " + table +
-    #      " which maps to " + ds.table_ref)
-
     new_klass = Class.new ActiveRecord::Base do
       cattr_accessor :model_name
       self.abstract_class = false
