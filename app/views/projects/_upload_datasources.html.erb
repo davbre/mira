@@ -2,7 +2,7 @@
   <div class="col-md-6 col-md-offset-3">
 
 
-      <%= form_for(@project, url: {action: "upload_datasources"} , method: "post", :html => { multipart: true }) do |f| %>
+    <%= form_for(@project, url: {action: "upload_datasources"} , method: "post", :html => { multipart: true }) do |f| %>
 
       <div class="control-group">
         <%= f.label :csv_files, "CSV files", :class => 'control-label' %>
@@ -12,10 +12,17 @@
       </div>
 
       <div class="form-actions">
-        <%= f.submit "Upload csv files", :class => 'btn btn-primary', id: 'submit_files' %>
+        <%= f.submit "Quick CSV Upload (upsert)", :class => 'btn btn-primary', id: 'submit_files', name: 'quick-csv-upload' %>
         <%= link_to t('.cancel', :default => t("helpers.links.cancel")),
                     projects_path, :class => 'btn btn-mini' %>
       </div>
+
+      <div class="form-actions">
+        <%= f.submit "Slow CSV Upload (ActiveRecord create)", :class => 'btn btn-primary', id: 'submit_files', name: 'slow-csv-upload' %>
+        <%= link_to t('.cancel', :default => t("helpers.links.cancel")),
+                    projects_path, :class => 'btn btn-mini' %>
+      </div>
+
 
     <% end %>
 

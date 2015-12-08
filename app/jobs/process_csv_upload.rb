@@ -7,10 +7,11 @@ class ProcessCsvUpload
 
   include Rails.application.routes.url_helpers
 
-  def initialize(datasource_id)
+  def initialize(datasource_id,upload_method)
     @ds = Datasource.find(datasource_id)
     @datapackage_resource = DatapackageResource.where(datapackage_id: @ds.datapackage_id,
                                                       table_ref: @ds.table_ref).first
+    @upload_method = upload_method
   end
 
   def job_logger
@@ -25,8 +26,8 @@ class ProcessCsvUpload
 
   def perform
     # puts "About to process: " + @ds.datafile_file_name
-    job_logger.info("About to process " + @ds.datafile_file_name)
-    LoadTable.new(@ds, @datapackage_resource)
+    job_logger.info("About to process " + @ds.datafile_file_name + " using '" + @upload_method + "' upload method")
+    LoadTable.new(@ds, @datapackage_resource, @upload_method)
   end
 
   def success

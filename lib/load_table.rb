@@ -8,7 +8,8 @@ class LoadTable
 
   attr_reader :table_name, :column_list, :column_type_hash
 
-  def initialize(datasource, datapackage_resource)
+
+  def initialize(datasource, datapackage_resource, upload_method)
 
     @ds = datasource
     @datapackage_resources = DatapackageResource.where(datapackage_id: @ds.datapackage_id)
@@ -16,11 +17,12 @@ class LoadTable
     load_logger.info("Initialising load of #{@table_metadata.table_ref}")
     @column_metadata = DatapackageResourceField.where(datapackage_resource_id: @table_metadata.id)
     @csv_file = File.open(@ds.datafile.path)
+    @upload_method = upload_method
 
-    load_logger.info("====>   Uploading " + @ds.datafile_file_name + " to " + @table_metadata.db_table_name + "   <====")
     upload_to_db_table
 
   end
+
 
   private
 
@@ -35,29 +37,38 @@ class LoadTable
     name.parameterize.underscore
   end
 
+
   def upload_to_db_table
-
-    ar_table_klass = get_mira_ar_table(@table_metadata.db_table_name)
-    # binding.pry
-    CSV.foreach(@csv_file, headers: true) do |row|
-
-      ar_table_klass.create! row.to_hash
-
+    if @upload_method == "quick"
+      quick_upload_to_db_table
+    else
+      slow_upload_to_db_table
     end
-    # columns in correct order
-
-    # column_names = @column_metadata.sort{ |a,b| a.order <=> b.order }.map{ |c| new_col_name(c.name) }
-    # column_string = "\"#{column_names.join('","')}\""
-    # csv_options = "DELIMITER '#{@table_metadata.delimiter}' CSV"
-    # skip_header_line = @csv_file.gets
-
-    # https://github.com/theSteveMitchell/postgres_upsert
-    # ActiveRecord::Base.connection.raw_connection.copy_data "COPY #{@table_metadata.db_table_name} (#{column_string}) FROM STDIN #{csv_options} QUOTE '#{@table_metadata.quote_character}'" do
-      # while line = @csv_file.gets do
-        # next if line.strip.size == 0
-        # ActiveRecord::Base.connection.raw_connection.put_copy_data line
-      # end
-    # end
   end
+
+
+  def slow_upload_to_db_table
+    ar_table_klass = get_mira_ar_table(@table_metadata.db_table_name)
+    CSV.foreach(@csv_file, headers: true) do |row|
+      ar_table_klass.create! row.to_hash
+    end
+  end
+
+
+  def quick_upload_to_db_table
+    # columns in correct order
+    column_names = @column_metadata.sort{ |a,b| a.order <=> b.order }.map{ |c| new_col_name(c.name) }
+    column_string = "\"#{column_names.join('","')}\""
+    csv_options = "DELIMITER '#{@table_metadata.delimiter}' CSV"
+    skip_header_line = @csv_file.gets
+    # https://github.com/theSteveMitchell/postgres_upsert
+    ActiveRecord::Base.connection.raw_connection.copy_data "COPY #{@table_metadata.db_table_name} (#{column_string}) FROM STDIN #{csv_options} QUOTE '#{@table_metadata.quote_character}'" do
+      while line = @csv_file.gets do
+        next if line.strip.size == 0
+        ActiveRecord::Base.connection.raw_connection.put_copy_data line
+      end
+    end
+  end
+
 
 end

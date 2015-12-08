@@ -143,7 +143,8 @@ class ProjectsController < ApplicationController
         # at this point we have saved the csv file and we know there is a
         # corresponding datapackage_resource which points to the metadata
         # required to import the csv file.
-        Delayed::Job.enqueue ProcessCsvUpload.new(new_datasource.id) if new_datasource.present?
+        upload_method = params.has_key?("quick-csv-upload") ? "quick" : "slow"
+        Delayed::Job.enqueue ProcessCsvUpload.new(new_datasource.id,upload_method) if new_datasource.present?
       end
     end
 
