@@ -67,8 +67,8 @@ class ProjectsController < ApplicationController
 
   def destroy
     project = Project.find(params[:id])
-    project.datasources.each do |ds|
-      ds.delete_associated_artifacts
+    project.datapackage.datapackage_resources.each do |dp_res|
+      dp_res.delete_associated_artifacts
     end
     FileUtils.rm_rf(project.job_log_path)
     FileUtils.rm_rf(project.upload_path)

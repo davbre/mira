@@ -215,6 +215,11 @@ module ProjectHelper
         end
       end
     end
+
+    # Add an index for each column
+    column_metadata.each do |col|
+      ActiveRecord::Base.connection.add_index db_table_name.to_sym, new_col_name(col.name) if col.add_index
+    end
   end
 
 

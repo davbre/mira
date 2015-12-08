@@ -37,40 +37,6 @@ class Datasource < ActiveRecord::Base
   end
 
 
-  def delete_associated_artifacts
-    unset_dp_datasource_id(self.id)
-    delete_db_table
-    delete_log
-    delete_upload
-  end
-
-  def unset_dp_datasource_id(ds_id)
-    dp_res = DatapackageResource.where(datasource_id: ds_id)
-    # should only be one
-    dp_res.each do |r|
-      r.datasource_id = nil
-      r.save
-    end
-  end
-
-  # delete_db_table called when destroying datasource
-  def delete_db_table
-    table = self.db_table_name
-    if ActiveRecord::Base.connection.table_exists? table
-      ActiveRecord::Base.connection.drop_table(table)
-    end
-  end
-
-  def delete_log
-    log = self.project.job_log_path + self.datafile_file_name + ".log"
-    File.delete(log) if File.exist?(log)
-  end
-
-  def delete_upload
-    upload = self.project.upload_path + self.datafile_file_name
-    File.delete(upload) if File.exist?(upload)
-  end
-
   private
 
     # Use an interpolation to get project_id into the path

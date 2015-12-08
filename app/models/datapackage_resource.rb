@@ -10,4 +10,35 @@ class DatapackageResource < ActiveRecord::Base
   validates :table_ref, presence: true
 
   attr_accessor :basket # just extra variable for convenience
+
+
+  def delete_associated_artifacts
+    if self.datasource_id.present?
+      delete_db_table
+      delete_log
+      delete_upload
+      self.datasource_id = nil
+      self.save
+    end
+  end
+
+  def delete_db_table
+    table = self.db_table_name
+    if ActiveRecord::Base.connection.table_exists? table
+      ActiveRecord::Base.connection.drop_table(table)
+    end
+  end
+
+  def delete_log
+    log_file_name = Datasource.find(self.datasource_id).datafile_file_name + ".log"
+    log = self.datapackage.project.job_log_path + log_file_name
+    File.delete(log) if File.exist?(log)
+  end
+
+  def delete_upload
+    upload_file_name = Datasource.find(self.datasource_id).datafile_file_name
+    upload = self.datapackage.project.upload_path + upload_file_name
+    File.delete(upload) if File.exist?(upload)
+  end
+
 end

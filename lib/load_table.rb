@@ -12,10 +12,10 @@ class LoadTable
   def initialize(datasource, datapackage_resource, upload_method)
 
     @ds = datasource
-    @datapackage_resources = DatapackageResource.where(datapackage_id: @ds.datapackage_id)
-    @table_metadata = datapackage_resource
-    load_logger.info("Initialising load of #{@table_metadata.table_ref}")
-    @column_metadata = DatapackageResourceField.where(datapackage_resource_id: @table_metadata.id)
+    # @datapackage_resources = DatapackageResource.where(datapackage_id: @ds.datapackage_id)
+    @datapackage_resource = datapackage_resource
+    load_logger.info("Initialising load of #{@datapackage_resource.table_ref}")
+    @column_metadata = DatapackageResourceField.where(datapackage_resource_id: @datapackage_resource.id)
     @csv_file = File.open(@ds.datafile.path)
     @upload_method = upload_method
 
@@ -48,10 +48,17 @@ class LoadTable
 
 
   def slow_upload_to_db_table
-    ar_table_klass = get_mira_ar_table(@table_metadata.db_table_name)
+    ar_table_klass = get_mira_ar_table(@datapackage_resource.db_table_name)
+    uploaded_row_count = 0
     CSV.foreach(@csv_file, headers: true) do |row|
-      ar_table_klass.create! row.to_hash
+      next if row.to_s.strip.size == 0
+      if ar_table_klass.create!(row.to_hash)
+        uploaded_row_count += 1
+      else
+        load_logger.error("Failed to upload row " + (uploaded_row_count + 1).to_s )
+      end
     end
+    save_row_count(uploaded_row_count)
   end
 
 
@@ -59,16 +66,23 @@ class LoadTable
     # columns in correct order
     column_names = @column_metadata.sort{ |a,b| a.order <=> b.order }.map{ |c| new_col_name(c.name) }
     column_string = "\"#{column_names.join('","')}\""
-    csv_options = "DELIMITER '#{@table_metadata.delimiter}' CSV"
+    csv_options = "DELIMITER '#{@datapackage_resource.delimiter}' CSV"
     skip_header_line = @csv_file.gets
+    uploaded_row_count = 0
     # https://github.com/theSteveMitchell/postgres_upsert
-    ActiveRecord::Base.connection.raw_connection.copy_data "COPY #{@table_metadata.db_table_name} (#{column_string}) FROM STDIN #{csv_options} QUOTE '#{@table_metadata.quote_character}'" do
+    ActiveRecord::Base.connection.raw_connection.copy_data "COPY #{@datapackage_resource.db_table_name} (#{column_string}) FROM STDIN #{csv_options} QUOTE '#{@datapackage_resource.quote_character}'" do
       while line = @csv_file.gets do
         next if line.strip.size == 0
         ActiveRecord::Base.connection.raw_connection.put_copy_data line
+        uploaded_row_count += 1
       end
     end
+    save_row_count(uploaded_row_count)
   end
 
-
+  def save_row_count(uploaded_row_count)
+    @datapackage_resource.imported_rows = uploaded_row_count
+    @datapackage_resource.save
+    load_logger.info("Imported " + uploaded_row_count.to_s + " rows of data.")
+  end
 end

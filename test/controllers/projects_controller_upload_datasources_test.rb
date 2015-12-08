@@ -109,4 +109,12 @@ class ProjectsControllerUploadDatasourceTest < ActionController::TestCase
     skip
   end
 
+  test "should save imported_rows correctly on successful upload - quick upload" do
+    skip
+  end
+
+  test "should save imported_rows correctly on successful upload - slow upload" do
+    skip
+  end
+
 end
