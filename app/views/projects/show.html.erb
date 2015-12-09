@@ -28,21 +28,29 @@
         <table class="table">
           <tr>
             <!-- Datasources table HEADER -->
-            <th>Datasources listed <br />in datapackage.json</th>
+            <th>Datasources listed<br />in datapackage.json</th>
             <th>Upload<br />Datetime</th>
             <% if user_signed_in? %>
               <th>ActiveRecord<br />Class Name</th>
               <th>Upload Log</th>
               <th>Import<br />Status</th>
+              <th>Rows<br />Imported</th>
               <th> </th>
             <% end %>
 
             <!-- One row per datapackage resource -->
-            <% @datapackage.datapackage_resources.each do |res| %>
+            <% @datapackage.datapackage_resources.sort_by { |obj| obj.table_ref }.each do |res| %>
               <tr>
 
                 <!-- Datasource -->
-                <td><%= res.path %></td>
+                <td>
+                  <% if res.datasource_id.present? %>
+                    <%= link_to res.path, @datasources.find(res.datasource_id).public_url %>
+                  <% else %>
+                    <%= res.path %>
+                  <% end %>
+                </td>
+
                 <!-- Upload datetime -->
                 <% if res.datasource_id.present? %>
                   <td><%= @datasources.find(res.datasource_id).created_at.strftime("%FT%R") %></td>
@@ -58,6 +66,7 @@
                     <!-- log file and status -->
                     <td><a href="/job_logs/project_<%= @datasources.find(res.datasource_id).project_id %>/<%= @datasources.find(res.datasource_id).datafile_file_name %>.log"><%= @datasources.find(res.datasource_id).datafile_file_name %>.log</a></td>
                     <td><%= @datasources.find(res.datasource_id).import_status %></td>
+                    <td><%= res.imported_rows.to_s %></th>
                     <td><%= link_to "delete", project_datasource_path(@datasources.find(res.datasource_id).project_id, @datasources.find(res.datasource_id).id), method: :delete,
                                                   data: { confirm: "You sure?" }, :class => "btn btn-xs btn-danger" %></td>
                   <% else %>

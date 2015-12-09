@@ -9,12 +9,9 @@ class DatapackageResource < ActiveRecord::Base
   validates :quote_character, presence: true
   validates :table_ref, presence: true
 
-  attr_accessor :basket # just extra variable for convenience
-
 
   def delete_associated_artifacts
     if self.datasource_id.present?
-      delete_db_table
       delete_log
       delete_upload
       self.datasource_id = nil
@@ -26,6 +23,13 @@ class DatapackageResource < ActiveRecord::Base
     table = self.db_table_name
     if ActiveRecord::Base.connection.table_exists? table
       ActiveRecord::Base.connection.drop_table(table)
+    end
+  end
+
+  def clear_db_table
+    ar_table = Mira::Application.const_get(self.db_table_name.capitalize.to_sym)
+    if ActiveRecord::Base.connection.table_exists? ar_table
+      ar_table.delete_all
     end
   end
 

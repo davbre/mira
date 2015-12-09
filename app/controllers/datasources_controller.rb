@@ -7,7 +7,9 @@ class DatasourcesController < ApplicationController
 
   def destroy
     ds = Datasource.where(id: params[:id]).first
-    ds.delete_associated_artifacts
+    dp_res = DatapackageResource.where(datasource_id: ds.id).first
+    dp_res.delete_associated_artifacts
+    dp_res.clear_db_table
     Datasource.find(params[:id]).destroy
     redirect_to project_path(params[:project_id])
   end

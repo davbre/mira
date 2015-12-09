@@ -218,8 +218,18 @@ module ProjectHelper
 
     # Add an index for each column
     column_metadata.each do |col|
-      ActiveRecord::Base.connection.add_index db_table_name.to_sym, new_col_name(col.name) if col.add_index
+      if col.add_index
+        if col.ftype == "string"
+          # create case insensitive index. Don't think the add_index method can be used so used a raw query.
+          # http://www.postgresql.org/docs/9.1/static/sql-createindex.html
+          create_index_execute_string = "CREATE INDEX index_" + db_table_name + "_on_" + col.name + " ON \"" + db_table_name + "\" (lower(\"" + col.name + "\"))"
+          ActiveRecord::Base.connection.execute(create_index_execute_string)
+        else
+          ActiveRecord::Base.connection.add_index db_table_name.to_sym, new_col_name(col.name)
+        end
+      end
     end
+
   end
 
 

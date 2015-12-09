@@ -36,12 +36,12 @@
 
         # if a text column then add a "contains" scope
         if ["text", "string"].include? self.columns_hash[sv].type.to_s
-          contains_scope = "scope :#{sv}_contains, -> (#{sv}) { where(\"#{sv} like ?\", \"%\#{#{sv}}%\") }"
-          not_contains_scope = "scope :#{sv}_not_contains, -> (#{sv}) { where(\"#{sv} NOT like ?\", \"%\#{#{sv}}%\") }"
-          begins_scope = "scope :#{sv}_begins, -> (#{sv}) { where(\"#{sv} like ?\", \"\#{#{sv}}%\") }"
-          not_begins_scope = "scope :#{sv}_not_begins, -> (#{sv}) { where(\"#{sv} NOT like ?\", \"\#{#{sv}}%\") }"
-          ends_scope = "scope :#{sv}_ends, -> (#{sv}) { where(\"#{sv} like ?\", \"%\#{#{sv}}\") }"
-          not_ends_scope = "scope :#{sv}_not_ends, -> (#{sv}) { where(\"#{sv} NOT like ?\", \"%\#{#{sv}}\") }"
+          contains_scope = "scope :#{sv}_contains, -> (#{sv}) { where(\"#{sv} ilike ?\", \"%\#{#{sv}}%\") }"
+          not_contains_scope = "scope :#{sv}_not_contains, -> (#{sv}) { where(\"#{sv} NOT ilike ?\", \"%\#{#{sv}}%\") }"
+          begins_scope = "scope :#{sv}_begins, -> (#{sv}) { where(\"#{sv} ilike ?\", \"\#{#{sv}}%\") }"
+          not_begins_scope = "scope :#{sv}_not_begins, -> (#{sv}) { where(\"#{sv} NOT ilike ?\", \"\#{#{sv}}%\") }"
+          ends_scope = "scope :#{sv}_ends, -> (#{sv}) { where(\"#{sv} ilike ?\", \"%\#{#{sv}}\") }"
+          not_ends_scope = "scope :#{sv}_not_ends, -> (#{sv}) { where(\"#{sv} NOT ilike ?\", \"%\#{#{sv}}\") }"
           text_blank_scope = "scope :#{sv}_blank, -> (#{sv}) { where(\"#{sv} = '' OR #{sv} IS NULL\") }"
           text_not_blank_scope = "scope :#{sv}_not_blank, -> (#{sv}) { where(\"#{sv} != '' AND #{sv} IS NOT NULL\") }"
           eval(contains_scope)
