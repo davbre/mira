@@ -14,8 +14,6 @@ module V1
 
 
     def show
-      # datasource = Project.find(params[:id]).datasources.where(table_ref: "#{params[:table_ref]}" ).first
-      # binding.pry
       project = Project.find(params[:id])
       resource = DatapackageResource.where(datapackage_id: project.datapackage.id,table_ref: "#{params[:table_ref]}").first
       render_hash = resource.as_json

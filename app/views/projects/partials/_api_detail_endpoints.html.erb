@@ -43,32 +43,49 @@
       <td>GET</td>
       <td><a class="api-endpoint-link" href="<%= root_url %>api/projects/<%= @project.id %>/tables"><%= root_url %>api/projects/<%= @project.id %>/tables</a></td>
     </tr>
-    <tr>
-      <td><strong>Tables</strong></td>
-      <td></td>
-    </tr>
+  <table>
+
+  <table class="table table-bordered table-hover" border="1">
+    <tbody>
+      <tr>
+        <th><strong>Table</strong></th>
+        <th><strong>HTTP Method</strong></th>
+        <th><strong>Description</strong></th>
+        <th><strong>API Endpoint</strong></th>
+      </tr>
+    </tbody>
     <% if @dp_resources.empty? %>
-      <tr><td>The datapackage does not specify any csv files<td></td><td></td></tr>
+      <tr>
+        <td>The datapackage does not specify any csv files</td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
     <% else %>
       <% @dp_resources.each do |res| %>
         <tr>
           <td>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<%= res.table_ref %></td>
           <td>GET</td>
           <td>
-            <dl class="dl-horizontal2">
-              <dt width="40px">Detail</dt>
-              <dd><a class="api-endpoint-link" href="<%= root_url %>api/projects/<%= @project.id %>/tables/<%= res.table_ref %>"><%= root_url %>api/projects/<%= @project.id %>/tables/<%= res.table_ref %></a></dd>
-              <dt width="40px">Columns</dt>
-              <dd><a class="api-endpoint-link" href="<%= root_url %>api/projects/<%= @project.id %>/tables/<%= res.table_ref %>/columns"><%= root_url %>api/projects/<%= @project.id %>/tables/<%= res.table_ref %>/columns</a></dd>
-              <dt width="40px">Data</dt>
-              <dd><a class="api-endpoint-link" href="<%= root_url %>api/projects/<%= @project.id %>/tables/<%= res.table_ref %>/data"><%= root_url %>api/projects/<%= @project.id %>/tables/<%= res.table_ref %>/data</a></dd>
-            </dl>
+            Detail<br />
+            Database Column Metadata<br />
+            Datapackage Column Metadata<br />
+          </td>
+          <td>
+            <dd><a class="api-endpoint-link" href="<%= root_url %>api/projects/<%= @project.id %>/tables/<%= res.table_ref %>"><%= root_url %>api/projects/<%= @project.id %>/tables/<%= res.table_ref %></a></dd>
+            <dd><a class="api-endpoint-link" href="<%= root_url %>api/projects/<%= @project.id %>/tables/<%= res.table_ref %>/columns"><%= root_url %>api/projects/<%= @project.id %>/tables/<%= res.table_ref %>/columns</a></dd>
+            <dd><a class="api-endpoint-link" href="<%= root_url %>api/projects/<%= @project.id %>/tables/<%= res.table_ref %>/datapackage/columns"><%= root_url %>api/projects/<%= @project.id %>/tables/<%= res.table_ref %>/datapackage/columns</a></dd>
+            <dd><a class="api-endpoint-link" href="<%= root_url %>api/projects/<%= @project.id %>/tables/<%= res.table_ref %>/data"><%= root_url %>api/projects/<%= @project.id %>/tables/<%= res.table_ref %>/data</a></dd>
           </td>
         </tr>
       <% end %>
     <% end %>
+    <tr>
+    </tr>
+  <table>
 
-  </table>
+
+
 
   <br /><br />
 </div>

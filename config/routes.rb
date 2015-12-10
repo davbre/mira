@@ -26,21 +26,22 @@ Rails.application.routes.draw do
       # Projects
       get "projects" => "projects#index"
       get "projects/:id" => "projects#show"
-      # Datapackage files
+
+      # Datapackage file
       get "projects/:id/datapackage" => "datapackages#show"
-      # Datapackage resources
-      get "projects/:id/datapackage/resources" => "datapackage_resources#index"
-      get "projects/:id/datapackage/resources/:table_ref" => "datapackage_resources#show"
-      # Datapackage resource fields
-      get "projects/:id/datapackage/resources/:table_ref/fields" => "datapackage_resource_fields#index"
-      # Datasources
-      # get "projects/:id/tables" => "datasources#index"
-      # get "projects/:id/tables/:table_ref" => "datasources#show"
-      # Resources...corresponds to metadata from DatapackageResource and the database itself
+
+      # Datapackage resource metadata combined with some information from datasources (e.g. public_url)
       get "projects/:id/tables" => "datapackage_resources#index"
       get "projects/:id/tables/:table_ref" => "datapackage_resources#show"
       get "projects/:id/tables/:table_ref/columns" => "datapackage_resources#column_index"
       get "projects/:id/tables/:table_ref/columns/:col_ref" => "datapackage_resources#column_show"
+      # Expose datapackage field metadata
+      get "projects/:id/tables/:table_ref/datapackage/columns" => "datapackage_resource_fields#index"
+      get "projects/:id/tables/:table_ref/datapackage/columns/:col_ref" => "datapackage_resource_fields#show"
+
+      # Uploads (via datasources table)
+      get "projects/:id/uploads" => "datasources#index"
+      get "projects/:id/uploads/:table_ref" => "datasources#show"
 
       # Data
       match "projects/:id/tables/:table_ref/data" => "data#datatables",
