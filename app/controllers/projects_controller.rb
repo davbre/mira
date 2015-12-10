@@ -162,7 +162,8 @@ class ProjectsController < ApplicationController
 
   def api_detail
     @project = Project.find(params[:id])
-    @datasources = @project.datasources.where.not(db_table_name: nil).order(:table_ref)
+    @datapackage = Datapackage.where(project_id: @project.id).first
+    @dp_resources = @datapackage.datapackage_resources.order(:table_ref)
   end
 
 

@@ -10,7 +10,7 @@ class ProcessCsvUpload
   def initialize(datasource_id,upload_method)
     @ds = Datasource.find(datasource_id)
     @datapackage_resource = DatapackageResource.where(datapackage_id: @ds.datapackage_id,
-                                                      table_ref: @ds.table_ref).first
+                                                      path: @ds.datafile_file_name).first
     @upload_method = upload_method
   end
 

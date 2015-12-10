@@ -33,11 +33,14 @@ Rails.application.routes.draw do
       get "projects/:id/datapackage/resources/:table_ref" => "datapackage_resources#show"
       # Datapackage resource fields
       get "projects/:id/datapackage/resources/:table_ref/fields" => "datapackage_resource_fields#index"
-      # Data sources
-      get "projects/:id/tables" => "datasources#index"
-      get "projects/:id/tables/:table_ref" => "datasources#show"
-      get "projects/:id/tables/:table_ref/columns" => "datasources#column_index"
-      get "projects/:id/tables/:table_ref/columns/:col_ref" => "datasources#column_show"
+      # Datasources
+      # get "projects/:id/tables" => "datasources#index"
+      # get "projects/:id/tables/:table_ref" => "datasources#show"
+      # Resources...corresponds to metadata from DatapackageResource and the database itself
+      get "projects/:id/tables" => "datapackage_resources#index"
+      get "projects/:id/tables/:table_ref" => "datapackage_resources#show"
+      get "projects/:id/tables/:table_ref/columns" => "datapackage_resources#column_index"
+      get "projects/:id/tables/:table_ref/columns/:col_ref" => "datapackage_resources#column_show"
 
       # Data
       match "projects/:id/tables/:table_ref/data" => "data#datatables",

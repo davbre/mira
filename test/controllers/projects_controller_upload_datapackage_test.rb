@@ -227,4 +227,12 @@ class ProjectsControllerUploadDatapackageTest < ActionController::TestCase
     # i.e. only keep "keepme.csv" from /do/not/keep/this/keepme.csv
     skip
   end
+
+  test "should save format properly from datapackage.json" do
+    skip
+  end
+
+  test "should save add_index properly" do
+    skip
+  end
 end

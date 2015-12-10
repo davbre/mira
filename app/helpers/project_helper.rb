@@ -267,6 +267,9 @@ module ProjectHelper
           end
         end
       end
+      if field["format"].present?
+        res_field.format = field["format"].to_s
+      end
       res_field.save
     end
   end
@@ -344,18 +347,12 @@ module ProjectHelper
     csv_file = File.open(csv.tempfile.path)
     ds = @project.datasources.create(datafile: csv_file, datafile_file_name: csv.original_filename, datapackage_id: @datapackage.id) # ds = datasource
     if ds.valid?
-      set_datasource_table_name(ds)
       ds.public_url = ds.datafile.url.partition("?").first
     else
       @feedback[:errors] << "Failed to create datasource. Errors: " + ds.errors.to_a.join(", ")
     end
     retval = ds.save ? ds : nil
     retval
-  end
-
-
-  def set_datasource_table_name(ds)
-    ds.db_table_name = Rails.configuration.x.db_table_prefix.downcase + ds.project_id.to_s + "_" + ds.id.to_s
   end
 
 

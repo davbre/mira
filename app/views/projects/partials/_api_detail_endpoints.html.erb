@@ -47,21 +47,21 @@
       <td><strong>Tables</strong></td>
       <td></td>
     </tr>
-    <% if @datasources.empty? %>
-      <tr><td>No csv files have been uploaded yet<td></td><td></td></tr>
+    <% if @dp_resources.empty? %>
+      <tr><td>The datapackage does not specify any csv files<td></td><td></td></tr>
     <% else %>
-      <% @datasources.each do |ds| %>
+      <% @dp_resources.each do |res| %>
         <tr>
-          <td>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<%= ds.table_ref %></td>
+          <td>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<%= res.table_ref %></td>
           <td>GET</td>
           <td>
             <dl class="dl-horizontal2">
               <dt width="40px">Detail</dt>
-              <dd><a class="api-endpoint-link" href="<%= root_url %>api/projects/<%= @project.id %>/tables/<%= ds.table_ref %>"><%= root_url %>api/projects/<%= @project.id %>/tables/<%= ds.table_ref %></a></dd>
+              <dd><a class="api-endpoint-link" href="<%= root_url %>api/projects/<%= @project.id %>/tables/<%= res.table_ref %>"><%= root_url %>api/projects/<%= @project.id %>/tables/<%= res.table_ref %></a></dd>
               <dt width="40px">Columns</dt>
-              <dd><a class="api-endpoint-link" href="<%= root_url %>api/projects/<%= @project.id %>/tables/<%= ds.table_ref %>/columns"><%= root_url %>api/projects/<%= @project.id %>/tables/<%= ds.table_ref %>/columns</a></dd>
+              <dd><a class="api-endpoint-link" href="<%= root_url %>api/projects/<%= @project.id %>/tables/<%= res.table_ref %>/columns"><%= root_url %>api/projects/<%= @project.id %>/tables/<%= res.table_ref %>/columns</a></dd>
               <dt width="40px">Data</dt>
-              <dd><a class="api-endpoint-link" href="<%= root_url %>api/projects/<%= @project.id %>/tables/<%= ds.table_ref %>/data"><%= root_url %>api/projects/<%= @project.id %>/tables/<%= ds.table_ref %>/data</a></dd>
+              <dd><a class="api-endpoint-link" href="<%= root_url %>api/projects/<%= @project.id %>/tables/<%= res.table_ref %>/data"><%= root_url %>api/projects/<%= @project.id %>/tables/<%= res.table_ref %>/data</a></dd>
             </dl>
           </td>
         </tr>

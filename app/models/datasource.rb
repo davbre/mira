@@ -3,8 +3,7 @@ class Datasource < ActiveRecord::Base
   belongs_to :project
   has_one :datapackage_resource
   validates :project_id, presence: true
-  validates :table_ref, uniqueness: { scope: :project,
-                                      message: "Filenames must be unique (file extensions are ignored)" }
+
   has_attached_file :datafile,
     :path => ":rails_root/public/uploads/project_:proj_id/:filename",
     :url  => "/uploads/project_:proj_id/:filename"
@@ -16,8 +15,6 @@ class Datasource < ActiveRecord::Base
   process_in_background :datafile # delayed_paperclip
 
   enum import_status: [ :ok, :note, :warning, :error ]
-
-  before_create :set_table_ref
 
   # Some helper methods, useful for linking to log file
   def basename
@@ -48,10 +45,6 @@ class Datasource < ActiveRecord::Base
 
     Paperclip.interpolates :proj_id do |attachment, style|
       attachment.instance.project_id
-    end
-
-    def set_table_ref
-      self.table_ref = basename
     end
 
 end

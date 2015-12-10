@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151208192920) do
+ActiveRecord::Schema.define(version: 20151209215327) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -25,6 +25,7 @@ ActiveRecord::Schema.define(version: 20151208192920) do
     t.datetime "updated_at",                             null: false
     t.boolean  "big_integer"
     t.boolean  "add_index",               default: true
+    t.text     "format"
   end
 
   add_index "datapackage_resource_fields", ["datapackage_resource_id"], name: "index_datapackage_resource_fields_on_datapackage_resource_id", using: :btree
@@ -60,7 +61,6 @@ ActiveRecord::Schema.define(version: 20151208192920) do
   add_index "datapackages", ["project_id"], name: "index_datapackages_on_project_id", using: :btree
 
   create_table "datasources", force: :cascade do |t|
-    t.string   "description"
     t.integer  "project_id"
     t.datetime "created_at",            null: false
     t.datetime "updated_at",            null: false
@@ -68,16 +68,12 @@ ActiveRecord::Schema.define(version: 20151208192920) do
     t.string   "datafile_content_type"
     t.integer  "datafile_file_size"
     t.datetime "datafile_updated_at"
-    t.string   "db_table_name"
-    t.text     "table_ref"
     t.text     "public_url"
     t.integer  "datapackage_id"
     t.integer  "import_status"
   end
 
-  add_index "datasources", ["db_table_name"], name: "index_datasources_on_db_table_name", using: :btree
   add_index "datasources", ["project_id"], name: "index_datasources_on_project_id", using: :btree
-  add_index "datasources", ["table_ref"], name: "index_datasources_on_table_ref", using: :btree
 
   create_table "delayed_jobs", force: :cascade do |t|
     t.integer  "priority",   default: 0, null: false
