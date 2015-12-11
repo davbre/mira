@@ -13,7 +13,7 @@ module V1
       response = []
       datapackage_resources.each do |res|
         resource_with_url = add_public_url_to_resource(res)
-        response << resource_with_url
+        response << resource_with_url.except("db_table_name")
       end
       paginate json: response
     end
@@ -23,7 +23,7 @@ module V1
       datapackage = Datapackage.where(project_id: project.id).first
       datapackage_resource = datapackage.datapackage_resources.where(table_ref: params[:table_ref]).first
       resource_with_url = add_public_url_to_resource(datapackage_resource)
-      render json: resource_with_url
+      render json: resource_with_url.except("db_table_name")
     end
 
     def column_index
