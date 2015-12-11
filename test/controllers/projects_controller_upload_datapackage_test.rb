@@ -211,6 +211,29 @@ class ProjectsControllerUploadDatapackageTest < ActionController::TestCase
     assert_equal before_dp_res_field_count + new_field_count, DatapackageResourceField.count
   end
 
+  test "good datapackage should create database table with correct name, columns, types and indices" do
+    good_datapackage = fixture_file_upload("uploads/datapackage/good/datapackage.json", "application/json")
+    post :upload_datapackage, id: @project.id, :datapackage => good_datapackage
+    last_dp = Datapackage.last
+    dp_resources = last_dp.datapackage_resources
+    dp_resources.each do |dp_res|
+      # database table exists
+      expected_db_table_name = Rails.configuration.x.db_table_prefix.downcase + last_dp.project_id.to_s + "_" + dp_res.id.to_s
+      ar_table = Mira::Application.const_get(expected_db_table_name.capitalize.to_sym)
+      assert ActiveRecord::Base.connection.table_exists? expected_db_table_name
+      # database table has correct columns
+      expected_db_table_columns = dp_res.datapackage_resource_fields.map { |f| f.name } | ["id"] # add "id" if not already there
+      actual_columns = ar_table.columns.map { |c| c.name }
+      assert_equal expected_db_table_columns.sort, actual_columns.sort
+      # database table column types are as expected
+      expected_column_types = [ {"id" => "integer"} ]
+      dp_res.datapackage_resource_fields.map { |f| expected_column_types << {f.name => DATAPACKAGE_TYPE_MAP[f.ftype] } }
+      actual_column_types = []
+      ar_table.columns.map { |c| actual_column_types << { c.name => c.type.to_s }}
+      assert_equal expected_column_types, actual_column_types
+    end
+  end
+
   test "should detect a delimiter of more than a single character" do
     long_dlm_dp = fixture_file_upload("uploads/datapackage/bad_delimiter_too_long/datapackage.json", "application/json")
     post :upload_datapackage, id: @project.id, :datapackage => long_dlm_dp

@@ -7,8 +7,8 @@ class DatapackageResource < ActiveRecord::Base
   validates :path, presence: true
   validates :delimiter, presence: true
   validates :quote_character, presence: true
-  validates :table_ref, presence: true
-
+  validates :table_ref, presence: true, uniqueness: { scope: :datapackage,
+                                        message: "table_ref must be unique within a datapackage!" }
 
   def delete_associated_artifacts
     if self.datasource_id.present?

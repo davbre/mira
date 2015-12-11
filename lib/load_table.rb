@@ -10,7 +10,6 @@ class LoadTable
 
 
   def initialize(datasource, datapackage_resource, upload_method)
-
     @ds = datasource
     # @datapackage_resources = DatapackageResource.where(datapackage_id: @ds.datapackage_id)
     @datapackage_resource = datapackage_resource

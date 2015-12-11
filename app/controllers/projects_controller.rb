@@ -67,9 +67,11 @@ class ProjectsController < ApplicationController
 
   def destroy
     project = Project.find(params[:id])
-    project.datapackage.datapackage_resources.each do |dp_res|
-      dp_res.delete_associated_artifacts
-      dp_res.delete_db_table
+    if project.datapackage.present?
+      project.datapackage.datapackage_resources.each do |dp_res|
+        dp_res.delete_associated_artifacts
+        dp_res.delete_db_table
+      end
     end
     FileUtils.rm_rf(project.job_log_path)
     FileUtils.rm_rf(project.upload_path)

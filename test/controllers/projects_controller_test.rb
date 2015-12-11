@@ -143,7 +143,7 @@ class ProjectsControllerTest < ActionController::TestCase
     upload_to_project(project, upload_files)
     db_table_names = []
     upload_files.each do |ul|
-      db_table_names << project.datasources.where(table_ref: "upload2").first.db_table_name
+      db_table_names << DatapackageResource.where(datapackage_id: project.datapackage, table_ref: ul).first.db_table_name
     end
     delete :destroy, id: Project.last.id
     db_table_names.each do |dbt|
