@@ -80,8 +80,9 @@ class Api::V1::DatasourcesEndpointsTest < ActionController::TestCase
     @uploads.each do |upl|
       get :show, :id => @project.id, :table_ref => upl
       json_response = JSON.parse(response.body)
-      csv_file = fixture_file_upload("uploads/" + upl + ".csv", "text/plain")
-      row_count = File.open(csv_file,"r").readlines.size
+      # csv_file = fixture_file_upload("uploads/" + upl + ".csv", "text/plain")
+      # row_count = File.open(csv_file,"r").readlines.size
+      row_count = csv_line_count(upl)
       assert_equal row_count, json_response["row_count"] + 1 # extra 1 accounts for header row
     end
   end

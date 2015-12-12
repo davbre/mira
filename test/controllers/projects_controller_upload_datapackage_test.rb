@@ -231,6 +231,20 @@ class ProjectsControllerUploadDatapackageTest < ActionController::TestCase
       actual_column_types = []
       ar_table.columns.map { |c| actual_column_types << { c.name => c.type.to_s }}
       assert_equal expected_column_types, actual_column_types
+      # database table indices as expected
+      # **NOTE ON INDICES**: couldn't get this test to work. Although the index seems to be created (when viewing from phppgadmin)
+      # when I try to get a list of indices, indices on string columns are not returned. Not sure why so going to
+      # skip this for the moment
+      table_indices = ActiveRecord::Base.connection.indexes(ar_table.name.downcase.to_sym)
+      # One option with raw query: http://stackoverflow.com/a/2213199/1002140
+      # rq = "select i.relname as index_name, a.attname as column_name
+      #       from pg_class t,pg_class i,pg_index ix, pg_attribute a
+      #       where t.oid = ix.indrelid and i.oid = ix.indexrelid
+      #             and a.attrelid = t.oid and a.attnum = ANY(ix.indkey)
+      #             and t.relkind = 'r' and t.relname = '*** YOUR TABLE NAME ***'
+      #             order by t.relname, i.relname;"
+      # results = ActiveRecord::Base.connection.execute(rq)
+      # dp_res_fields = dp_res.datapackage_resource_fields.map { .... add_index field... }
     end
   end
 
@@ -244,6 +258,19 @@ class ProjectsControllerUploadDatapackageTest < ActionController::TestCase
     long_quote_dp = fixture_file_upload("uploads/datapackage/bad_quote_char_too_long/datapackage.json", "application/json")
     post :upload_datapackage, id: @project.id, :datapackage => long_quote_dp
     expected_error = assigns["project"].errors.messages[:datapackage].flatten.include? datapackage_errors[:quote_char_too_long]
+  end
+
+  test "should index column by default" do
+    # see **NOTE ON INDICES** above
+    skip
+  end
+
+  test "should not index where field has mira['index']: false" do
+    skip
+  end
+
+  test "API should be available on successful upload" do
+    skip
   end
 
   test "should keep only the filename from the path value" do

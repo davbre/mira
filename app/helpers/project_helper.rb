@@ -229,7 +229,6 @@ module ProjectHelper
         end
       end
     end
-
   end
 
 

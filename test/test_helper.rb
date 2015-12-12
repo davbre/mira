@@ -38,8 +38,14 @@ class ActiveSupport::TestCase
       ds.save
       Delayed::Job.enqueue ProcessCsvUpload.new(ds.id,"quick")
     end
-
   end
+
+  def csv_line_count(txtfile)
+    csv_file = fixture_file_upload("uploads/" + txtfile + ".csv", "text/plain")
+    row_count = File.open(csv_file,"r").readlines.size
+    row_count
+  end
+
 end
 
 class ActionController::TestCase
