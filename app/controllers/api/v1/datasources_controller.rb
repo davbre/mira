@@ -14,12 +14,8 @@ module V1
 
 
     def show
-      project = Project.find(params[:id])
-      resource = DatapackageResource.where(datapackage_id: project.datapackage.id,table_ref: "#{params[:table_ref]}").first
-      render_hash = resource.as_json
-      ar_table = get_mira_ar_table(resource.db_table_name)
-      render_hash[:row_count] = ar_table.count
-      response = render_hash.as_json(:except => datasource_exclude_fields)
+      datasource = Project.find(params[:id]).datasources.where(datafile_file_name: params[:table_ref] + ".csv").first
+      response = datasource.as_json(:except => datasource_exclude_fields)
       render json: response
     end
 

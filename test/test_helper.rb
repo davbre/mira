@@ -1,6 +1,7 @@
 ENV['RAILS_ENV'] ||= 'test'
 require File.expand_path('../../config/environment', __FILE__)
 require 'rails/test_help'
+require 'net/http'
 
 class ActiveSupport::TestCase
   # Setup all fixtures in test/fixtures/*.yml for all tests in alphabetical order.
@@ -25,10 +26,18 @@ class ActiveSupport::TestCase
   end
 
 
-  def upload_to_project(project,file_names,datapackage_file = "uploads/datapackage.json")
+  def upload_to_project(controller,project,file_names,datapackage_file = "uploads/datapackage.json")
     Delayed::Worker.delay_jobs = false # turn off queuing
     @dp_file = fixture_file_upload(datapackage_file, "application/json")
+
+    # The call to the "post" method would fail when called outside the context of a ProjectsController
+    # so we change it temporarily. This allows us to upload the datapackage from tests not relating directly
+    # to project actions. See http://stackoverflow.com/a/7743176/1002140
+    orig_controller = controller
+    @controller = ProjectsController.new
     post :upload_datapackage, id: project.id, :datapackage => @dp_file
+    @controller = orig_controller
+
     @uploads = file_names
     @datapackage = Datapackage.last
 

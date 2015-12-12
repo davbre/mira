@@ -27,7 +27,7 @@ module V1
       datapackage_resource = datapackage.datapackage_resources.where(table_ref: params[:table_ref]).first
       resource_field = DatapackageResourceField.where(datapackage_resource_id: datapackage_resource.id,name: params[:col_ref]).order(:order).first
       response = rename_ftype(resource_field.attributes)
-      response = resource_field.as_json(:only => keep_keys)
+      response = response.as_json(:only => keep_keys)
       render json: response
     end
 

@@ -255,7 +255,7 @@ module ProjectHelper
       if field["constraints"].present?
         field_min = custom_is_string_int?(field["constraints"]["minimum"]) ? field["constraints"]["minimum"].to_i : 0
         field_max = custom_is_string_int?(field["constraints"]["maximum"]) ? field["constraints"]["maximum"].to_i : 0
-        res_field.big_integer = true if [field_min.abs, field_max.abs].max > 2147483647 # 2^31-1
+        res_field.big_integer = true if [field_min.abs, field_max.abs].max > BIG_INTEGER_LIMIT
       end
       if field["mira"].present?
         if field["mira"]["index"].to_s.present?

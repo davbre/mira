@@ -36,8 +36,8 @@ Rails.application.routes.draw do
       get "projects/:id/tables/:table_ref/columns" => "datapackage_resources#column_index"
       get "projects/:id/tables/:table_ref/columns/:col_ref" => "datapackage_resources#column_show"
       # Expose datapackage field metadata
-      get "projects/:id/tables/:table_ref/datapackage/columns" => "datapackage_resource_fields#index"
-      get "projects/:id/tables/:table_ref/datapackage/columns/:col_ref" => "datapackage_resource_fields#show"
+      get "projects/:id/tables/:table_ref/datapackage/fields" => "datapackage_resource_fields#index"
+      get "projects/:id/tables/:table_ref/datapackage/fields/:col_ref" => "datapackage_resource_fields#show"
 
       # Uploads (via datasources table)
       get "projects/:id/uploads" => "datasources#index"

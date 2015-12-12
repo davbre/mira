@@ -37,3 +37,5 @@ DATAPACKAGE_TYPE_MAP = {
     "string" => "text",
     "null" => "text"
   }
+
+BIG_INTEGER_LIMIT = 2147483647 # 2^31-1

@@ -126,7 +126,7 @@ class ProjectsControllerTest < ActionController::TestCase
     project = user.projects.build(name: "Testing deletion of uploads and logs", description: "Upload test project description")
     project.save
     upload_files = ["upload1","upload2"]
-    upload_to_project(project, upload_files)
+    upload_to_project(@controller, project, upload_files)
     relevant_project_id = Project.last.id
     relevant_project_log_path = Project.last.job_log_path
     relevant_project_upload_path = Project.last.upload_path
@@ -140,7 +140,7 @@ class ProjectsControllerTest < ActionController::TestCase
     project = user.projects.build(name: "Testing deletion of uploads and logs", description: "Upload test project description")
     project.save
     upload_files = ["upload1","upload2"]
-    upload_to_project(project, upload_files)
+    upload_to_project(@controller, project, upload_files)
     db_table_names = []
     upload_files.each do |ul|
       db_table_names << DatapackageResource.where(datapackage_id: project.datapackage, table_ref: ul).first.db_table_name

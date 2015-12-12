@@ -10,7 +10,7 @@ class ProjectsControllerUploadDatasourceTest < ActionController::TestCase
     @user = users(:one)
     @project = @user.projects.build(name: "Upload test project", description: "Upload test project description")
     @project.save
-    upload_to_project(@project, [], "uploads/datapackage.json") # just upload datapackage file
+    upload_to_project(@controller, @project, [], "uploads/datapackage.json") # just upload datapackage file
   end
 
   def teardown
@@ -92,7 +92,7 @@ class ProjectsControllerUploadDatasourceTest < ActionController::TestCase
     # if we POST a file we have no way of triggering delayed job so we're assuming it's uploaded to server and take it from there...
     upload_file = "upload1"
     csv_line_count = csv_line_count(upload_file)
-    upload_to_project(@project, [upload_file])
+    upload_to_project(@controller,@project, [upload_file])
     ds = Datasource.last # last uploaded file is our file
     dp_res_array = DatapackageResource.where(datasource_id: ds.id)
     # if one DatapackageResource object returned then the datasource_id variable was set correctly

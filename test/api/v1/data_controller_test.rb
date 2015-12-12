@@ -12,7 +12,7 @@ class Api::V1::DataControllerTest < ActionController::TestCase
     @project = @user.projects.build(name: "Upload test project", description: "Upload test project description")
     @project.save
     @uploads = ["good_upload"]
-    upload_to_project(@project, @uploads, "uploads/datapackage/good/datapackage.json") # just upload datapackage file
+    upload_to_project(@controller,@project, @uploads, "uploads/datapackage/good/datapackage.json") # just upload datapackage file
     @dp_file_json = JSON.parse(File.read(@dp_file))
   end
 
