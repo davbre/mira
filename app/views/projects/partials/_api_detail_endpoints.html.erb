@@ -41,20 +41,28 @@
         <dl class="dl-horizontal2">
           <dt width="40px">Detail</dt>
           <dd><a class="api-endpoint-link" href="<%= root_url %>api/projects/<%= @project.id %>/tables/<%= res.table_ref %>"><%= root_url %>api/projects/<%= @project.id %>/tables/<%= res.table_ref %></a></dd>
+
           <dt>Database columns</dt>
           <dd><a class="api-endpoint-link" href="<%= root_url %>api/projects/<%= @project.id %>/tables/<%= res.table_ref %>/columns"><%= root_url %>api/projects/<%= @project.id %>/tables/<%= res.table_ref %>/columns</a>
           </dd>
+          <dt>Single column</dt>
+          <dd><%= root_url %>api/projects/<%= @project.id %>/tables/<%= res.table_ref %>/columns/[column_name]
+          </dd>
+
           <dt>Datapackage fields</dt>
           <dd><a class="api-endpoint-link" href="<%= root_url %>api/projects/<%= @project.id %>/tables/<%= res.table_ref %>/datapackage/fields"><%= root_url %>api/projects/<%= @project.id %>/tables/<%= res.table_ref %>/datapackage/fields</a>
           </dd>
-          <dt width="40px">Data</dt>
-          <dd><a class="api-endpoint-link" href="<%= root_url %>api/projects/<%= @project.id %>/tables/<%= res.table_ref %>/data"><%= root_url %>api/projects/<%= @project.id %>/tables/<%= res.table_ref %>/data</a></dd>
+          <dt>Single field</dt>
+          <dd><%= root_url %>api/projects/<%= @project.id %>/tables/<%= res.table_ref %>/datapackage/fields/[field_name]</dd>
+
+          <dt width="40px"><strong>Data</strong></dt>
+          <dd><strong><a class="api-endpoint-link" href="<%= root_url %>api/projects/<%= @project.id %>/tables/<%= res.table_ref %>/data"><%= root_url %>api/projects/<%= @project.id %>/tables/<%= res.table_ref %>/data</a></strong></dd>
         </dl>
       </td>
     </tr>
     <% end %>
 
-  <table>
+  </table>
 
   <br /><br />
 </div>

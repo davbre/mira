@@ -222,7 +222,8 @@ module ProjectHelper
         if col.ftype == "string"
           # create case insensitive index. Don't think the add_index method can be used so used a raw query.
           # http://www.postgresql.org/docs/9.1/static/sql-createindex.html
-          create_index_execute_string = "CREATE INDEX index_" + db_table_name + "_on_" + col.name + " ON \"" + db_table_name + "\" (lower(\"" + col.name + "\"))"
+          new_col_name = new_col_name(col.name)
+          create_index_execute_string = "CREATE INDEX index_" + db_table_name + "_on_" + new_col_name + " ON \"" + db_table_name + "\" (lower(\"" + new_col_name + "\"))"
           ActiveRecord::Base.connection.execute(create_index_execute_string)
         else
           ActiveRecord::Base.connection.add_index db_table_name.to_sym, new_col_name(col.name)
