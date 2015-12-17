@@ -41,7 +41,6 @@ class Api::V1::DataControllerTest < ActionController::TestCase
     # type_map will look like {"column_name"=>"column_type", ... }
     ret = nil
     cell_type = type_map[text_cell[0]]
-    # binding.pry
     if text_cell[1].blank?
       ret = nil
     elsif ["text","date","datetime","time"].include? cell_type

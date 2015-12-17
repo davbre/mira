@@ -208,7 +208,9 @@ module ProjectHelper
         #   t.text   :description
         # Cater for big integers
         col_name = new_col_name(col.name)
-        if DATAPACKAGE_TYPE_MAP[col.ftype] == "integer" && col.big_integer == true
+        if DATAPACKAGE_TYPE_MAP[col.ftype] == "date" && col.format.to_s.downcase == "yyyy"
+          t.send "integer", col_name
+        elsif DATAPACKAGE_TYPE_MAP[col.ftype] == "integer" && col.big_integer == true
           t.send DATAPACKAGE_TYPE_MAP[col.ftype], col_name, :limit => 8
         else
           t.send DATAPACKAGE_TYPE_MAP[col.ftype], col_name

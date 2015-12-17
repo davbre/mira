@@ -11,7 +11,6 @@ module Api
         query_params = request.query_parameters
 
         # create active record table with scopes
-        # binding.pry
         table_with_scopes = get_mira_ar_table("#{resource.db_table_name}")
         scope = table_with_scopes.unscoped
 

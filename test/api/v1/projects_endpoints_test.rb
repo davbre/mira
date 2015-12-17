@@ -23,7 +23,6 @@ class Api::V1::ProjectsEndpointsTest < ActionController::TestCase
     # ds.save
     #
     # datapackage = JSON.parse(File.read(dp_file.tempfile.path))
-    # binding.pry
     # ProcessCsvUpload.new(ds.id).perform
   end
 

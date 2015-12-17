@@ -53,7 +53,6 @@ module Mira
     #          http://www.adobe.com/devnet/archive/html5/articles/understanding-cross-origin-resource-sharing-cors.html
 #"Rack::Cors"
     config.middleware.insert_before "ActionDispatch::Static", "Rack::Cors", :debug => true, :logger => (-> { Rails.logger }) do
-      #binding.pry
       allow do
         origins '*'
         resource '*',
