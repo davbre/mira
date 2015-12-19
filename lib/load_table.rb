@@ -33,6 +33,8 @@ class LoadTable
 
 
   def new_col_name(name)
+    # NOTE: better not to try maintaining case of variables as uppercase column names
+    # leads to problems later when creating scopes dynamically (ruby starts looking for constants).
     name.parameterize.underscore
   end
 
@@ -49,7 +51,9 @@ class LoadTable
   def slow_upload_to_db_table
     ar_table_klass = get_mira_ar_table(@datapackage_resource.db_table_name)
     uploaded_row_count = 0
-    CSV.foreach(@csv_file, headers: true) do |row|
+    CSV.foreach(@csv_file,
+                :headers => true,
+                :header_converters => lambda { |h| new_col_name(h) }) do |row|
       next if row.to_s.strip.size == 0
       if ar_table_klass.create!(row.to_hash)
         uploaded_row_count += 1

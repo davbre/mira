@@ -118,4 +118,9 @@ class ProjectsControllerUploadDatasourceTest < ActionController::TestCase
     skip
   end
 
+  test "slow upload method should map column names correctly regardless of case" do
+    skip
+  end
+
+
 end

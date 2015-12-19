@@ -285,4 +285,11 @@ class ProjectsControllerUploadDatapackageTest < ActionController::TestCase
   test "should save add_index properly" do
     skip
   end
+
+  test "should detect duplicate column names where case is irrelevant" do
+    # I think this test would currently fail
+    # MY_VARIABLE should equal My_Variable and this should not be allowed
+    # as the variable names are 'parameterized' prior to going into the database
+    skip
+  end
 end
