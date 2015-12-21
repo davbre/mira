@@ -136,8 +136,8 @@ class Api::V1::DataControllerTest < ActionController::TestCase
 
         # Get indices of rows with non-empty values then pick one at random
         # Query API using each the cell value and check that returned JSON matches our selected CSV row
-        non_empty_indices = []
-        csv_table.by_col[i].collect.with_index {|e,j| non_empty_indices << j if !e.nil?}
+        column_values = csv_table.by_col[i]
+        non_empty_indices = column_values.each_with_index.map {|e,j| e.present? ? j : nil }.compact
         random_row_num = non_empty_indices.sample
         random_csv_row_json = csv_row_to_json(upl  + ".csv",random_row_num + 1,csv_table[random_row_num])
 

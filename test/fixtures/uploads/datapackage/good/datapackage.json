@@ -151,6 +151,58 @@
       }
     },
     {
+      "path": "good_upload_with_tabs.csv",
+      "format": "csv",
+      "dialect": {
+        "delimiter": "\t"
+      },
+      "mediatype": "text/csv",
+      "schema": {
+        "fields": [
+          {
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "name": "age",
+            "type": "integer",
+            "constraints": {
+              "minimum": "23",
+              "maximum": "89"
+            }
+          },
+          {
+            "name": "dob",
+            "type": "date",
+            "constraints": {
+              "minimum": "2015-12-01",
+              "maximum": "2015-12-16"
+            }
+          },
+          {
+            "name": "score",
+            "type": "number",
+            "constraints": {
+              "minimum": "1.123",
+              "maximum": "534.234"
+            }
+          },
+          {
+            "name": "longid",
+            "type": "integer",
+            "constraints": {
+              "minimum": "1000000000000000000000000000",
+              "maximum": "1000000000000000000000000000"
+            }
+          },
+          {
+            "name": "boolfl",
+            "type": "boolean"
+          }
+        ]
+      }
+    },
+    {
       "path": "good_upload.csv",
       "format": "csv",
       "dialect": {

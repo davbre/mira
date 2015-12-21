@@ -254,6 +254,13 @@ class ProjectsControllerUploadDatapackageTest < ActionController::TestCase
     expected_error = assigns["project"].errors.messages[:datapackage].flatten.include? datapackage_errors[:delimiter_too_long]
   end
 
+  test "should be able to save tab character in the delimiter field " do
+    good_datapackage = fixture_file_upload("uploads/datapackage/good/datapackage.json", "application/json")
+    post :upload_datapackage, id: @project.id, :datapackage => good_datapackage
+    tabbed_resource = @project.datapackage.datapackage_resources.where(table_ref: "good_upload_with_tabs").first
+    assert_equal "\t", tabbed_resource.delimiter
+  end
+
   test "should detect a quote character of more than a single character" do
     long_quote_dp = fixture_file_upload("uploads/datapackage/bad_quote_char_too_long/datapackage.json", "application/json")
     post :upload_datapackage, id: @project.id, :datapackage => long_quote_dp

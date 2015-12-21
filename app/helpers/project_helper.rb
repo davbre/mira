@@ -180,7 +180,7 @@ module ProjectHelper
         dp_res.save
         extract_and_save_resource_fields(json_dp,dp_res)
       else
-        @feedback[:errors] << "Datapackage resource not saved for " + res["path"] + ". ERRORS: " + dp_res.to_a.join(", ") + "."
+        @feedback[:errors] << "Datapackage resource not saved for " + res["path"] + ". ERRORS: " + dp_res.errors.to_a.join(", ") + "."
       end
     end
   end
@@ -310,7 +310,7 @@ module ProjectHelper
             # the processing of the uploaded datapackage.json file).
             # Do a quick check of each csv file.
             dp_res_fields = dp_res.datapackage_resource_fields
-            csv_actual_fields = CSV.open(csv.tempfile, 'r') { |csvfile| csvfile.first }.sort
+            csv_actual_fields = CSV.open(csv.tempfile, 'r', {:col_sep => dp_res.delimiter}) { |csvfile| csvfile.first }.sort
             csv_metadata_fields = dp_res_fields.map { |f| f.name }.sort
             if csv_actual_fields != csv_metadata_fields
               @feedback[:errors] << "The datapackage.json field names for " + csv.original_filename +
