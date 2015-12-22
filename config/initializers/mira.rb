@@ -15,12 +15,16 @@ if ActiveRecord::Base.connection.table_exists? 'projects'
     valid_project_prefixes.any? { |z| a.starts_with? z}
   }
 
+  # create scopes on Project model to allow metadata search
+  load_dynamic_AR_class_with_scopes("project")
+
   # Create a model for each of the data tables
   api_tables.each do |table|
 
     load_dynamic_AR_class_with_scopes(table)
 
   end
+
 
 end
 

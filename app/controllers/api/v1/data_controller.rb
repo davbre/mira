@@ -6,12 +6,19 @@ module Api
 
       def index
 
-        project = Project.find(params[:id])
-        resource = DatapackageResource.where(datapackage_id: project.datapackage.id,table_ref: "#{params[:table_ref]}").first
+        if params[:id].present?
+          project = Project.find(params[:id])
+          resource = DatapackageResource.where(datapackage_id: project.datapackage.id,table_ref: "#{params[:table_ref]}").first
+          table_with_scopes = get_mira_ar_table("#{resource.db_table_name}")
+        elsif params[:db_table].present?
+          table_with_scopes = get_mira_ar_table(params[:db_table])
+        else
+          raise "Unexpected url reaching data#index action"
+        end
+
         query_params = request.query_parameters
 
         # create active record table with scopes
-        table_with_scopes = get_mira_ar_table("#{resource.db_table_name}")
         scope = table_with_scopes.unscoped
 
         # extract the sort order column

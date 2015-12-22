@@ -361,6 +361,9 @@ class Api::V1::DataControllerTest < ActionController::TestCase
     assert_equal upl_row_count, response.header["Records-Total"].to_i
   end
 
+  test "should be able to query project metadata" do
+    skip
+  end
   # can't test this locally
   # test "API projects/:id/tables/:table_ref/data - response should contain CORS header" do
   #   skip

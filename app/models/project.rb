@@ -6,7 +6,6 @@ class Project < ActiveRecord::Base
 
   validates :name,
             presence: true,
-            length: { maximum: 64 },
             uniqueness: { case_sensitive: false }
   validates :user_id, presence: true
 

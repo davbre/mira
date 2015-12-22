@@ -49,6 +49,7 @@ Rails.application.routes.draw do
             :constraints => lambda { |request| (request.params.has_key?(:draw) && request.params.has_key?(:start) && request.params.has_key?(:length)) }
 
       get "projects/:id/tables/:table_ref/data" => "data#index"
+      get ":db_table/metadata/search" => "data#index" # e.g. for searching project metadata
 
       # Distinct values
       get "projects/:id/tables/:table_ref/columns/:col_ref/distinct" => "data#distinct"

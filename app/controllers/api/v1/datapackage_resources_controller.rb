@@ -9,7 +9,7 @@ module V1
     def index
       project = Project.find(params[:id])
       datapackage = Datapackage.where(project_id: project.id).first
-      datapackage_resources = datapackage.datapackage_resources
+      datapackage_resources = datapackage.present? ? datapackage.datapackage_resources : []
       response = []
       datapackage_resources.each do |res|
         resource_with_url = add_public_url_to_resource(res)

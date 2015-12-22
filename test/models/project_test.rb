@@ -21,11 +21,11 @@ class ProjectTest < ActiveSupport::TestCase
     assert_not project.save
   end
 
-  test "should not save with a name length > 64" do
+  test "should save a long name" do
     user = users(:one)
-    name65 = "a" * 65
+    name65 = "a" * 2049
     project = user.projects.build(name: name65, description: "Test project description")
-    assert_not project.save
+    assert project.save
   end
 
   test "should not save with non-unique name" do

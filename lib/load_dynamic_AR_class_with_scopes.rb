@@ -3,16 +3,25 @@
   # method to create dynamic activerecord class with all the scopes required for the API
   def load_dynamic_AR_class_with_scopes(table)
 
-    new_klass = Class.new ActiveRecord::Base do
-      cattr_accessor :model_name
-      self.abstract_class = false
-      self.table_name = table # this is the existing table
-      self.model_name = ActiveModel::Name.new(self, nil, table)
-      # class_variable_set(:@@columns, self.columns_hash)
-      # set inheritance_column to nil. See http://api.rubyonrails.org/classes/ActiveRecord/Inheritance.html
-      # If we don't do this, columns with the name "type" generate errors:
-      #   "This error is raised because the column 'type' is reserved for storing the class in case of inheritance."
-      self.inheritance_column = nil
+    if ActiveRecord::Base.const_defined? "#{table}".capitalize
+      a_klass = ActiveRecord::Base.const_get "#{table}".capitalize
+    else
+
+      a_klass = Class.new ActiveRecord::Base do
+        cattr_accessor :model_name
+        self.abstract_class = false
+        self.table_name = table # this is the existing table
+        self.model_name = ActiveModel::Name.new(self, nil, table)
+        # class_variable_set(:@@columns, self.columns_hash)
+        # set inheritance_column to nil. See http://api.rubyonrails.org/classes/ActiveRecord/Inheritance.html
+        # If we don't do this, columns with the name "type" generate errors:
+        #   "This error is raised because the column 'type' is reserved for storing the class in case of inheritance."
+        self.inheritance_column = nil
+      end
+
+    end
+
+    a_klass.class_eval do
 
       self.column_names.each do |sv|
 
@@ -65,6 +74,9 @@
 
     end
 
-    Object.const_set "#{table}".capitalize, new_klass
+    # only create class if it doesn't exist (e.g. the Project class will already exist)
+    unless ActiveRecord::Base.const_defined? "#{table}".capitalize
+      Object.const_set "#{table}".capitalize, a_klass
+    end
 
   end
