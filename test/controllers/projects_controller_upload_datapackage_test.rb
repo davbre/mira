@@ -293,6 +293,10 @@ class ProjectsControllerUploadDatapackageTest < ActionController::TestCase
     skip
   end
 
+  test "should save datapackage resource description if provided" do
+    skip
+  end
+
   test "should detect duplicate column names where case is irrelevant" do
     # I think this test would currently fail
     # MY_VARIABLE should equal My_Variable and this should not be allowed

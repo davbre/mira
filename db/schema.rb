@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151209215327) do
+ActiveRecord::Schema.define(version: 20151227122837) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -43,6 +43,7 @@ ActiveRecord::Schema.define(version: 20151209215327) do
     t.text     "table_ref"
     t.text     "db_table_name"
     t.integer  "imported_rows"
+    t.text     "description"
   end
 
   add_index "datapackage_resources", ["table_ref"], name: "index_datapackage_resources_on_table_ref", using: :btree

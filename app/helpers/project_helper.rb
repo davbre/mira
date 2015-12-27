@@ -149,6 +149,7 @@ module ProjectHelper
       dp_res = DatapackageResource.new(datapackage_id: dp_object.id, path: res["path"], table_ref: File.basename(res["path"],".*"))
       dp_res.format = res["format"] if res.has_key? "format"
       dp_res.mediatype = res["mediatype"] if res.has_key? "mediatype"
+      dp_res.description = res["description"].to_s if res.has_key? "description"
       # delimiter
       delimiter = ','
       if res.has_key? "dialect" and res["dialect"].has_key? "delimiter"
