@@ -28,7 +28,7 @@ class DatapackageResource < ActiveRecord::Base
 
   def clear_db_table
     ar_table = Mira::Application.const_get(self.db_table_name.capitalize.to_sym)
-    if ActiveRecord::Base.connection.table_exists? ar_table
+    if ActiveRecord::Base.connection.table_exists? ar_table.to_s.downcase
       ar_table.delete_all
     end
   end
