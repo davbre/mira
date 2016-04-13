@@ -23,7 +23,21 @@
 
     a_klass.class_eval do
 
-      self.column_names.each do |sv|
+      self.columns.each do |sc|
+
+        sv = sc.name
+        st = sc.cast_type.type
+
+        # add validators
+        if ["id"].exclude? sv
+          if st == :integer
+            self.validates sv.to_sym, numericality: { only_integer: true, :allow_nil => true }
+          elsif [:float, :decimal].include? st
+            self.validates sv.to_sym, numericality: {:allow_nil => true}
+          end
+          # TODO ?? validators for dates, datetimes, booleans ??
+
+        end
 
         # !! NB: when a new scope is added, update data_controller, specifically the datatables section!!
         # using "_eq" suffix as without it we run the risk of conflicting with existing methods, e.g. "name", "time" etc.

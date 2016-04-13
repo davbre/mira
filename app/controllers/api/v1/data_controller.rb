@@ -169,6 +169,14 @@ module Api
       end
 
 
+
+      def recline
+        render json: { foo: "bar" }
+      end
+
+
+
+
       private
 
         def get_query_string_params(params)

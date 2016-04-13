@@ -43,18 +43,34 @@ Rails.application.routes.draw do
       get "projects/:id/uploads" => "datasources#index"
       get "projects/:id/uploads/:table_ref" => "datasources#show"
 
-      # Data
+      # Query data
       match "projects/:id/tables/:table_ref/data" => "data#datatables",
             :via => [:post],
             :constraints => lambda { |request| (request.params.has_key?(:draw) && request.params.has_key?(:start) && request.params.has_key?(:length)) }
 
       get "projects/:id/tables/:table_ref/data" => "data#index"
+      get "projects/:id/tables/:table_ref/recline/data" => "data#recline"
       get ":db_table/metadata/search" => "data#index" # e.g. for searching project metadata
-
       # Distinct values
       get "projects/:id/tables/:table_ref/columns/:col_ref/distinct" => "data#distinct"
+
+      # CRUD
+      post "projects/:project_id/tables/:table_ref/data/:data_id" => "data_crud#create"
+      get "projects/:project_id/tables/:table_ref/data/:data_id" => "data_crud#show"
+      patch "projects/:project_id/tables/:table_ref/data/:data_id" => "data_crud#update"
+      delete "projects/:project_id/tables/:table_ref/data/:data_id" => "data_crud#destroy"
     end
 
   end
+
+  # table = "xy41_97"
+  # table_klass = ActiveRecord::Base.const_get "#{table}".capitalize
+  # project_number, datasource_number = table.sub(Rails.configuration.x.db_table_prefix.downcase,"").split("_").map { |s| s.to_i }
+  # table_ref = DatapackageResource.where(datasource_id: datasource_number).first.table_ref
+  #
+  # puts "Adding routes for project " + project_number.to_s + ", table " + table_ref
+  # get_route =  "/api/projects/" + project_number.to_s + "/tables/" + table_ref + "/:id"
+  # binding.pry
+  # get get_route, :to => "projects#index"
 
 end
