@@ -55,7 +55,7 @@ Rails.application.routes.draw do
       get "projects/:id/tables/:table_ref/columns/:col_ref/distinct" => "data#distinct"
 
       # CRUD
-      post "projects/:project_id/tables/:table_ref/data/:data_id" => "data_crud#create"
+      post "projects/:project_id/tables/:table_ref/data" => "data_crud#create"
       get "projects/:project_id/tables/:table_ref/data/:data_id" => "data_crud#show"
       patch "projects/:project_id/tables/:table_ref/data/:data_id" => "data_crud#update"
       delete "projects/:project_id/tables/:table_ref/data/:data_id" => "data_crud#destroy"
