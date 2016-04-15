@@ -7,4 +7,5 @@ class User < ActiveRecord::Base
   # DBR: removed from above (only want admin user(s): :registerable,
 
   has_many :projects
+  has_many :api_keys
 end

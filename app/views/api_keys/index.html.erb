@@ -1,0 +1,22 @@
+<% provide(:title, 'API Keys') %>
+<h4>API Keys</h4>
+
+<% if user_signed_in? %>
+  <%= link_to "New API Key", new_user_api_key_path, :class => "btn btn-primary" %>
+  <br /><br />
+<% end %>
+<%= paginate @keys %>
+<table class="table">
+  <thead>
+    <th>Key</th>
+    <th>Description</th>
+    <th> </th>
+  </thead>
+  <% @keys.each do |k| %>
+    <tr>
+      <td><%= k.token %></td>
+      <td><%= k.description %></td>
+    </tr>
+  <% end %>
+</table>
+<%= paginate @keys %>

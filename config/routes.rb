@@ -5,6 +5,12 @@ Rails.application.routes.draw do
   devise_for :users
   root "projects#index"
 
+
+  resources :user do
+    resources :api_keys
+  end
+
+
   # UI routes
   resources :projects do
     resources :datasources
