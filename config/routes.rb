@@ -7,7 +7,9 @@ Rails.application.routes.draw do
 
 
   resources :user do
-    resources :api_keys
+    resources :api_keys do
+      resources :api_key_permissions
+    end
   end
 
 

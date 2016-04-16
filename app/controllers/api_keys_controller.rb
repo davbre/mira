@@ -2,19 +2,19 @@ class ApiKeysController < ApplicationController
 
   include ApplicationHelper
   include DatapackageHelper
-  include ProjectHelper
 
-  before_action :authenticate_user!, except: [ :index, :show, :api_detail ]
-  before_action :correct_user, only: [ :destroy, :edit, :update ]
+  before_action :authenticate_user!
+  before_action :correct_user#, only: [ :destroy, :edit, :update ]
 
 
   def index
-    @keys = ApiKey.order(id: :desc).page params[:page] # kaminari
+    @user = current_user
+    @keys = ApiKey.where(user_id: current_user.id).order(id: :desc).page params[:page] # kaminari
   end
 
 
   def show
-    @key = ApiKey.find(params[:id])
+    @user = current_user
   end
 
 
@@ -25,7 +25,6 @@ class ApiKeysController < ApplicationController
 
 
   def create
-    binding.pry
     @key = current_user.api_keys.build(api_key_params)
     @key.token = generate_api_key
     if @key.save
@@ -38,15 +37,23 @@ class ApiKeysController < ApplicationController
 
 
   def edit
-    @key = ApiKey.find(params[:id])
+    # TODO
   end
 
 
   def update
+    # TODO
   end
 
 
   def destroy
+    key = ApiKey.where(user: current_user.id, id: params[:id]).first
+    if key.destroy
+      flash[:success] = "API key deleted"
+    else
+      flash[:error] = "Failed to delete API key"
+    end
+    redirect_to user_api_keys_url(current_user)
   end
 
 
@@ -55,13 +62,11 @@ class ApiKeysController < ApplicationController
 
     # Rails strong parameters
     def api_key_params
-      binding.pry
-      params.permit(:description)
+      params.require(:api_key).permit(:description)
     end
 
     def correct_user
-      @key = current_user.api_keys.find_by(id: params[:id])
-      redirect_to root_url if @key.nil?
+      redirect_to root_url if params[:user_id] != current_user.id.to_s
     end
 
     def generate_api_key

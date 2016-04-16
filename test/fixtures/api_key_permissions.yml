@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  token_id: 1
+  scope: 1
+  project_id: 1
+  datapackage_resource_id: 1
+  db_table_name: MyString
+  permission: 1
+
+two:
+  token_id: 1
+  scope: 1
+  project_id: 1
+  datapackage_resource_id: 1
+  db_table_name: MyString
+  permission: 1

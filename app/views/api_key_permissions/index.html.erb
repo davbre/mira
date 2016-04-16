@@ -1,0 +1,23 @@
+<% provide(:title, 'API Key Permissions') %>
+
+<% if user_signed_in? %>
+  <%= link_to "New API Key Permission", new_user_api_key_api_key_permission_path, :class => "btn btn-primary" %>
+  <br /><br />
+<% end %>
+
+<h4>Permissions for API Key <code><%= @key.token %></code></h4>
+
+<%= paginate @permissions %>
+<table class="table">
+  <thead>
+    <th>Scope</th>
+    <th>Permission</th>
+  </thead>
+  <% @permissions.each do |p| %>
+    <tr>
+      <td><%= p.scope %></td>
+      <td><%= p.permission %></td>
+    </tr>
+  <% end %>
+</table>
+<%= paginate @permissions %>

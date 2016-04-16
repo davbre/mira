@@ -1,0 +1,8 @@
+<div class="row">
+  <div class="col-md-6 col-md-offset-3">
+    <%= form_for [@user, @key] do |f| %>
+      <%= render 'error_messages' %>
+      <%= select_tag(:permission, '<option value="1">Lisbon</option>') %>
+    <% end %>
+  </div>
+</div>

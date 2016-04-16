@@ -3,6 +3,7 @@
 
 <% if user_signed_in? %>
   <%= link_to "New project", new_project_path, :class => "btn btn-primary" %>
+  <%= link_to "Manage API Keys", user_api_keys_path(@user), :class => "btn btn-primary" %>
   <br /><br />
 <% end %>
 <%= paginate @projects %>
@@ -12,8 +13,12 @@
     <th>Name</th>
     <th>Description</th>
     <th> </th>
+    <% if user_signed_in? %>
+      <th> </th>
+      <th> </th>
+    <% end %>
   </thead>
-  <% @projects.each do |proj| %>  
+  <% @projects.each do |proj| %>
     <tr>
       <td><%= proj.id %></td>
       <td><a href="/projects/<%= proj.id %>/api-details"><%= proj.name %></a></td>
@@ -22,9 +27,9 @@
       <% if user_signed_in? %>
         <td><%= link_to "Edit Project", edit_project_path(proj), :class => "btn btn-xs btn-info" %></td>
         <td><%= link_to "delete", proj, method: :delete,
-                        data: { confirm: "You sure?" }, :class => "btn btn-xs btn-danger" %></td>      
-      <%end %>
+                        data: { confirm: "You sure?" }, :class => "btn btn-xs btn-danger" %></td>
+      <% end %>
     </tr>
-  <% end %>  
+  <% end %>
 </table>
 <%= paginate @projects %>
