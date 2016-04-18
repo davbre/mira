@@ -3,6 +3,10 @@ module Api
     class DataCrudController < Api::ApiController
 
       include ApplicationHelper
+
+      before_action :key_authorize_read, only: [ :show ]
+      before_action :key_authorize_write, only: [:create, :destroy, :update]
+
       # http_basic_authenticate_with name: "admin", password: "pass"
 
       @@param_suffix = "_val"  # this is the suffix we expect to see in incoming urls (using a suffix for parameters to avoid any conflict with other variable names)
