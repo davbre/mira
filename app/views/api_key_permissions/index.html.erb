@@ -10,13 +10,19 @@
 <%= paginate @permissions %>
 <table class="table">
   <thead>
-    <th>Scope</th>
     <th>Permission</th>
+    <th>Scope</th>
+    <th>Project</th>
   </thead>
   <% @permissions.each do |p| %>
     <tr>
-      <td><%= p.scope %></td>
       <td><%= p.permission %></td>
+      <td><%= p.permission_scope %></td>
+      <% if p.permission_scope == "global" %>
+        <td>All projects</td>
+      <% elsif p.permission_scope == "project" %>
+        <td><%= Project.find(p.project_id).name %></td>
+      <% end %>
     </tr>
   <% end %>
 </table>

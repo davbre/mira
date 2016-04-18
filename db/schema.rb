@@ -18,11 +18,11 @@ ActiveRecord::Schema.define(version: 20160415185504) do
 
   create_table "api_key_permissions", force: :cascade do |t|
     t.integer  "api_key_id"
-    t.integer  "scope"
+    t.integer  "permission_scope"
+    t.integer  "permission"
     t.integer  "project_id"
     t.integer  "datapackage_resource_id"
     t.string   "db_table_name"
-    t.integer  "permission"
     t.datetime "created_at",              null: false
     t.datetime "updated_at",              null: false
   end

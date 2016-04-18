@@ -1,8 +1,33 @@
 <div class="row">
-  <div class="col-md-6 col-md-offset-3">
-    <%= form_for [@user, @key] do |f| %>
+  <div class="col-md-6">
+    <br />
+    <%= form_for [@user, @key, @permission], :html => { multipart: true } do |f| %>
       <%= render 'error_messages' %>
-      <%= select_tag(:permission, '<option value="1">Lisbon</option>') %>
+        <p>Select projects:</p>
+        <select name="api_key_permission[projects][]" size="10" multiple>
+          <optgroup label="Apply to all your projects">
+            <option value="all">All projects</option>
+          </optgroup>
+          <optgroup label="Apply to specific projects">
+          <%= @user.projects.each do |p| %>
+            <option value="<%= p.id %>"><%= p.name %></option>
+          <% end %>
+        </select>
+      <br />
+      <p>Apply permission: read or read-write</p>
+      <div class="radio col-sm-6">
+        <input type="radio" name="api_key_permission[permission]" value="read">Read<br>
+        <input type="radio" name="api_key_permission[permission]" value="write">Read-write<br>
+      </div>
+
+      <div class="form-actions">
+        <%= f.submit "Save", :class => 'btn btn-primary' %>
+        <%= link_to t('.cancel', :default => t("helpers.links.cancel")),
+                    root_url, :class => 'btn btn-mini' %>
+      </div>
+
+
+        <%#= f.submit "Save changes", class: "btn btn-primary" %>
     <% end %>
   </div>
 </div>

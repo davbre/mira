@@ -1,6 +1,6 @@
 class ApiKeyPermission < ActiveRecord::Base
 
-  enum scope: [:all_projects, :project, :table]
+  enum permission_scope: [:global, :project, :table]
   enum permission: [ :read, :write ]
 
   belongs_to :api_key
