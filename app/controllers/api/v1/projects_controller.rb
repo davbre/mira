@@ -3,7 +3,7 @@ module V1
 
   class ProjectsController < Api::ApiController
 
-    before_action :key_authorize_read
+    #before_action :key_authorize_read
 
     def index
       paginate json: Project.all

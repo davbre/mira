@@ -7,7 +7,6 @@ private
   # permission_scope: 0 => global, 1 => project
   # permission: 0 => read, 1 => write
   def key_authorize_read
-
     # If no project key permissions set then allow read access. Otherwise check for valid permission.
     if no_project_permissions?
       global_permission = "ok"

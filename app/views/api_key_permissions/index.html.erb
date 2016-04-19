@@ -1,29 +1,34 @@
 <% provide(:title, 'API Key Permissions') %>
 
 <% if user_signed_in? %>
-  <%= link_to "New API Key Permission", new_user_api_key_api_key_permission_path, :class => "btn btn-primary" %>
-  <br /><br />
+    <%= link_to "New API Key Permission", new_user_api_key_api_key_permission_path, :class => "btn btn-primary" %>
+    <br /><br />
+
+  <h4>Permissions for API Key <code><%= @key.token %></code></h4>
+
+  <%= paginate @permissions %>
+  <table class="table">
+    <thead>
+      <th>Permission</th>
+      <th>Scope</th>
+      <th>Project</th>
+      <th> </th>
+    </thead>
+    <% @permissions.each do |p| %>
+      <tr>
+        <td><%= p.permission %></td>
+        <td><%= p.permission_scope %></td>
+        <% if p.permission_scope == "global" %>
+          <td>All projects</td>
+        <% elsif p.permission_scope == "project" %>
+          <td><%= Project.find(p.project_id).name %></td>
+        <% end %>
+        <td><%= link_to "delete", [@user, @key, p] , method: :delete,
+                        data: { confirm: "You sure?" }, :class => "btn btn-xs btn-danger" %></td>
+
+      </tr>
+    <% end %>
+  </table>
+  <%= paginate @permissions %>
+
 <% end %>
-
-<h4>Permissions for API Key <code><%= @key.token %></code></h4>
-
-<%= paginate @permissions %>
-<table class="table">
-  <thead>
-    <th>Permission</th>
-    <th>Scope</th>
-    <th>Project</th>
-  </thead>
-  <% @permissions.each do |p| %>
-    <tr>
-      <td><%= p.permission %></td>
-      <td><%= p.permission_scope %></td>
-      <% if p.permission_scope == "global" %>
-        <td>All projects</td>
-      <% elsif p.permission_scope == "project" %>
-        <td><%= Project.find(p.project_id).name %></td>
-      <% end %>
-    </tr>
-  <% end %>
-</table>
-<%= paginate @permissions %>

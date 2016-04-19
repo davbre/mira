@@ -8,20 +8,17 @@ class ApiKeysController < ApplicationController
 
 
   def index
-    @user = current_user
     @keys = ApiKey.where(user_id: current_user.id).order(id: :desc).page params[:page] # kaminari
   end
 
 
   def show
-    @user = current_user
     @key = ApiKey.find(params[:id])
   end
 
 
   def new
     @key = ApiKey.new
-    @user = current_user
   end
 
 
@@ -30,7 +27,7 @@ class ApiKeysController < ApplicationController
     @key.token = generate_api_key
     if @key.save
       flash[:success] = "New API key created."
-      redirect_to user_api_key_url(current_user, @key)
+      redirect_to user_api_keys_url(current_user)
     else
       render 'new'
     end
@@ -38,12 +35,20 @@ class ApiKeysController < ApplicationController
 
 
   def edit
-    # TODO
+    @key = ApiKey.find(params[:id])
+    # @key.token = generate_api_key
+    # @key.save
   end
 
 
   def update
-    # TODO
+    @key = ApiKey.find(params[:id])
+    if @key.update_attributes(api_key_params)
+      flash[:success] = "API key updated"
+      redirect_to user_api_keys_url(@user)
+    else
+      render 'edit'
+    end
   end
 
 
@@ -58,6 +63,17 @@ class ApiKeysController < ApplicationController
   end
 
 
+  def gen_new_key
+    @key = ApiKey.find(params[:id])
+    @key.token = generate_api_key
+    if @key.save
+      flash[:success] = "New API key created: " + @key.token
+    else
+      flash[:error] = "Failed to generate new API key!"
+    end
+    redirect_to user_api_keys_url(current_user)
+  end
+
   private
 
 
@@ -67,6 +83,7 @@ class ApiKeysController < ApplicationController
     end
 
     def correct_user
+      @user = current_user
       redirect_to root_url if params[:user_id] != current_user.id.to_s
     end
 

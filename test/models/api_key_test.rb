@@ -6,6 +6,18 @@ class ApiKeyTest < ActiveSupport::TestCase
     @ok_token = "123456789012345678901234"
   end
 
+  test "should save unique token of length 24" do
+    k = ApiKey.new(user_id: users(:one).id, token: @ok_token)
+    assert k.save
+  end
+
+  test "should not save same token twice" do
+    k1 = ApiKey.new(user_id: users(:one).id, token: @ok_token)
+    k1.save
+    k2 = ApiKey.new(user_id: users(:one).id, token: @ok_token)
+    assert_not k2.save
+  end
+
   test "should not save without a user" do
     k = ApiKey.new(token: @ok_token)
     assert_not k.save

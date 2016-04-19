@@ -2,10 +2,10 @@
 
 one:
   user: one
-  token: MyString
-  description: MyText
+  token: 123456789012345678901111
+  description: Test API key 1
 
 two:
   user: one
-  token: MyString
-  description: MyText
+  token: 123456789012345678902222
+  description: Test API key 2

@@ -48,27 +48,19 @@ class ApiKeyPermissionsController < ApplicationController
     end
   end
 
-  #
-  # def edit
-  #   @key = ApiKey.find(params[:id])
-  #   # TODO
-  # end
-  #
-  #
-  # def update
-  #   # TODO
-  # end
-  #
-  #
-  # def destroy
-  #   key = ApiKey.where(user: current_user.id, id: params[:id]).first
-  #   if key.destroy
-  #     flash[:success] = "API key deleted"
-  #   else
-  #     flash[:error] = "Failed to delete API key"
-  #   end
-  #   redirect_to user_api_keys_url(current_user)
-  # end
+
+  def destroy
+    key = ApiKey.where(user: current_user.id, id: params[:api_key_id]).first
+    key_permission = ApiKeyPermission.where(id: params[:id], api_key_id: params[:api_key_id]).first
+
+    if key.user_id == current_user.id && key_permission.destroy
+      flash[:success] = "API key permission deleted"
+    else
+      flash[:error] = "Failed to delete API key permission"
+    end
+
+    redirect_to user_api_key_api_key_permissions_url(current_user,key)
+  end
 
 
   private
