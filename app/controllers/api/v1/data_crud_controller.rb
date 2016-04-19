@@ -12,7 +12,7 @@ module Api
       @@param_suffix = "_val"  # this is the suffix we expect to see in incoming urls (using a suffix for parameters to avoid any conflict with other variable names)
 
       def create
-        db_table = get_db_table(params[:project_id],params[:table_ref])
+        db_table = get_db_table(params[:id],params[:table_ref])
         field_values = get_field_values(params)
 
         @new_row = db_table.new(field_values)
@@ -28,14 +28,15 @@ module Api
 
 
       def show
-        db_table = get_db_table(params[:project_id],params[:table_ref])
+        binding.pry
+        db_table = get_db_table(params[:id],params[:table_ref])
         row = db_table.find(params[:data_id])
         render json: row
       end
 
 
       def update
-        db_table = get_db_table(params[:project_id],params[:table_ref])
+        db_table = get_db_table(params[:id],params[:table_ref])
         field_values = get_field_values(params)
 
         @row = db_table.find(params[:data_id])
@@ -49,12 +50,12 @@ module Api
 
 
       def destroy
-        db_table_hash = get_db_table_info(params[:project_id],params[:table_ref])
+        db_table_hash = get_db_table_info(params[:id],params[:table_ref])
         db_table = db_table_hash[:db_table]
         @row = db_table.where(id: params[:data_id]).first
         if @row.present? && @row.destroy
           response = { meta: {
-                         project_id: db_table_hash[:project].id,
+                         id: db_table_hash[:project].id,
                          table: db_table_hash[:resource].db_table_name,
                          table_id: params[:data_id],
                          status: "deleted"
@@ -69,13 +70,13 @@ module Api
       private
 
         def get_db_table(project_id,table_ref)
-          project = Project.find(params[:project_id])
+          project = Project.find(project_id)
           resource = DatapackageResource.where(datapackage_id: project.datapackage.id,table_ref: table_ref).first
           db_table = get_mira_ar_table("#{resource.db_table_name}")
         end
 
         def get_db_table_info(project_id,table_ref)
-          project = Project.find(params[:project_id])
+          project = Project.find(project_id)
           resource = DatapackageResource.where(datapackage_id: project.datapackage.id,table_ref: table_ref).first
           db_table = get_mira_ar_table("#{resource.db_table_name}")
           { project: project, resource: resource, db_table: db_table }

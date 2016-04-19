@@ -1,7 +1,9 @@
 module Api
 module V1
 
-  class ProjectsController < ApplicationController
+  class ProjectsController < Api::ApiController
+
+    before_action :key_authorize_read
 
     def index
       paginate json: Project.all

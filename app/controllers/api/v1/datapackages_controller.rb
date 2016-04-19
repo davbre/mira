@@ -2,9 +2,11 @@ module Api
 module V1
 
 
-  class DatapackagesController < ApplicationController
+  class DatapackagesController < Api::ApiController
 
     include ApplicationHelper
+
+    before_action :key_authorize_read
 
     def show
       project = Project.find(params[:id])
