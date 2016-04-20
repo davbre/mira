@@ -13,7 +13,7 @@ private
     elsif db_key.present?
       global_permission = ApiKeyPermission.where(api_key_id: db_key.id, permission_scope: 0).first
       if global_permission.nil?
-        project_permission = ApiKeyPermission.where(api_key_id: db_key.id, permission_scope: 1, project_id: params[:project_id]).first
+        project_permission = ApiKeyPermission.where(api_key_id: db_key.id, permission_scope: 1, project_id: params[:id]).first
       else
         project_permission = nil
       end
@@ -26,11 +26,10 @@ private
 
 
   def key_authorize_write
-
     if db_key.present?
-      global_permission = ApiKeyPermission.where(api_key_id: db_key.id, permission_scope: 0, permission: 2).first
+      global_permission = ApiKeyPermission.where(api_key_id: db_key.id, permission_scope: 0, permission: 1).first
       if global_permission.nil?
-        project_permission = ApiKeyPermission.where(api_key_id: db_key.id, permission_scope: 1, permission: 2, project_id: params[:project_id]).first
+        project_permission = ApiKeyPermission.where(api_key_id: db_key.id, permission_scope: 1, permission: 1, project_id: params[:id]).first
       else
         project_permission = nil
       end
