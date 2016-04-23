@@ -12,8 +12,11 @@
     <th>ID</th>
     <th>Name</th>
     <th>Description</th>
-    <th> </th>
+    <th>Read Access</th>
+    <th>Write Access</th>
     <% if user_signed_in? %>
+      <!-- <th>Read Access</th>
+      <th>Write Access</th> -->
       <th> </th>
       <th> </th>
     <% end %>
@@ -23,6 +26,36 @@
       <td><%= proj.id %></td>
       <td><a href="/projects/<%= proj.id %>/api-details"><%= proj.name %></a></td>
       <td><%= proj.description %></td>
+
+      <td>
+      <% if @read_key_hash[proj.id].present? %>
+        <% if user_signed_in? %>
+          <%= link_to project_api_keys_path(@user,proj) do %>
+            <span class="glyphicon glyphicon-lock" title="Read enabled API - key required"></span>
+          <% end %>
+        <% else %>
+          <span class="glyphicon glyphicon-lock" title="Read enabled API - key required"></span>
+        <% end %>
+      <% else %>
+        <span class="glyphicon glyphicon-ok" title="Open read API - no key required"></span>
+      <% end %>
+      </td>
+
+      <td>
+      <% if @write_key_hash[proj.id].present? %>
+        <% if user_signed_in? %>
+          <%= link_to project_api_keys_path(@user,proj) do %>
+            <span class="glyphicon glyphicon-lock" title="Write enabled API - key required"></span>
+          <% end %>
+        <% else %>
+          <span class="glyphicon glyphicon-lock" title="Write enabled API - key required"></span>
+        <% end %>
+      <% else %>
+        <span class="glyphicon glyphicon-remove" title="Write API not available"></span>
+      <% end %>
+      </td>
+
+
       <td><%= link_to "Uploads", proj %></td>
       <% if user_signed_in? %>
         <td><%= link_to "Edit Project", edit_project_path(proj), :class => "btn btn-xs btn-info" %></td>

@@ -1,0 +1,26 @@
+<% provide(:title, 'Project API Keys') %>
+<h4>API Keys</h4>
+
+<% if user_signed_in? %>
+
+  <br /><br />
+  <%= paginate @proj_keys_info %>
+  <table class="table">
+    <thead>
+      <th>ID</td>
+      <th>Description</th>
+      <th>Key</th>
+      <th>Permission</th>
+    </thead>
+    <% @proj_keys_info.each do |kp| %>
+      <tr>
+        <td><%= kp.id %></td>
+        <td><%= kp.description %></td>
+        <td><%= kp.token %></td>
+        <td><%= kp.permission %></td>
+      </tr>
+    <% end %>
+  </table>
+  <%= paginate @proj_keys_info %>
+
+<% end %>

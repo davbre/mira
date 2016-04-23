@@ -12,7 +12,9 @@ Rails.application.routes.draw do
     end
   end
 
-  get "users/:user_id/api_keys/:id/generate-new-api-key" => "api_keys#gen_new_key"
+  # Custom routes relating to API keys
+  get "user/:user_id/api_keys/:id/generate-new-api-key" => "api_keys#gen_new_key"
+  get "user/:user_id/api_keys/projects/:project_id" => "api_keys#index_project", as: :project_api_keys
 
   # UI routes
   resources :projects do

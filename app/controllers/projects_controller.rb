@@ -16,6 +16,9 @@ class ProjectsController < ApplicationController
   def index
     @projects = Project.order(id: :desc).page params[:page] # kaminari
     @user = current_user
+    pids = @projects.ids
+    @read_key_hash = ApiKeyPermission.where(project_id: pids,permission: [0,1]).group(:project_id).count
+    @write_key_hash = ApiKeyPermission.where(project_id: pids,permission: 1).group(:project_id).count
   end
 
   def show

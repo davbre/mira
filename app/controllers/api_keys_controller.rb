@@ -74,6 +74,18 @@ class ApiKeysController < ApplicationController
     redirect_to user_api_keys_url(current_user)
   end
 
+
+  def index_project
+    # api_key_ids = ApiKeyPermission.where(project_id: params[:project_id],permission: [0,1]).map { |p| p.api_key_id }
+    # @keys = ApiKey.where(user_id: current_user.id, id: api_key_ids).order(id: :desc).page params[:page] # kaminari
+    select_str = "api_key_permissions.id,api_key_permissions.permission"
+    select_str += ",api_key_permissions.permission_scope,api_keys.description,api_keys.token"
+    @proj_keys_info = ApiKeyPermission.where(project_id: params[:project_id]).joins(:api_key).select(select_str).order(id: :desc).page params[:page]
+
+    # ApiKey.joins(:api_key_permissions).select("api_keys.token,api_keys.description,api_key_permissions.permission")
+  end
+
+
   private
 
 
