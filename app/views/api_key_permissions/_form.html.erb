@@ -4,7 +4,7 @@
     <%= form_for [@user, @key, @permission], :html => { multipart: true } do |f| %>
       <%= render 'error_messages' %>
         <p>Select projects:</p>
-        <select name="api_key_permission[projects][]" size="10" multiple>
+        <select name="api_key_permission[projects][]" size="10" multiple required="true">
           <optgroup label="Apply to all your projects">
             <option value="all">All projects</option>
           </optgroup>
@@ -16,8 +16,8 @@
       <br />
       <p>Apply permission: read or read-write</p>
       <div class="radio col-sm-6">
-        <input type="radio" name="api_key_permission[permission]" value="read">Read<br>
-        <input type="radio" name="api_key_permission[permission]" value="write">Read-write<br>
+        <input type="radio" name="api_key_permission[permission]" value="read" required="true">Read<br>
+        <input type="radio" name="api_key_permission[permission]" value="write" required="true">Read-write<br>
       </div>
 
       <div class="form-actions">
