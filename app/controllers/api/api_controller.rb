@@ -42,7 +42,8 @@ private
 
 
   def no_project_permissions?
-    ApiKeyPermission.where(project_id: params[:id]).empty?
+    # Check no global API key and no project specific key. If none => we will later allow read access
+    ApiKeyPermission.where(project_id: nil,permission_scope: 0).empty? && ApiKeyPermission.where(project_id: params[:id]).empty?
   end
 
 

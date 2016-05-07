@@ -8,6 +8,7 @@
   <table class="table">
     <thead>
       <th>ID</td>
+      <th>Scope</td>
       <th>Description</th>
       <th>Key</th>
       <th>Permission</th>
@@ -15,6 +16,7 @@
     <% @proj_keys_info.each do |kp| %>
       <tr>
         <td><%= kp.id %></td>
+        <td><%= kp.permission_scope %></td>
         <td><%= kp.description %></td>
         <td><%= kp.token %></td>
         <td><%= kp.permission %></td>

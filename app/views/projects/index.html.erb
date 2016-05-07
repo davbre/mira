@@ -28,7 +28,8 @@
       <td><%= proj.description %></td>
 
       <td>
-      <% if @read_key_hash[proj.id].present? %>
+      <%-# Check if there is a global (this will have a nil key) or project specific permission applied -%>
+      <% if @read_key_hash[nil].present? || @read_key_hash[proj.id].present? %>
         <% if user_signed_in? %>
           <%= link_to project_api_keys_path(@user,proj) do %>
             <span class="glyphicon glyphicon-lock" title="Read enabled API - key required"></span>
@@ -42,7 +43,8 @@
       </td>
 
       <td>
-      <% if @write_key_hash[proj.id].present? %>
+      <%-# Check if there is a global (this will have a nil key) or project specific permission applied -%>
+      <% if @write_key_hash[nil].present? || @write_key_hash[proj.id].present? %>
         <% if user_signed_in? %>
           <%= link_to project_api_keys_path(@user,proj) do %>
             <span class="glyphicon glyphicon-lock" title="Write enabled API - key required"></span>

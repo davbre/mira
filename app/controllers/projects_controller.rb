@@ -17,8 +17,10 @@ class ProjectsController < ApplicationController
     @projects = Project.order(id: :desc).page params[:page] # kaminari
     @user = current_user
     pids = @projects.ids
-    @read_key_hash = ApiKeyPermission.where(project_id: pids,permission: [0,1]).group(:project_id).count
-    @write_key_hash = ApiKeyPermission.where(project_id: pids,permission: 1).group(:project_id).count
+    # note that nil is added to list of pids so that we include in our hash any global permissions. We do this
+    # because as soon as a global permission is added, it locks down all projects.
+    @read_key_hash = ApiKeyPermission.where(project_id: [nil] + pids,permission: [0,1]).group(:project_id).count
+    @write_key_hash = ApiKeyPermission.where(project_id: [nil] + pids,permission: 1).group(:project_id).count
   end
 
   def show
