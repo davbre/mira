@@ -217,6 +217,12 @@ module ProjectHelper
           t.send DATAPACKAGE_TYPE_MAP[col.ftype], col_name
         end
       end
+      # Add extra columns if specified
+      if defined? Rails.configuration.x.extra_table_columns && Rails.configuration.x.extra_table_columns.present?
+        Rails.configuration.x.extra_table_columns.each do |xcol,xtype|
+          t.send xtype, xcol
+        end
+      end
     end
 
     # Add an index for each column

@@ -10,7 +10,8 @@ module Api
 
       def create
         db_table = get_db_table(params[:id],params[:table_ref])
-        @new_row = db_table.new(params[:data])
+        @new_row = db_table.new(table_params db_table)
+        binding.pry
         if @new_row.save
           response = @new_row
         else
@@ -26,11 +27,10 @@ module Api
         render json: row
       end
 
-
       def update
         db_table = get_db_table(params[:id],params[:table_ref])
         @row = db_table.find(params[:data_id])
-        if @row.update(params[:data])
+        if @row.update(table_params db_table)
           response = @row
         else
           response = { error: @row.errors.messages }
@@ -255,6 +255,18 @@ module Api
           resource = DatapackageResource.where(datapackage_id: project.datapackage.id,table_ref: table_ref).first
           db_table = get_mira_ar_table("#{resource.db_table_name}")
           { project: project, resource: resource, db_table: db_table }
+        end
+
+
+        # strong params...only allow params[:data], and specific fields within (i.e. those defined by the datapackage!)
+        def table_params(db_table)
+          dp_res_id = db_table.name.split("_")[1].to_i
+          table_fields_syms = DatapackageResourceField.where(datapackage_resource_id: dp_res_id).map { |e| e.name.to_sym }
+          # Add extra columns if defined in config
+          if defined? Rails.configuration.x.extra_table_columns && Rails.configuration.x.extra_table_columns.present?
+            extra_cols = Rails.configuration.x.extra_table_columns.keys
+          end
+          params.require(:data).permit(table_fields_syms + extra_cols)
         end
 
     end
