@@ -87,3 +87,9 @@ Some examles of interacting with a Mira API:
 10. Navigate to the following address for the project's API details:
 
     [http://localhost:3000/projects/1/api-details](http://localhost:3000/projects/1/api-details)
+
+
+
+---
+Example of using curl to write to table:
+curl -d "data[col1]=value1&data[col2]=val2" -H "X-Api-Key: 6041fa394bc84abe46ffdb71" http://localhost:3000/api/projects/50/tables/mytable/data

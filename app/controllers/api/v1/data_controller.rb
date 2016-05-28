@@ -11,7 +11,7 @@ module Api
       def create
         db_table = get_db_table(params[:id],params[:table_ref])
         @new_row = db_table.new(table_params db_table)
-        binding.pry
+
         if @new_row.save
           response = @new_row
         else
@@ -57,6 +57,52 @@ module Api
       end
 
 
+      # datatables editor request, which can be create, edit or update!
+      #{"action"=>"create",
+      #    "data"=>{"0"=>{"setup"=>"Bloo", "punchline"=>"yy"}},
+      #    "format"=>"json",
+      #    "controller"=>"api/v1/data",
+      #    "id"=>"50",
+      #    "table_ref"=>"jokes"}
+      # {
+#     "data": [
+#         {
+#             "DT_RowId":   "row_29",
+#             "first_name": "Fiona",
+#             "last_name":  "Green",
+#             "position":   "Chief Operating Officer (COO)",
+#             "office":     "San Francisco",
+#             "extn":       "2947",
+#             "salary":     "850000",
+#             "start_date": "2010-03-11"
+#         }
+#     ]
+# }
+      # See API, and the response expected: https://editor.datatables.net/manual/server
+      def datatables_editor
+        db_table = get_db_table(params[:id],params[:table_ref])
+        # we inspect request.query_parameters because params["action"]
+        # overwrites the "action" field sent by datatables.
+        qparams = request.query_parameters
+
+        response = {"data" => [], "error" => "", "fieldErrors" => []}
+
+        if qparams["action"] == "create"
+          # qparams["data"] should have keys ["0", "1",..."n"]. Should
+          # check this is the case here...TODO!
+          qparams["data"].each do |key,row_data|
+            # on each iteration we overwrite params["data"]
+            params["data"] = row_data
+            new_row = db_table.new(table_params db_table)
+            if new_row.save
+              response["data"] << new_row
+            else
+              response["error"] = "Could not create row(s)"
+            end
+          end
+        end
+        render json: response
+      end
 
 
 
@@ -268,6 +314,8 @@ module Api
           end
           params.require(:data).permit(table_fields_syms + extra_cols)
         end
+
+
 
     end
   end

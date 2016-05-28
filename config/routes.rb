@@ -55,22 +55,24 @@ Rails.application.routes.draw do
       get "projects/:id/uploads" => "datasources#index"
       get "projects/:id/uploads/:table_ref" => "datasources#show"
 
-      # Query data
-      match "projects/:id/tables/:table_ref/data" => "data#datatables",
-            :via => [:post],
-            :constraints => lambda { |request| (request.params.has_key?(:draw) && request.params.has_key?(:start) && request.params.has_key?(:length)) }
-
       get "projects/:id/tables/:table_ref/data" => "data#index"
       get "projects/:id/tables/:table_ref/recline/data" => "data#recline"
       get ":db_table/metadata/search" => "data#index" # e.g. for searching project metadata
       # Distinct values
       get "projects/:id/tables/:table_ref/columns/:col_ref/distinct" => "data#distinct"
 
-      # CRUD
+      # generic CRUD
       post "projects/:id/tables/:table_ref/data" => "data#create"
       get "projects/:id/tables/:table_ref/data/:data_id" => "data#show"
       patch "projects/:id/tables/:table_ref/data/:data_id" => "data#update"
       delete "projects/:id/tables/:table_ref/data/:data_id" => "data#destroy"
+
+      # datatables CRUD
+      post "projects/:id/tables/:table_ref/datatables" => "data#datatables",
+            :via => [:post],
+            :constraints => lambda { |request| (request.params.has_key?(:draw) && request.params.has_key?(:start) && request.params.has_key?(:length)) }
+      post "projects/:id/tables/:table_ref/datatables/editor" => "data#datatables_editor"
+
     end
 
   end
