@@ -57,27 +57,6 @@ module Api
       end
 
 
-      # datatables editor request, which can be create, edit or update!
-      #{"action"=>"create",
-      #    "data"=>{"0"=>{"setup"=>"Bloo", "punchline"=>"yy"}},
-      #    "format"=>"json",
-      #    "controller"=>"api/v1/data",
-      #    "id"=>"50",
-      #    "table_ref"=>"jokes"}
-      # {
-#     "data": [
-#         {
-#             "DT_RowId":   "row_29",
-#             "first_name": "Fiona",
-#             "last_name":  "Green",
-#             "position":   "Chief Operating Officer (COO)",
-#             "office":     "San Francisco",
-#             "extn":       "2947",
-#             "salary":     "850000",
-#             "start_date": "2010-03-11"
-#         }
-#     ]
-# }
       # See API, and the response expected: https://editor.datatables.net/manual/server
       def datatables_editor
         db_table = get_db_table(params[:id],params[:table_ref])
@@ -87,20 +66,46 @@ module Api
 
         response = {"data" => [], "error" => "", "fieldErrors" => []}
 
+
         if qparams["action"] == "create"
-          # qparams["data"] should have keys ["0", "1",..."n"]. Should
-          # check this is the case here...TODO!
-          qparams["data"].each do |key,row_data|
-            # on each iteration we overwrite params["data"]
-            params["data"] = row_data
-            new_row = db_table.new(table_params db_table)
-            if new_row.save
-              response["data"] << new_row
-            else
-              response["error"] = "Could not create row(s)"
-            end
-          end
+              # qparams["data"] should have keys ["0", "1",..."n"]. Should
+              # check this is the case here...TODO!
+              qparams["data"].each do |key,row_data|
+                # on each iteration we overwrite params["data"]
+                params["data"] = row_data
+                new_row = db_table.new(table_params db_table)
+                if new_row.save
+                  response["data"] << new_row
+                else
+                  response["error"] << new_row.errors.messages
+                end
+              end
+        elsif qparams["action"] == "edit"
+              qparams["data"].each do |key,row_data|
+                # on each iteration we overwrite params["data"]
+                params["data"] = row_data
+                row = db_table.find(key.to_i) # for the datatables 'edit' action, the key will be the row id!
+                if row.update(table_params db_table)
+                  response["data"] << row
+                else
+                  response["error"] << new_row.errors.messages
+                end
+              end
+        elsif qparams["action"] == "remove"
+              db_table_hash = get_db_table_info(params[:id],params[:table_ref])
+              db_table = db_table_hash[:db_table]
+              qparams["data"].each do |key,row_data|
+                row = db_table.where(id: key.to_i).first
+                if row.present? && row.destroy
+                  response = {} # on successful delete datatables expects empty hash
+                else
+                  response = { error: 404 }
+                end
+              end
+        else
+          response["error"] = "Unexpected action '" + qparams["action"] + "' from datatables!"
         end
+
         render json: response
       end
 

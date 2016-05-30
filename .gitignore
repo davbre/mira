@@ -22,7 +22,7 @@
 #/public/job_logs/*
 /.idea/*
 docker.md
-notes.md
+notes*
 commands.md
 Dockerfile
 docker-compose.yml
