@@ -217,12 +217,6 @@ module ProjectHelper
           t.send DATAPACKAGE_TYPE_MAP[col.ftype], col_name
         end
       end
-      # Add extra columns if specified
-      if defined? Rails.configuration.x.extra_table_columns && Rails.configuration.x.extra_table_columns.present?
-        Rails.configuration.x.extra_table_columns.each do |xcol,xtype|
-          t.send xtype, xcol
-        end
-      end
     end
 
     # Add an index for each column
@@ -273,6 +267,13 @@ module ProjectHelper
             res_field.add_index = false
           else
             res_field.add_index = true
+          end
+        end
+        if field["mira"]["private"].to_s.present?
+          if field["mira"]["private"].to_s.downcase.to_sym == :true
+            res_field.private = true
+          else
+            res_field.private = false
           end
         end
       end

@@ -86,6 +86,24 @@
 
       end
 
+
+      if table.downcase.start_with? Rails.configuration.x.db_table_prefix.downcase
+        # want to exclude 'private' fields by default. See:
+        # http://www.daveperrett.com/articles/2010/10/03/excluding-fields-from-rails-json-and-xml-output/
+        # We create a method dynamically to do this - we override the as_json method
+        table_dpr = DatapackageResource.where(db_table_name: table).first
+        private_fields = []
+        DatapackageResourceField.where(datapackage_resource_id: table_dpr.id, private: true).each do |privf|
+          private_fields << privf.name.to_sym
+        end
+
+        define_method("as_json") do |options|
+          options[:except] ||= private_fields
+          super(options)
+        end
+      end
+
+
     end
 
     # only create class if it doesn't exist (e.g. the Project class will already exist)

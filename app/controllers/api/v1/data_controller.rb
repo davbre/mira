@@ -162,6 +162,7 @@ module Api
         end
 
         results[:data] = paginate scope, per_page: per_page_num
+
         render json: results
 
 
@@ -313,11 +314,7 @@ module Api
         def table_params(db_table)
           dp_res_id = db_table.name.split("_")[1].to_i
           table_fields_syms = DatapackageResourceField.where(datapackage_resource_id: dp_res_id).map { |e| e.name.to_sym }
-          # Add extra columns if defined in config
-          if defined? Rails.configuration.x.extra_table_columns && Rails.configuration.x.extra_table_columns.present?
-            extra_cols = Rails.configuration.x.extra_table_columns.keys
-          end
-          params.require(:data).permit(table_fields_syms + extra_cols)
+          params.require(:data).permit(table_fields_syms)
         end
 
 

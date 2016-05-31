@@ -40,10 +40,6 @@ module Mira
 
     config.x.upload_path = "#{Rails.root}/public/uploads"
 
-    # DBR: extra columns in project tables. You may want additional columns in
-    # your tables, e.g. to store metadata.
-    config.x.extra_table_columns = { mira_source: "text" }
-
     # This is not exactly required but decided to make it explicit
     # as we can see below that we are :expose'ing some of these
     # headers in the rack-cors section

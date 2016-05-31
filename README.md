@@ -91,5 +91,24 @@ Some examles of interacting with a Mira API:
 
 
 ---
+# Extra notes
 Example of using curl to write to table:
 curl -d "data[col1]=value1&data[col2]=val2" -H "X-Api-Key: 6041fa394bc84abe46ffdb71" http://localhost:3000/api/projects/50/tables/mytable/data
+
+datapackage.json fields can contain a "mira" object. You can use this to prevent an index being added to a column or
+to make a column private (i.e. not included in the JSON payload from the API):
+
+    {
+      "name":"colx",
+      "type":"string",
+      "mira": {
+        "index": false
+      },
+      "name":"colx",
+      "type":"string",
+      "mira": {
+        "private": true
+      }      
+    }
+
+Use constraints => maximum and minimum to force use of big integer (not ideal...maybe use mira => big_integer)
