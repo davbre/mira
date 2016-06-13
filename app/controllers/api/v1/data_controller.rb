@@ -45,15 +45,16 @@ module Api
         @row = db_table.where(id: params[:data_id]).first
         if @row.present? && @row.destroy
           response = { meta: {
-                         project_id: db_table_hash[:project].id,
-                         table: db_table_hash[:resource].db_table_name,
-                         table_id: params[:data_id],
-                         status: "deleted"
+                         projectId: db_table_hash[:project].id,
+                         tableName: db_table_hash[:resource].table_ref,
+                         rowId: @row.id
                      }}
+          status = :ok
         else
-          response = { error: 404 }
+          response = { error: "404: row does not exist" }
+          status = :not_found
         end
-        render json: response, status: :not_found
+        render json: response, status: status
       end
 
 

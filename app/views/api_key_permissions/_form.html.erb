@@ -15,9 +15,17 @@
         </select>
       <br />
       <p>Apply permission: read or read-write</p>
-      <div class="radio col-sm-6">
-        <input type="radio" name="api_key_permission[permission]" value="read" required="true">Read<br>
-        <input type="radio" name="api_key_permission[permission]" value="write" required="true">Read-write<br>
+
+      <!-- <div class="radio">
+        <label><input type="radio" "api_key_permission[permission]" value="read" required>Read</label>
+      </div>
+      <div class="radio">
+        <label><input type="radio" name="api_key_permission[permission]" value="write" required>Read-write</label>
+      </div> -->
+
+      <div class="radio inline">
+        <input type="radio" name="api_key_permission[permission]" value="read" required="true">Read<br />
+        <input type="radio" name="api_key_permission[permission]" value="write" required="true">Read-write
       </div>
 
       <div class="form-actions">

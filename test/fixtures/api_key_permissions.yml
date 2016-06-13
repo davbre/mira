@@ -1,5 +1,17 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
+one:
+  api_key: one
+  project_id: one
+  permission_scope: :project
+  permission: :read
+
+two:
+  api_key: one
+  project_id: two
+  permission_scope: :project
+  permission: :write
+
 # one:
 #   token_id: 1
 #   scope: 1

@@ -2,10 +2,10 @@
 
 one:
   name: Project 1
-  description: Test project 2 description
+  description: Test project 1 description
   user: one
 
 two:
-  name: Test Project 1
-  description: Test project 1 description
-  user: two
+  name: Test Project 2
+  description: Test project 2 description
+  user: one

@@ -33,8 +33,13 @@ class ApiKeyPermissionTest < ActiveSupport::TestCase
   end
 
   test "should NOT save when permission already exists" do
-    # not a big deal but should enforce this
-    skip
+    project = projects(:one)
+    scope = ApiKeyPermission.permission_scopes[:project]
+    perm = ApiKeyPermission.permissions[:read]
+    akp = ApiKeyPermission.new(api_key_id: @key.id, permission_scope: scope, permission: perm, project_id: project)
+    akp.save
+    akp_same = ApiKeyPermission.new(api_key_id: @key.id, permission_scope: scope, permission: perm, project_id: project)
+    assert_not akp_same.valid?
   end
 
 end
