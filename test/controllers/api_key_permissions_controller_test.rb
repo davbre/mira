@@ -3,10 +3,6 @@ require 'test_helper'
 
 class ApiKeyPermissionsControllerTest < ActionController::TestCase
 
-  # send non-numeric project ids  => should not add permission
-  # send project ids not belonging to current_user => should not add permission
-
-  # add global read API key, should lock down all projects
 
   setup do
     @user1 = users(:one)
@@ -80,6 +76,30 @@ class ApiKeyPermissionsControllerTest < ActionController::TestCase
       post :create, :user_id => @user1.id, \
            :api_key_id => @key_permission.api_key_id, \
            :api_key_permission =>  { :projects => [projects(:two).id], \
+                                     :permission => :read }
+    end
+    assert_redirected_to user_api_key_api_key_permissions_path
+  end
+
+
+  # send non-numeric project ids  => should not add permission
+  test "should not add permission if project ids non-numeric" do
+    assert_no_difference('ApiKeyPermission.count') do
+      post :create, :user_id => @user1.id, \
+           :api_key_id => @key_permission.api_key_id, \
+           :api_key_permission =>  { :projects => ["a", "b", "c"], \
+                                     :permission => :read }
+    end
+    assert_redirected_to user_api_key_api_key_permissions_path
+  end
+
+  # send project ids not belonging to current_user => should not add permission
+  # projects(:three) belongs to different user
+  test "should not add permission if not project of current user" do
+    assert_no_difference('ApiKeyPermission.count') do
+      post :create, :user_id => @user1.id, \
+           :api_key_id => @key_permission.api_key_id, \
+           :api_key_permission =>  { :projects => [projects(:three).id], \
                                      :permission => :read }
     end
     assert_redirected_to user_api_key_api_key_permissions_path

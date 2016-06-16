@@ -9,3 +9,8 @@ two:
   name: Test Project 2
   description: Test project 2 description
   user: one
+
+three:
+  name: Test Project 3
+  description: Test project 3 description
+  user: two

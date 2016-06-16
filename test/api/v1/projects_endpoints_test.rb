@@ -45,4 +45,26 @@ class Api::V1::ProjectsEndpointsTest < ActionController::TestCase
   end
 
 
+  test "should not be able to read project metadata when API key set" do
+    # this is not currently the case! I.e. project metadata can be read
+    [:global, :project].each do |scope|
+
+      project_id = (scope == :global) ? nil : @project.id
+
+      [:read, :write].each_with_index do |perm,ndx|
+        new_key = ApiKey.new(user_id: @user.id, token: ndx.to_s[0]*24, description: "New API key")
+        new_key.save
+        permission = ApiKeyPermission.new(api_key_id: new_key.id, \
+                                          permission_scope: scope, \
+                                          permission: perm,
+                                          project_id: project_id)
+        permission.save
+
+        get :index, :id => @project.id, :table_ref => @uploads[0]
+        assert_response :unauthorized
+
+      end
+    end
+  end
+
 end

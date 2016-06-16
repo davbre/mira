@@ -13,6 +13,8 @@ class Api::V1::DataControllerTest < ActionController::TestCase
     @project.save
     @uploads = ["good_upload"]
     upload_to_project(@controller,@project, @uploads, "uploads/datapackage/good/datapackage.json") # just upload datapackage file
+    @last_dpr = DatapackageResource.last
+    @test_table = Mira::Application.const_get(@last_dpr.db_table_name.capitalize.to_sym)
   end
 
   test "should return 200 success when reading row data with no API key set" do
@@ -33,11 +35,68 @@ class Api::V1::DataControllerTest < ActionController::TestCase
   end
 
 
-  test "should NOT return a row of data when API key set" do
-    # create key
-    # create read permission on this project
-    # 'get' data without API key in header
-    # assert there is an error response
+  test "should not be able to read or write data when global API key set" do
+    # read permissions restricted for both :read and :write
+    # Cross reference the api data actions. We loop over the API key scopes and
+    # then permissions, testing each endpoint.
+    [:global, :project].each do |scope|
+
+      project_id = (scope == :global) ? nil : @project.id
+
+      [:read, :write].each_with_index do |perm,ndx|
+
+        new_key = ApiKey.new(user_id: @user.id, token: ndx.to_s[0]*24, description: "New API key")
+        new_key.save
+        permission = ApiKeyPermission.new(api_key_id: new_key.id, \
+                                                      permission_scope: scope, \
+                                                      permission: perm,
+                                                      project_id: project_id)
+        permission.save
+
+        # just make sure we are referencing the correct data!
+        assert_equal @last_dpr.table_ref, @uploads[0]
+
+        # check read endpoints
+        get :index, :id => @project.id, :table_ref => @uploads[0]
+        assert_response :unauthorized
+
+        post :datatables, :id => @project.id, :table_ref => @uploads[0]
+        assert_response :unauthorized
+
+        get :show, :id => @project.id, :table_ref => @uploads[0], :data_id => 1
+        assert_response :unauthorized
+
+        get :distinct, :id => @project.id, :table_ref => @uploads[0], :col_ref => "age"
+        assert_response :unauthorized
+
+        # check write endpoints
+        count_before = @test_table.count
+        post :create, :id => @project.id, :table_ref => @uploads[0]
+        count_after = @test_table.count
+        assert_response :unauthorized
+        assert_equal count_before, count_after
+
+        patch :update, :id => @project.id, :table_ref => @uploads[0], :data_id => 1
+        assert_response :unauthorized
+
+        count_before = @test_table.count
+        delete :destroy, :id => @project.id, :table_ref => @uploads[0], :data_id => 1
+        count_after = @test_table.count
+        assert_response :unauthorized
+        assert_equal count_before, count_after
+
+
+      end
+
+    end
+  end
+
+  test "should be able to write/update/delete data when using global write API key" do
     skip
   end
+
+  test "should be able to write/update/delete data when using project write API key" do
+    skip
+  end
+
 end
