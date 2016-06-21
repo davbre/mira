@@ -1,8 +1,9 @@
 module Api
   module V1
-    class DataController < Api::ApiController
+    class DataController < ActionController::Base
 
       include ApplicationHelper
+      include DataAccessHelper
 
       before_action :key_authorize_read, only: [ :show, :index, :datatables, :distinct ]
       before_action :key_authorize_write, only: [:create, :destroy, :update]

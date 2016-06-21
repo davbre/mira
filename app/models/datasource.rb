@@ -1,16 +1,18 @@
 class Datasource < ActiveRecord::Base
 
   belongs_to :project
-  has_one :datapackage_resource
+  belongs_to :datapackage_resource
   validates :project_id, presence: true
 
   has_attached_file :datafile,
-    :path => ":rails_root/public/uploads/project_:proj_id/:filename",
+    :path => ":rails_root/project_files/uploads/project_:proj_id/:filename",
     :url  => "/uploads/project_:proj_id/:filename"
 
   # validates_attachment :datafile, :content_type => /\Atext\/csv/
   validates_attachment :datafile, content_type: { :content_type => [/\Atext\//, "application/json"] }
-  validates_attachment_file_name :datafile, :matches => [/csv\Z/, /datapackage.*\.json/]
+  validates_attachment_file_name :datafile, :matches => [/csv\Z/]
+
+  validate :validate_filename_unique, on: :create
 
   process_in_background :datafile # delayed_paperclip
 
@@ -47,4 +49,9 @@ class Datasource < ActiveRecord::Base
       attachment.instance.project_id
     end
 
+    def validate_filename_unique
+      if Datasource.where(project_id: self.project_id, datafile_file_name: self.datafile_file_name).length > 0
+        errors.add(:datasource, "A file of this name has already been uploaded to this project!")
+      end
+    end
 end

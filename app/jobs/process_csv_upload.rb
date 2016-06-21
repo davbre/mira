@@ -34,7 +34,7 @@ class ProcessCsvUpload
     job_logger.info("Finished uploading " + @ds.datafile_file_name + " to the database")
     # we can now set the datasource_id in the datapackage_resource table as we
     # know it has been uploaded
-    @datapackage_resource.datasource_id = @ds.id
+    # @datapackage_resource.datasource_id = @ds.id
     if @datapackage_resource.save
       job_logger.info("Saved the datasource_id to the datapackage_resource table")
       @ds.ok!
@@ -46,10 +46,9 @@ class ProcessCsvUpload
   end
 
   def error(job,exception)
-    @datapackage_resource.datasource_id = @ds.id
-    if @datapackage_resource.save
-      job_logger.info("Saved the datasource_id to the datapackage_resource table")
-    end
+    # if @datapackage_resource.save
+    #   job_logger.info("Saved the datasource_id to the datapackage_resource table")
+    # end
     job_logger.error("Something went wrong while loading " + @ds.datafile_file_name + " into the database...")
     job_logger.error(exception)
     @ds.error!

@@ -1,0 +1,21 @@
+<% provide(:title, 'Datasources') %>
+<h2>Datasource</h2>
+
+<%= paginate @dss %>
+<table class="table">
+  <thead>
+    <th>ID</th>
+    <th>File Name</th>
+    <th>Size</th>
+    <th>Uploaded</th>
+  </thead>
+  <% @dss.each do |ds| %>
+    <tr>
+      <td><%= ds.id %></td>
+      <td><%=link_to ds.datafile_file_name, project_datasource_path(@proj,ds) %></td>
+      <td><%= number_to_human_size ds.datafile_file_size %></td>
+      <td><%= ds.created_at %></td>
+    </tr>
+  <% end %>
+</table>
+<%= paginate @dss %>

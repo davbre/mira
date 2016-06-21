@@ -32,7 +32,6 @@ module ProjectHelper
       no_datapackage: "This project has no associated datapackage.",
       missing_resource_metadata: "This project's datapackage has no resource metadata.",
       non_csv: "Only csv files can be uploaded.",
-      already_uploaded: "A file of this name has been uploaded already",
       no_resource_metadata: "This project's datapackage has no metadata for uploaded file.",
       field_missing_metadata: "This project's datapackage has metadata for the uploaded file but none for its fields."
     }
@@ -217,6 +216,10 @@ module ProjectHelper
           t.send DATAPACKAGE_TYPE_MAP[col.ftype], col_name
         end
       end
+      # add some extra columns to each table
+      t.send "datetime", "mira_created_at"
+      t.send "integer", "mira_source_id"
+      t.send "text", "mira_source_type"
     end
 
     # Add an index for each column
@@ -295,19 +298,19 @@ module ProjectHelper
     else
       datasource_filenames = @csv_uploads.map { |u| u.original_filename }
       datapackage_filenames = @datapackage.datapackage_resources.map { |ds| ds.path }
-      existing_uploads = @project.datasources.map { |ds| ds.datafile_file_name }
+
       @csv_uploads.each do |csv|
+        # we may not have an exact filename match but we allow suffixes e.g. mydata_20161212.csv for mydata.csv
+        csv_root_name = get_csv_root_name(csv)
+
         if csv.original_filename !~ /\.csv/i
           @feedback[:errors] << datasource_errors[:non_csv]
           @feedback[:errors] << "Upload: " + csv.original_filename + "."
-        elsif datapackage_filenames.exclude? csv.original_filename
+        elsif (datapackage_filenames.exclude?(csv.original_filename) && csv_root_name == "")
           @feedback[:errors] << datasource_errors[:no_resource_metadata]
           @feedback[:errors] << "Upload: " + csv.original_filename + "."
-        elsif existing_uploads.include? csv.original_filename
-          @feedback[:errors] << datasource_errors[:already_uploaded]
-          @feedback[:errors] << "Upload: " + csv.original_filename + "."
         else
-          dp_res = @datapackage.datapackage_resources.where(path: csv.original_filename).first
+          dp_res = @datapackage.datapackage_resources.where(path: csv_root_name + ".csv").first
           dp_res_fields = dp_res.datapackage_resource_fields
           if dp_res_fields.empty?
             # shouldn't ever reach here...but just in case
@@ -355,7 +358,12 @@ module ProjectHelper
 
   def save_datasource(csv)
     csv_file = File.open(csv.tempfile.path)
-    ds = @project.datasources.create(datafile: csv_file, datafile_file_name: csv.original_filename, datapackage_id: @datapackage.id) # ds = datasource
+    csv_save_basename = get_csv_root_name(csv)
+    ds_datapackage_resource = @datapackage_resources.where(table_ref: csv_save_basename).first
+    ds = @project.datasources.create(datafile: csv_file, \
+                                     datafile_file_name: csv.original_filename, \
+                                     datapackage_id: @datapackage.id, \
+                                     datapackage_resource_id: ds_datapackage_resource.id)
     if ds.valid?
       ds.public_url = ds.datafile.url.partition("?").first
     else
@@ -365,5 +373,16 @@ module ProjectHelper
     retval
   end
 
+  def basename(filename)
+    File.basename(filename, File.extname(filename))
+  end
 
+  def get_csv_root_name(csv)
+    csv_basename = basename(csv.original_filename)
+    datapackage_basenames = @datapackage.datapackage_resources.map { |ds| basename(ds.path) }
+    possible_csv_root_names = datapackage_basenames.select { |e| csv_basename.start_with? e }
+    # A filename in a datapackage may be a substring of another filename, so we take the longest
+    # matching prefix
+    csv_root_name = possible_csv_root_names.sort_by {|x| x.length}.last
+  end
 end

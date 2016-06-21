@@ -1,11 +1,6 @@
-class Api::ApiController < ActionController::Base
+module DataAccessHelper
 
-
-
-private
-
-  # permission_scope: 0 => global, 1 => project
-  # permission: 0 => read, 1 => write
+  private
   def key_authorize_read
     # If no project key permissions set then allow read access. Otherwise check for valid permission.
     if no_project_permissions?
@@ -57,4 +52,5 @@ private
     message = message.chop + " " + extra + "." if extra.present?
     {errors: [ code: 401, message: message]}
   end
+
 end

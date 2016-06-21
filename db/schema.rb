@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160531140633) do
+ActiveRecord::Schema.define(version: 20160617073857) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -58,7 +58,6 @@ ActiveRecord::Schema.define(version: 20160531140633) do
     t.text     "mediatype"
     t.datetime "created_at",      null: false
     t.datetime "updated_at",      null: false
-    t.integer  "datasource_id"
     t.text     "quote_character"
     t.text     "table_ref"
     t.text     "db_table_name"
@@ -83,17 +82,20 @@ ActiveRecord::Schema.define(version: 20160531140633) do
 
   create_table "datasources", force: :cascade do |t|
     t.integer  "project_id"
-    t.datetime "created_at",            null: false
-    t.datetime "updated_at",            null: false
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
     t.string   "datafile_file_name"
     t.string   "datafile_content_type"
     t.integer  "datafile_file_size"
     t.datetime "datafile_updated_at"
     t.text     "public_url"
-    t.integer  "datapackage_id"
     t.integer  "import_status"
+    t.integer  "datapackage_resource_id"
+    t.integer  "datapackage_id"
   end
 
+  add_index "datasources", ["datapackage_id"], name: "index_datasources_on_datapackage_id", using: :btree
+  add_index "datasources", ["datapackage_resource_id"], name: "index_datasources_on_datapackage_resource_id", using: :btree
   add_index "datasources", ["project_id"], name: "index_datasources_on_project_id", using: :btree
 
   create_table "delayed_jobs", force: :cascade do |t|
@@ -113,7 +115,7 @@ ActiveRecord::Schema.define(version: 20160531140633) do
   add_index "delayed_jobs", ["priority", "run_at"], name: "delayed_jobs_priority", using: :btree
 
   create_table "projects", force: :cascade do |t|
-    t.string   "name"
+    t.text     "name"
     t.text     "description"
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
@@ -142,5 +144,7 @@ ActiveRecord::Schema.define(version: 20160531140633) do
 
   add_foreign_key "datapackage_resource_fields", "datapackage_resources"
   add_foreign_key "datapackages", "projects"
+  add_foreign_key "datasources", "datapackage_resources"
+  add_foreign_key "datasources", "datapackages"
   add_foreign_key "datasources", "projects"
 end

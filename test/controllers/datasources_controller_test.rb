@@ -78,4 +78,12 @@ class DatasourcesControllerTest < ActionController::TestCase
     delete :destroy, project_id: @project, id: relevant_datasource.id
     # refute File.file?(@project.job_log_path + relevant_datasource.datafile_file_name + ".log")
   end
+
+  test "should be able to download uploaded csv files when no API key set" do
+    skip
+  end
+
+  test "should not be able to download uploaded csv files when API key set" do
+    skip
+  end
 end

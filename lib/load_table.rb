@@ -68,7 +68,16 @@ class LoadTable
   def quick_upload_to_db_table
     # columns in correct order
     column_names = @column_metadata.sort{ |a,b| a.order <=> b.order }.map{ |c| new_col_name(c.name) }
-    column_string = "\"#{column_names.join('","')}\""
+    extra_column_names = ',"mira_created_at","mira_source_id","mira_source_type"'
+    column_string = "\"#{column_names.join('","')}\"" + extra_column_names
+
+    # now add our extra variables on to our string
+    dlm = @datapackage_resource.delimiter
+    mira_created_at = Time.now.iso8601
+    mira_source_id = @datapackage_resource.id
+    mira_source_type = "csv"
+    extra_columns =  dlm + mira_created_at + dlm + mira_source_id.to_s + dlm + mira_source_type
+
     csv_options = "DELIMITER '#{@datapackage_resource.delimiter}' CSV"
     skip_header_line = @csv_file.gets
     uploaded_row_count = 0
@@ -76,7 +85,8 @@ class LoadTable
     ActiveRecord::Base.connection.raw_connection.copy_data "COPY #{@datapackage_resource.db_table_name} (#{column_string}) FROM STDIN #{csv_options} QUOTE '#{@datapackage_resource.quote_character}'" do
       while line = @csv_file.gets do
         next if line.strip.size == 0
-        ActiveRecord::Base.connection.raw_connection.put_copy_data line
+        putline = line.split("\n")[0] + extra_columns + "\n"
+        ActiveRecord::Base.connection.raw_connection.put_copy_data putline
         uploaded_row_count += 1
       end
     end

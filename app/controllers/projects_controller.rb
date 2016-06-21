@@ -27,13 +27,13 @@ class ProjectsController < ApplicationController
     @project = Project.find(params[:id])
     @datasources = @project.datasources
     @datapackage = @project.datapackage
-    @datapackage_resources = @datapackage.present? ?  @datapackage.datapackage_resources : nil
+    # @datapackage_resources = @datapackage.present? ?  @datapackage.datapackage_resources : nil
     # if there exists a datasource with the same name as a datapackage_resource then it was uploaded
     # @datapackage_resources.each do |dr|
     #   @datasources.any?{ |a| a.datafile_file_name == dr.split("/").last }
     # end
-    log_files = Dir.glob(@project.job_log_path + '*.log')
-    @log_file_names = log_files.map { |l| l.split("/").last }
+    # log_files = Dir.glob(@project.job_log_path + '*.log')
+    # @log_file_names = log_files.map { |l| l.split("/").last }
   end
 
   def new

@@ -1,8 +1,7 @@
 class DatapackageResource < ActiveRecord::Base
   belongs_to :datapackage
   has_many :datapackage_resource_fields
-  belongs_to :datasource  # this is not required. Only set when corresponding file
-                       # has been uploaded
+  has_many :datasources
   validates :datapackage_id, presence: true
   validates :path, presence: true
   validates :delimiter, exclusion: {in: [nil]}, allow_blank: false # using this instead of presence: true as was unable to save "\t" (signifying tab-delimited)

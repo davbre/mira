@@ -1,0 +1,41 @@
+<% provide(:title, 'Datapackage Resource') %>
+
+<div class="row">
+  <div class="col-md-4">
+    <h4>Resource Metadata</h4>
+    <table class="table">
+      <thead>
+        <tr><th>Item</th><th>Value</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>ID</td>                   <td><%= @dpr.id %></td></tr>
+        <tr><td>Description</td>          <td><%= @dpr.description %></td></tr>
+        <tr><td>Datapackage ID</td>       <td><%= @dpr.datapackage_id %></td></tr>
+        <tr><td>Path</td>                 <td><%= @dpr.path %></td></tr>
+        <tr><td>Format</td>               <td><%= @dpr.format %></td></tr>
+        <tr><td>Delimitir</td>            <td><%= @dpr.delimiter %></td></tr>
+        <tr><td>Mediatype</td>            <td><%= @dpr.mediatype %></td></tr>
+        <tr><td>Created Datetime</td>     <td><%= @dpr.created_at %></td></tr>
+        <tr><td>Quote Character</td>      <td><%= @dpr.quote_character %></td></tr>
+        <tr><td>Table Reference</td>      <td><%= @dpr.table_ref %></td></tr>
+        <tr><td>Database Table Name</td>  <td><%= @dpr.db_table_name %></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="col-md-8">
+    <h4>Datasources (files uploaded)</h4>
+    <table class="table">
+      <thead>
+        <tr><th>ID</th><th>2</th><th>3</th><th>4</th></tr>
+      </thead>
+      <tbody>
+        <% @dpr_ds.each do |ds| %>
+          <tr>
+            <td><%= ds.id %></td><td><%= ds.datafile_file_name %></td><td><%= ds.created_at %></td><td></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

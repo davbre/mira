@@ -29,12 +29,12 @@
           <tr>
             <!-- Datasources table HEADER -->
             <th>Datasources listed<br />in datapackage.json</th>
-            <th>Upload<br />Datetime</th>
+            <!-- <th>Upload<br />Datetime</th> -->
             <% if user_signed_in? %>
               <th>ActiveRecord<br />Class Name</th>
-              <th>Upload Log</th>
-              <th>Import<br />Status</th>
-              <th>Rows<br />Imported</th>
+              <th>Uploads</th>
+              <!-- <th>Import<br />Status</th>
+              <th>Rows<br />Imported</th> -->
               <th> </th>
             <% end %>
 
@@ -44,36 +44,39 @@
 
                 <!-- Datasource -->
                 <td>
-                  <% if res.datasource_id.present? %>
-                    <%= link_to res.path, @datasources.find(res.datasource_id).public_url %>
-                  <% else %>
+                  <%# if res.datasource_id.present? %>
+                    <%#= link_to res.path, @datasources.find(res.datasource_id).public_url %>
+                  <%# else %>
                     <%= res.path %>
-                  <% end %>
+                  <%# end %>
                 </td>
 
                 <!-- Upload datetime -->
-                <% if res.datasource_id.present? %>
-                  <td><%= @datasources.find(res.datasource_id).created_at.strftime("%FT%R") %></td>
-                <% else %>
-                  <td>-- Not uploaded yet --</td>
-                <% end %>
+                <%# if res.datasource_id.present? %>
+                  <!-- <td><%#= @datasources.find(res.datasource_id).created_at.strftime("%FT%R") %></td> -->
+                <%# else %>
+                  <!-- <td>-- Not uploaded yet --</td> -->
+                <%# end %>
 
                 <% if user_signed_in? %>
                   <!-- ActiveRecord class name -->
                   <td><%= res.db_table_name.capitalize %></td>
 
-                  <% if res.datasource_id.present? %>
+                  <td><%= link_to Datasource.where(datapackage_resource_id: res.id).count, project_datapackage_datapackage_resource_path(@project,res) %></td>
+                    <!-- <a href=''><%#= Datasource.where(datapackage_resource_id: res.id).count %></a></td> -->
+
+                  <%# if res.datasource_id.present? %>
                     <!-- log file and status -->
-                    <td><a href="/job_logs/project_<%= @datasources.find(res.datasource_id).project_id %>/<%= @datasources.find(res.datasource_id).datafile_file_name %>.log"><%= @datasources.find(res.datasource_id).datafile_file_name %>.log</a></td>
-                    <td><%= @datasources.find(res.datasource_id).import_status %></td>
-                    <td><%= res.imported_rows.to_s %></th>
-                    <td><%= link_to "delete", project_datasource_path(@datasources.find(res.datasource_id).project_id, @datasources.find(res.datasource_id).id), method: :delete,
-                                                  data: { confirm: "You sure?" }, :class => "btn btn-xs btn-danger" %></td>
-                  <% else %>
+                    <!-- <td><a href="/job_logs/project_<%#= @datasources.find(res.datasource_id).project_id %>/<%#= @datasources.find(res.datasource_id).datafile_file_name %>.log"><%#= @datasources.find(res.datasource_id).datafile_file_name %>.log</a></td> -->
+                    <!-- <td><%#= @datasources.find(res.datasource_id).import_status %></td>
+                    <td><%#= res.imported_rows.to_s %></th>
+                    <td><%#= link_to "delete", project_datasource_path(@datasources.find(res.datasource_id).project_id, @datasources.find(res.datasource_id).id), method: :delete,
+                                                  data: { confirm: "You sure?" }, :class => "btn btn-xs btn-danger" %></td> -->
+                  <%# else %>
                     <td>-- N/A --</td>
-                    <td>-- N/A --</td>
+                    <!-- <td>-- N/A --</td> -->
                     <td> </td>
-                  <% end %>
+                  <%# end %>
 
                 <% end %>
 
