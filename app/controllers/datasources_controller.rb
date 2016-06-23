@@ -20,10 +20,9 @@ class DatasourcesController < ApplicationController
   end
 
   def destroy
-    ds = Datasource.where(id: params[:id]).first
-    dp_res = DatapackageResource.where(datasource_id: ds.id).first
-    dp_res.delete_associated_artifacts
-    dp_res.clear_db_table
+    @ds = Datasource.where(id: params[:id]).first
+    # delete_associated_artifacts
+    remove_datasource_rows_from_db_table
     Datasource.find(params[:id]).destroy
     redirect_to project_path(params[:project_id])
   end
@@ -35,4 +34,13 @@ class DatasourcesController < ApplicationController
       redirect_to root_url if @ds.nil?
     end
 
+
+
+    def remove_datasource_rows_from_db_table
+      binding.pry
+      # ar_table = Mira::Application.const_get(self.db_table_name.capitalize.to_sym)
+      # if ActiveRecord::Base.connection.table_exists? ar_table.to_s.downcase
+      #   ar_table.delete_all
+      # end
+    end
 end

@@ -74,7 +74,7 @@ class ProjectsController < ApplicationController
     project = Project.find(params[:id])
     if project.datapackage.present?
       project.datapackage.datapackage_resources.each do |dp_res|
-        dp_res.delete_associated_artifacts
+        #dp_res.delete_associated_artifacts
         dp_res.delete_db_table
       end
     end

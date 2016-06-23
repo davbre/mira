@@ -43,3 +43,9 @@ DATAPACKAGE_TYPE_MAP = {
   }
 
 BIG_INTEGER_LIMIT = 2147483647 # 2^31-1
+
+MIRA_EXTRA_VARIABLE_MAP = {
+  "mira_created_at" => "datetime",
+  "mira_source_id" => "integer",
+  "mira_source_type" => "text"
+}

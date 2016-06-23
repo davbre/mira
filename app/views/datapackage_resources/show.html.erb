@@ -1,7 +1,10 @@
 <% provide(:title, 'Datapackage Resource') %>
 
-<div class="row">
-  <div class="col-md-4">
+<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+  Datapackage Resource Metadata (click for details)
+</button>
+<div class="collapse" id="collapseExample">
+  <div class="well">
     <h4>Resource Metadata</h4>
     <table class="table">
       <thead>
@@ -22,20 +25,29 @@
       </tbody>
     </table>
   </div>
+</div>
 
-  <div class="col-md-8">
+
+<!-- <div class="row">
+  <div class="col-md-8"> -->
     <h4>Datasources (files uploaded)</h4>
     <table class="table">
       <thead>
-        <tr><th>ID</th><th>2</th><th>3</th><th>4</th></tr>
+        <tr><th>ID</th><th>File Name</th><th>Uploaded Date</th><th></th></tr>
       </thead>
       <tbody>
         <% @dpr_ds.each do |ds| %>
           <tr>
-            <td><%= ds.id %></td><td><%= ds.datafile_file_name %></td><td><%= ds.created_at %></td><td></td>
+            <td><%= ds.id %></td>
+            <td><%= ds.datafile_file_name %></td>
+            <td><%= ds.created_at %></td>
+            <td><%= link_to "delete", [@project,ds], method: :delete,
+                            data: { confirm: "Are you sure? This will delete any associated observations from the database." }, :class => "btn btn-xs btn-danger" %></td></td>
           </tr>
         <% end %>
       </tbody>
     </table>
-  </div>
-</div>
+  <!-- </div> -->
+
+
+<!-- </div> -->

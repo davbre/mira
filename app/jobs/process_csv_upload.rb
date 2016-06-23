@@ -6,11 +6,13 @@ require 'net/http'
 class ProcessCsvUpload
 
   include Rails.application.routes.url_helpers
+  include ProjectHelper
 
   def initialize(datasource_id,upload_method)
     @ds = Datasource.find(datasource_id)
-    @datapackage_resource = DatapackageResource.where(datapackage_id: @ds.datapackage_id,
-                                                      path: @ds.datafile_file_name).first
+    @dp = Datapackage.find(@ds.datapackage_id)
+    mapped_csv_name = map_csv_basename(@dp, basename(@ds.datafile_file_name))
+    @datapackage_resource = DatapackageResource.where(datapackage_id: @dp.id, table_ref: mapped_csv_name).first
     @upload_method = upload_method
   end
 

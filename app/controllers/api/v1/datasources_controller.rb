@@ -2,7 +2,7 @@ module Api
 module V1
 
 
-  class DatasourcesController < Api::ApiController
+  class DatasourcesController < ActionController::Base
 
     include ApplicationHelper
 

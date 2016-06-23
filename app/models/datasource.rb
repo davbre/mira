@@ -18,6 +18,9 @@ class Datasource < ActiveRecord::Base
 
   enum import_status: [ :ok, :note, :warning, :error ]
 
+  before_destroy :retain_file_name
+  after_destroy :delete_associated_artifacts
+
   # Some helper methods, useful for linking to log file
   def basename
     File.basename(self.datafile_file_name, ".*" )
@@ -34,7 +37,6 @@ class Datasource < ActiveRecord::Base
   def logfile
     "upload_" + self.basename + ".log"
   end
-
 
   private
 
@@ -53,5 +55,28 @@ class Datasource < ActiveRecord::Base
       if Datasource.where(project_id: self.project_id, datafile_file_name: self.datafile_file_name).length > 0
         errors.add(:datasource, "A file of this name has already been uploaded to this project!")
       end
+    end
+
+    def retain_file_name
+      @ds_filename = self.datafile_file_name
+    end
+
+    def delete_associated_artifacts
+      # delete_log
+      # delete_upload
+      binding.pry
+    end
+
+    def delete_log
+      proj_log_path = Rails.configuration.x.job_log_path + "/project_" +  self.project_id.to_s + "/"
+      log_file_name = self.datafile_file_name + ".log"
+      log = self.datapackage.project.job_log_path + log_file_name
+      File.delete(log) if File.exist?(log)
+    end
+
+    def delete_upload
+      upload_file_name = Datasource.find(ds.id).datafile_file_name
+      upload = self.datapackage.project.upload_path + upload_file_name
+      File.delete(upload) if File.exist?(upload)
     end
 end

@@ -216,10 +216,11 @@ module ProjectHelper
           t.send DATAPACKAGE_TYPE_MAP[col.ftype], col_name
         end
       end
+
       # add some extra columns to each table
-      t.send "datetime", "mira_created_at"
-      t.send "integer", "mira_source_id"
-      t.send "text", "mira_source_type"
+      MIRA_EXTRA_VARIABLE_MAP.each do |vname,vtype|
+        t.send vtype, vname
+      end
     end
 
     # Add an index for each column
@@ -379,7 +380,11 @@ module ProjectHelper
 
   def get_csv_root_name(csv)
     csv_basename = basename(csv.original_filename)
-    datapackage_basenames = @datapackage.datapackage_resources.map { |ds| basename(ds.path) }
+    mapped_csv_name = map_csv_basename(@datapackage,csv_basename)
+  end
+
+  def map_csv_basename(dp,csv_basename)
+    datapackage_basenames = dp.datapackage_resources.map { |ds| basename(ds.path) }
     possible_csv_root_names = datapackage_basenames.select { |e| csv_basename.start_with? e }
     # A filename in a datapackage may be a substring of another filename, so we take the longest
     # matching prefix

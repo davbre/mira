@@ -1,7 +1,7 @@
 module Api
 module V1
 
-  class ProjectsController < Api::ApiController
+  class ProjectsController < ActionController::Base
 
     def index
       header_api_key = request.headers['X-Api-Key']

@@ -9,6 +9,7 @@ class DatapackageResourcesController < ApplicationController
     # /projects/:project_id/datapackage/datapackage_resources/:id
     # The aim is to show the datapackage resource (which gives the metadata of those files
     # that CAN be uploaded), and alongside this the actual files that have been uploaded
+    @project = Project.find(params[:project_id])
     @dpr = DatapackageResource.find(params[:id])
     @dpr_ds = Datasource.where(datapackage_resource_id: @dpr.id)
   end

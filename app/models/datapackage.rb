@@ -1,6 +1,6 @@
 class Datapackage < ActiveRecord::Base
   belongs_to :project
-  has_many  :datapackage_resources
+  has_many  :datapackage_resources, dependent: :destroy
   validates :project_id, presence: true
 
   has_attached_file :datapackage,

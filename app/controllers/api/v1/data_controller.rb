@@ -129,7 +129,7 @@ module Api
 
         # create active record table with scopes
         scope = table_with_scopes.unscoped
-
+binding.pry
         # extract the sort order column
         order_columns = query_params.delete(:order)
         # extract select columns
@@ -312,7 +312,9 @@ module Api
           params.require(:data).permit(table_fields_syms)
         end
 
-
+        def select_without_extra_scope
+          select(column_names - columns.map(&:to_s))
+        end
 
     end
   end

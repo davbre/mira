@@ -5,6 +5,7 @@ require 'load_dynamic_AR_class_with_scopes'
 class LoadTable
 
   include ApplicationHelper
+  include ProjectHelper
 
   attr_reader :table_name, :column_list, :column_type_hash
 
@@ -13,7 +14,7 @@ class LoadTable
     @ds = datasource
     # @datapackage_resources = DatapackageResource.where(datapackage_id: @ds.datapackage_id)
     @datapackage_resource = datapackage_resource
-    load_logger.info("Initialising load of #{@datapackage_resource.table_ref}")
+    load_logger.info("Initialising load of #{@ds.datafile_file_name}")
     @column_metadata = DatapackageResourceField.where(datapackage_resource_id: @datapackage_resource.id)
     @csv_file = File.open(@ds.datafile.path)
     @upload_method = upload_method
