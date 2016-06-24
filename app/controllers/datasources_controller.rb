@@ -20,27 +20,29 @@ class DatasourcesController < ApplicationController
   end
 
   def destroy
-    @ds = Datasource.where(id: params[:id]).first
+    @proj = Project.find(params[:project_id])
+    @ds = Datasource.find(params[:id])
+    @dpr = DatapackageResource.find(@ds.datapackage_resource_id)
     # delete_associated_artifacts
-    remove_datasource_rows_from_db_table
-    Datasource.find(params[:id]).destroy
-    redirect_to project_path(params[:project_id])
+    num_rows_deleted = remove_datasource_rows_from_db_table
+    flash[:notice] = "Deleted " + num_rows_deleted.to_s + " rows from the corresponding database table."
+    ds_name = @ds.datafile_file_name
+    if Datasource.find(params[:id]).destroy
+      flash[:notice].prepend(ds_name + " successfully deleted. ")
+    end
+    redirect_to project_datapackage_datapackage_resource_path(@proj,@dpr)#project_path(params[:project_id])
   end
 
   private
+
     def correct_user
-      binding.pry
       @ds = current_user.projects.find_by(id: params[:project_id]).datasources.find_by(id: params[:id])
       redirect_to root_url if @ds.nil?
     end
 
-
-
     def remove_datasource_rows_from_db_table
-      binding.pry
-      # ar_table = Mira::Application.const_get(self.db_table_name.capitalize.to_sym)
-      # if ActiveRecord::Base.connection.table_exists? ar_table.to_s.downcase
-      #   ar_table.delete_all
-      # end
+      dpr = DatapackageResource.find(@ds.datapackage_resource_id)
+      db_table = get_mira_ar_table(dpr.db_table_name)
+      num_rows_deleted = db_table.where(mira_source_type: "csv", mira_source_id: @ds.id).delete_all
     end
 end

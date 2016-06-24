@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160617073857) do
+ActiveRecord::Schema.define(version: 20160624141850) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -61,7 +61,6 @@ ActiveRecord::Schema.define(version: 20160617073857) do
     t.text     "quote_character"
     t.text     "table_ref"
     t.text     "db_table_name"
-    t.integer  "imported_rows"
     t.text     "description"
   end
 
@@ -88,10 +87,11 @@ ActiveRecord::Schema.define(version: 20160617073857) do
     t.string   "datafile_content_type"
     t.integer  "datafile_file_size"
     t.datetime "datafile_updated_at"
-    t.text     "public_url"
+    t.text     "logfile_path"
     t.integer  "import_status"
     t.integer  "datapackage_resource_id"
     t.integer  "datapackage_id"
+    t.integer  "imported_rows"
   end
 
   add_index "datasources", ["datapackage_id"], name: "index_datasources_on_datapackage_id", using: :btree

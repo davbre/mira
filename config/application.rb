@@ -36,9 +36,11 @@ module Mira
     config.x.api_max_per_page = 200;
 
     # DBR: job logs
-    config.x.job_log_path = "#{Rails.root}/project_files/job_logs"
+    # config.x.job_log_path = "#{Rails.root}/project_files/job_logs"
+    config.x.job_log_path = "project_files/job_logs"
 
-    config.x.upload_path = "#{Rails.root}/project_files/uploads"
+    # config.x.upload_path = "#{Rails.root}/project_files/uploads"
+    config.x.upload_path = "project_files/uploads"
 
     # This is not exactly required but decided to make it explicit
     # as we can see below that we are :expose'ing some of these

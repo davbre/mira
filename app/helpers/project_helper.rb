@@ -361,13 +361,14 @@ module ProjectHelper
     csv_file = File.open(csv.tempfile.path)
     csv_save_basename = get_csv_root_name(csv)
     ds_datapackage_resource = @datapackage_resources.where(table_ref: csv_save_basename).first
-    ds = @project.datasources.create(datafile: csv_file, \
-                                     datafile_file_name: csv.original_filename, \
-                                     datapackage_id: @datapackage.id, \
-                                     datapackage_resource_id: ds_datapackage_resource.id)
-    if ds.valid?
-      ds.public_url = ds.datafile.url.partition("?").first
-    else
+    ds = @project.datasources.build(datafile: csv_file, \
+                                    datafile_file_name: csv.original_filename, \
+                                    datapackage_id: @datapackage.id, \
+                                    datapackage_resource_id: ds_datapackage_resource.id)
+    # if ds.valid?
+    #   ds.public_url = ds.datafile.url.partition("?").first
+    # else
+    unless ds.valid?
       @feedback[:errors] << "Failed to create datasource. Errors: " + ds.errors.to_a.join(", ")
     end
     retval = ds.save ? ds : nil

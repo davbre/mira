@@ -180,7 +180,8 @@ class ProjectsController < ApplicationController
 
     # Rails strong parameters
     def project_params
-      params.require(:project).permit(:name, :description, datasources: [:datafile_file_name, :table_ref, :public_url])
+      # params.require(:project).permit(:name, :description, datasources: [:datafile_file_name, :table_ref, :public_url])
+      params.require(:project).permit(:name, :description) #, datasources: [:datafile_file_name, :table_ref, :public_url])
     end
 
     def correct_user

@@ -29,7 +29,8 @@ class LoadTable
   def load_logger
     log_dir = Project.find(@ds.project_id).job_log_path
     Dir.mkdir(log_dir) unless File.directory?(log_dir)
-    @load_logger ||= Logger.new("#{log_dir}/#{@ds.datafile_file_name}.log")
+    @load_logger ||= Logger.new(@ds.logfile_path)
+    # @load_logger ||= Logger.new("#{log_dir}/#{@ds.datafile_file_name}.log")
   end
 
 
@@ -69,13 +70,13 @@ class LoadTable
   def quick_upload_to_db_table
     # columns in correct order
     column_names = @column_metadata.sort{ |a,b| a.order <=> b.order }.map{ |c| new_col_name(c.name) }
-    extra_column_names = ',"mira_created_at","mira_source_id","mira_source_type"'
-    column_string = "\"#{column_names.join('","')}\"" + extra_column_names
+    extra_column_string = ',"' + MIRA_EXTRA_VARIABLE_MAP.keys.join('","') + '"'
+    column_string = "\"#{column_names.join('","')}\"" + extra_column_string
 
     # now add our extra variables on to our string
     dlm = @datapackage_resource.delimiter
     mira_created_at = Time.now.iso8601
-    mira_source_id = @datapackage_resource.id
+    mira_source_id = @ds.id
     mira_source_type = "csv"
     extra_columns =  dlm + mira_created_at + dlm + mira_source_id.to_s + dlm + mira_source_type
 
@@ -95,8 +96,8 @@ class LoadTable
   end
 
   def save_row_count(uploaded_row_count)
-    @datapackage_resource.imported_rows = uploaded_row_count
-    @datapackage_resource.save
+    @ds.imported_rows = uploaded_row_count
+    @ds.save
     load_logger.info("Imported " + uploaded_row_count.to_s + " rows of data.")
   end
 end

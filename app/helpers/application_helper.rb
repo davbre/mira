@@ -25,7 +25,7 @@ module ApplicationHelper
   end
 
 
-  def get_mira_ar_table(table)
+  def get_mira_ar_table(table) # table is a string
     begin
       ar_table = Mira::Application.const_get(table.capitalize)
     rescue NameError => e

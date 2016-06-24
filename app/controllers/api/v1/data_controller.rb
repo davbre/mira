@@ -25,7 +25,7 @@ module Api
       def show
         db_table = get_db_table(params[:id],params[:table_ref])
         row = db_table.find(params[:data_id])
-        render json: row
+        render json: row, except: MIRA_EXTRA_VARIABLE_MAP.keys
       end
 
       def update
@@ -129,7 +129,7 @@ module Api
 
         # create active record table with scopes
         scope = table_with_scopes.unscoped
-binding.pry
+
         # extract the sort order column
         order_columns = query_params.delete(:order)
         # extract select columns
@@ -165,7 +165,8 @@ binding.pry
 
         results[:data] = paginate scope, per_page: per_page_num
 
-        render json: results
+        # render excluding extra variables
+        render json: results, except: MIRA_EXTRA_VARIABLE_MAP.keys
 
 
       end
@@ -248,7 +249,7 @@ binding.pry
         results[:recordsTotal] = response.headers[ApiPagination.config.total_header]
         results[:recordsFiltered] = results[:recordsTotal] # don't yet know exactly what this is for
         results[:draw] = dt_draw
-        render json: results
+        render json: results, except: MIRA_EXTRA_VARIABLE_MAP.keys
       end
 
 
