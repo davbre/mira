@@ -11,7 +11,11 @@ module Api
 
       def create
         db_table = get_db_table(params[:id],params[:table_ref])
+
         @new_row = db_table.new(table_params db_table)
+        @new_row.mira_created_at = Time.now.iso8601
+        @new_row.mira_source_id = db_key.id
+        @new_row.mira_source_type = "key"
 
         if @new_row.save
           response = @new_row

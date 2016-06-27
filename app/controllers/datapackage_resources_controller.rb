@@ -12,6 +12,10 @@ class DatapackageResourcesController < ApplicationController
     @project = Project.find(params[:project_id])
     @dpr = DatapackageResource.find(params[:id])
     @dpr_ds = Datasource.where(datapackage_resource_id: @dpr.id)
+    # get the unique API key IDs in the table
+    db_table = get_mira_ar_table(@dpr.db_table_name)
+    key_ids = db_table.uniq.pluck(:mira_source_id)
+    # binding.pry
   end
 
   # def destroy
