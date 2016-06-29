@@ -14,11 +14,19 @@ module Api
 
         @new_row = db_table.new(table_params db_table)
         @new_row.mira_created_at = Time.now.iso8601
-        @new_row.mira_source_id = db_key.id
-        @new_row.mira_source_type = "key"
+        if current_user.present?
+          @new_row.mira_source_id = current_user.id
+          @new_row.mira_source_type = "user"
+        elsif db_key.id.present?
+          @new_row.mira_source_id = db_key.id
+          @new_row.mira_source_type = "key"
+        else
+          @new_row.errors.messages["dumb_error:"] << "Row not added"
+        end
 
-        if @new_row.save
-          response = @new_row
+        response = {}
+        if @new_row.mira_source_id.present? && @new_row.errors.messages.empty?
+          response = @new_row if @new_row.save
         else
           response = { error: @new_row.errors.messages }
         end

@@ -9,6 +9,10 @@ gem 'sass-rails', '~> 5.0'
 gem 'uglifier', '>= 1.3.0'
 gem 'coffee-rails', '~> 4.1.0'
 gem 'jquery-rails'
+
+gem 'jquery-ui-rails'
+gem 'jtable-rails4', path: '/home/david/webdev/jtable-rails4'
+
 gem 'turbolinks'
 gem 'sdoc', '~> 0.4.0', group: :doc
 

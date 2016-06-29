@@ -6,6 +6,21 @@ class DatapackageResourcesController < ApplicationController
   # before_action :correct_user, only: [:destroy]
 
   def show
+    @project = Project.find(params[:project_id])
+    @dpr = DatapackageResource.find(params[:id])
+    @dpr_ds = Datasource.where(datapackage_resource_id: @dpr.id)
+    db_table = get_mira_ar_table(@dpr.db_table_name)
+    @fields = DatapackageResourceField.where(datapackage_resource_id: @dpr.id).order(:order)
+    @rows = db_table.all.page params[:page]
+    @tableUrl = request.base_url + "/api/projects/" + @project.id.to_s + "/tables/" + @dpr.table_ref + "/"
+    # binding.pry
+    #Project.order(id: :desc).page params[:page] # kaminari
+# binding.pry
+
+  end
+
+
+  def show_orig
     # /projects/:project_id/datapackage/datapackage_resources/:id
     # The aim is to show the datapackage resource (which gives the metadata of those files
     # that CAN be uploaded), and alongside this the actual files that have been uploaded

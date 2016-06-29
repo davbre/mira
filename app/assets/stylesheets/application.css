@@ -12,4 +12,6 @@
  *
  *= require_tree .
  *= require_self
+ *= require jquery-ui
+ *= require jtable/themes/metro/blue/jtable
  */

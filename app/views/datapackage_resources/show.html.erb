@@ -6,6 +6,15 @@
 <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
   Datapackage Resource Metadata (click for details)
 </button>
+
+
+<div id="mira-jtable">
+
+
+</div>
+
+
+
 <div class="collapse" id="collapseExample">
   <div class="well">
     <h4>Resource Metadata</h4>
@@ -34,22 +43,187 @@
 <!-- <div class="row">
   <div class="col-md-8"> -->
     <h4>Datasources (files uploaded)</h4>
-    <table class="table">
+    <%= paginate @rows %>
+    <table class="table table-condensed table-striped">
       <thead>
-        <tr><th>ID</th><th>File Name</th><th>Uploaded Date</th><th></th></tr>
+        <tr>
+          <th>Actions</th>
+          <th>id</th>
+          <% @fields.each do |field| %>
+            <th><%= field.name %></th>
+          <% end %>
+        </tr>
       </thead>
       <tbody>
-        <% @dpr_ds.each do |ds| %>
+        <% @rows.each do |row| %>
           <tr>
-            <td><%= ds.id %></td>
-            <td><%= ds.datafile_file_name %></td>
-            <td><%= ds.created_at %></td>
-            <td><%= link_to "delete", [@project,ds], method: :delete,
-                            data: { confirm: "Are you sure? This will delete any associated observations from the database." }, :class => "btn btn-xs btn-danger" %></td></td>
+            <td>
+              <a class="btn btn-mini" href="#">Edit</a>
+              <a class="btn btn-mini btn-danger" data-confirm="Are you sure?" data-method="delete" href="#" rel="nofollow">Delete</a>
+            </td>
+            <td><%= row.id %></td>
+            <% @fields.each do |field| %>
+              <td><%= row["#{field.name}"] %></td>
+            <% end %>
           </tr>
         <% end %>
       </tbody>
     </table>
+    <%= paginate @rows %>
+
+
+    <% provide(:custom_endofpage) do %>
+
+      <%#= javascript_include_tag "/vendor/jtable.2.4.0/jquery/jtable.min.js" %>
+      <script>
+      $(document).ready(function () {
+
+        var tableUrl = '<%= @tableUrl %>';
+        var authToken = document.querySelector('meta[name="csrf-token"]').content
+
+        $('#mira-jtable').jtable({
+            title: '<%= @dpr.table_ref %>',
+            actions: {
+                // listAction: tableUrl + 'jtable/list', //miraListData(postData, jtParams)
+                // listAction: miraListAction(postData, jtParams),
+                listAction:   function(postData,jsParams) { return miraListAction(postData, jsParams) },
+                createAction: function(postData) { return miraCreateAction(postData) },
+                updateAction: function(postData) { return miraUpdateAction(postData) },
+                deleteAction: function (postData) {
+                  return $.Deferred(function ($dfd) {
+                              $.ajax({
+                                  url: tableUrl + 'data' + '/' + postData["id"],
+                                  type: 'DELETE',
+                                  beforeSend: function (request) {
+                                    request.setRequestHeader('X-CSRF-Token', authToken);
+                                  },
+                                  dataType: 'json',
+                                  success: function (miraData) {
+                                    jtableData = {
+                                      "Result":"OK",
+                                    };
+                                    $dfd.resolve(jtableData);
+                                  },
+                                  error: function () {
+                                      $dfd.reject();
+                                  }
+                              });
+                          });
+                      }
+
+            },
+            fields: {
+                id: {
+                    key: true,
+                    list: true
+                }
+                <% @fields.each do |field| %>
+                  ,<%= field.name %>: {
+                    title: '<%= field.name %>'
+                  }
+                <% end %>
+            }
+        });
+
+        $('#mira-jtable').jtable('load');
+
+
+
+        function miraPostData(postData) {
+          miraPD = {};
+          postData.split("&").forEach(function(item) {
+            miraPD[item.split("=")[0]] = item.split("=")[1]
+          });
+          return miraPD;
+        }
+
+
+        
+        function miraListAction(postData, jtParams) {
+            var miraQuery = '?';
+            if (jtParams.jtStartIndex != undefined) {
+              miraQuery += 'page=' + jtStartIndex.toString();
+            }
+            if (jtParams.jtPageSize != undefined) {
+              miraQuery += '&per_page=' + jtParams.jtPageSize.toString();
+            }
+
+            return $.Deferred(function ($dfd) {
+                     $.ajax({
+                       url: tableUrl + 'data' + miraQuery,  /* refactor */
+                       type: 'GET',
+                       dataType: 'json',
+                       data: postData,
+                       success: function (miraData, textStatus, request) {
+                         var jtableData = {
+                           'Result': 'OK',
+                           'Records': miraData["data"],
+                           'TotalRecordCout': request.getResponseHeader('records-total')
+                         };
+
+                         $dfd.resolve(jtableData);
+                        },
+                        error: function () {
+                          $dfd.reject();
+                        }
+                      });
+                   });
+            }
+
+
+
+            function miraCreateAction(postData){
+              return $.Deferred(function ($dfd) {
+                       $.ajax({
+                         url: tableUrl + 'data', /* refactor */
+                         type: 'POST',
+                         dataType: 'json',
+                         data: { "data": miraPostData(postData) },
+                         success: function (miraData) {
+                          //  debugger;
+                           jtableData = {
+                            "Result":"OK",
+                            "Record": miraData
+                           }
+                           $dfd.resolve(jtableData);
+                         },
+                         error: function () {
+                           $dfd.reject();
+                         }
+                       });
+                   });
+            }
+
+
+
+            function miraUpdateAction(postData) {
+              var postDataObj = miraPostData(postData);
+              return $.Deferred(function ($dfd) {
+                        $.ajax({
+                          url: tableUrl + 'data' + '/' + postDataObj["id"],
+                          type: 'PATCH',
+                          dataType: 'json',
+                            data: { "data": miraPostData(postData) },
+                            success: function (miraData) {
+                              jtableData = {
+                                "Result":"OK",
+                                "Record": miraData
+                              };
+                              $dfd.resolve(jtableData);
+                            },
+                            error: function () {
+                              $dfd.reject();
+                            }
+                        });
+                      });
+            }
+
+
+
+
+          });
+      </script>
+    <% end %>
   <!-- </div> -->
 
 
