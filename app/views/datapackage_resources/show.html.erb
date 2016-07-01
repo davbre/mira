@@ -1,23 +1,54 @@
 <% provide(:title, 'Datapackage Resource') %>
 
+<% provide(:custom_style) do %>
+
+<% end %>
+
+
 <%= link_to "Back to project overview", project_path(@project)%>
 <br /><br />
 
-<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-  Datapackage Resource Metadata (click for details)
-</button>
 
 
-<div id="mira-jtable">
+<h2>Data: <%= @dpr.table_ref %></h2>
+<ul class="nav nav-tabs">
+  <li class="active"><a data-toggle="tab" href="#home">Browse Data</a></li>
+  <li><a data-toggle="tab" href="#menu1">Uploads</a></li>
+  <li><a data-toggle="tab" href="#menu2">Table Metadata</a></li>
+  <li><a data-toggle="tab" href="#menu3">Column Metadata</a></li>
+</ul>
+
+<div class="tab-content">
+  <div id="home" class="tab-pane fade in active">
+
+    <div id="mira-jtable">
+    </div>
+
+  </div>
+  <div id="menu1" class="tab-pane fade">
+
+    <h4>Uploads</h4>
+    <table class="table">
+      <thead>
+        <tr><th>ID</th><th>File Name</th><th>Uploaded Date</th><th></th></tr>
+      </thead>
+      <tbody>
+        <% @dpr_ds.each do |ds| %>
+          <tr>
+            <td><%= ds.id %></td>
+            <td><%= ds.datafile_file_name %></td>
+            <td><%= ds.created_at %></td>
+            <td><%= link_to "delete", [@project,ds], method: :delete,
+                            data: { confirm: "Are you sure? This will delete any associated observations from the database." }, :class => "btn btn-xs btn-danger" %></td></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
 
 
-</div>
+  </div>
+  <div id="menu2" class="tab-pane fade">
 
-
-
-<div class="collapse" id="collapseExample">
-  <div class="well">
-    <h4>Resource Metadata</h4>
     <table class="table">
       <thead>
         <tr><th>Item</th><th>Value</th></tr>
@@ -36,40 +67,17 @@
         <tr><td>Database Table Name</td>  <td><%= @dpr.db_table_name %></td></tr>
       </tbody>
     </table>
+
   </div>
+  <div id="menu3" class="tab-pane fade">
+
+    <p>TODO</p>
+
+  </div>
+</div>
 </div>
 
 
-<!-- <div class="row">
-  <div class="col-md-8"> -->
-    <h4>Datasources (files uploaded)</h4>
-    <%= paginate @rows %>
-    <table class="table table-condensed table-striped">
-      <thead>
-        <tr>
-          <th>Actions</th>
-          <th>id</th>
-          <% @fields.each do |field| %>
-            <th><%= field.name %></th>
-          <% end %>
-        </tr>
-      </thead>
-      <tbody>
-        <% @rows.each do |row| %>
-          <tr>
-            <td>
-              <a class="btn btn-mini" href="#">Edit</a>
-              <a class="btn btn-mini btn-danger" data-confirm="Are you sure?" data-method="delete" href="#" rel="nofollow">Delete</a>
-            </td>
-            <td><%= row.id %></td>
-            <% @fields.each do |field| %>
-              <td><%= row["#{field.name}"] %></td>
-            <% end %>
-          </tr>
-        <% end %>
-      </tbody>
-    </table>
-    <%= paginate @rows %>
 
 
     <% provide(:custom_endofpage) do %>
@@ -84,34 +92,17 @@
         $('#mira-jtable').jtable({
             title: '<%= @dpr.table_ref %>',
             actions: {
-                // listAction: tableUrl + 'jtable/list', //miraListData(postData, jtParams)
-                // listAction: miraListAction(postData, jtParams),
                 listAction:   function(postData,jsParams) { return miraListAction(postData, jsParams) },
-                createAction: function(postData) { return miraCreateAction(postData) },
-                updateAction: function(postData) { return miraUpdateAction(postData) },
-                deleteAction: function (postData) {
-                  return $.Deferred(function ($dfd) {
-                              $.ajax({
-                                  url: tableUrl + 'data' + '/' + postData["id"],
-                                  type: 'DELETE',
-                                  beforeSend: function (request) {
-                                    request.setRequestHeader('X-CSRF-Token', authToken);
-                                  },
-                                  dataType: 'json',
-                                  success: function (miraData) {
-                                    jtableData = {
-                                      "Result":"OK",
-                                    };
-                                    $dfd.resolve(jtableData);
-                                  },
-                                  error: function () {
-                                      $dfd.reject();
-                                  }
-                              });
-                          });
-                      }
+                createAction: function(postData) { return miraCreateAction(postData); },
+                updateAction: function(postData) { return miraUpdateAction(postData); },
+                deleteAction: function (postData) { return miraDeleteAction(postData); }
 
             },
+            sorting: true,
+            multiSorting: true,
+            paging: true,
+            pageSize: 10,
+            jqueryuiTheme: true,
             fields: {
                 id: {
                     key: true,
@@ -120,8 +111,36 @@
                 <% @fields.each do |field| %>
                   ,<%= field.name %>: {
                     title: '<%= field.name %>'
+                    <% if field.ftype == "date" %>
+                      ,type: 'date'
+                    <% end %>
                   }
                 <% end %>
+                ,
+                mira_source_type: {
+                  title: "_source_",
+                  edit: false,
+                  create: false,
+                  listClass: "special-mira-col",
+                  display: function (data) {
+                    // return "boo";
+                    return '<span title="' + data.record.mira_created_at + '">' + data.record.mira_source_type + ', ' + data.record.mira_source_id + '</span>';
+                  }
+                },
+                mira_source_id: {
+                  title: "mira_source_id",
+                  edit: false,
+                  create: false,
+                  type: "hidden"
+                  // listClass: "special-mira-col"
+                },
+                mira_created_at: {
+                  title: "mira_created_at",
+                  edit: false,
+                  create: false,
+                  type: "hidden"
+                  // listClass: "special-mira-col"
+                }
             }
         });
 
@@ -138,15 +157,23 @@
         }
 
 
-        
+
         function miraListAction(postData, jtParams) {
             var miraQuery = '?';
+            // paging
             if (jtParams.jtStartIndex != undefined) {
-              miraQuery += 'page=' + jtStartIndex.toString();
+              var dataPage = jtParams.jtStartIndex/parseFloat(jtParams.jtPageSize)+1;
+              miraQuery += 'page=' + dataPage.toString();
             }
             if (jtParams.jtPageSize != undefined) {
               miraQuery += '&per_page=' + jtParams.jtPageSize.toString();
             }
+            // sorting
+            if (jtParams.jtSorting != undefined) {
+              // will look something like: "country ASC,sex ASC,armcd DESC"
+              miraQuery += '&order=' + jtParams.jtSorting.replace(/\s/g,":");
+            }
+
 
             return $.Deferred(function ($dfd) {
                      $.ajax({
@@ -158,7 +185,7 @@
                          var jtableData = {
                            'Result': 'OK',
                            'Records': miraData["data"],
-                           'TotalRecordCout': request.getResponseHeader('records-total')
+                           'TotalRecordCount': request.getResponseHeader('records-total')
                          };
 
                          $dfd.resolve(jtableData);
@@ -215,6 +242,31 @@
                               $dfd.reject();
                             }
                         });
+                      });
+            }
+
+
+
+
+            function miraDeleteAction(postData) {
+              return $.Deferred(function ($dfd) {
+                          $.ajax({
+                              url: tableUrl + 'data' + '/' + postData["id"],
+                              type: 'DELETE',
+                              beforeSend: function (request) {
+                                request.setRequestHeader('X-CSRF-Token', authToken);
+                              },
+                              dataType: 'json',
+                              success: function (miraData) {
+                                jtableData = {
+                                  "Result":"OK",
+                                };
+                                $dfd.resolve(jtableData);
+                              },
+                              error: function () {
+                                  $dfd.reject();
+                              }
+                          });
                       });
             }
 

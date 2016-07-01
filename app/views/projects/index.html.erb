@@ -11,9 +11,11 @@
   <thead>
     <th>ID</th>
     <th>Name</th>
-    <th>Description</th>
-    <th>Read Access</th>
-    <th>Write Access</th>
+    <th></th>
+    <!-- <th></th>
+    <th></th> -->
+    <th>Read<br />Access</th>
+    <th>Write<br />Access</th>
     <% if user_signed_in? %>
       <!-- <th>Read Access</th>
       <th>Write Access</th> -->
@@ -24,9 +26,16 @@
   <% @projects.each do |proj| %>
     <tr>
       <td><%= proj.id %></td>
-      <td><a href="/projects/<%= proj.id %>/api-details"><%= proj.name %></a></td>
-      <td><%= proj.description %></td>
-
+      <td title="<%= proj.description.truncate_words(20) %>">
+        <%= link_to "#{proj.name}", proj %>
+        <%#= proj.name %>
+      </td>
+      <td>
+        <a href="/projects/<%= proj.id %>/api-details">API details</a><br />
+        <%#= link_to "Data", proj %><br />
+        <%#= link_to proj.datapackage.datapackage_file_name, proj.datapackage.datapackage.url %>
+        <!-- <a href="#">datapackage.json</a> -->
+      </td>
       <td>
       <%-# Check if there is a global (this will have a nil key) or project specific permission applied -%>
       <% if @read_key_hash[nil].present? || @read_key_hash[proj.id].present? %>
@@ -58,10 +67,9 @@
       </td>
 
 
-      <td><%= link_to "Uploads", proj %></td>
       <% if user_signed_in? %>
         <td><%= link_to "Edit Project", edit_project_path(proj), :class => "btn btn-xs btn-info" %></td>
-        <td><%= link_to "delete", proj, method: :delete,
+        <td><%= link_to "Delete", proj, method: :delete,
                         data: { confirm: "You sure?" }, :class => "btn btn-xs btn-danger" %></td>
       <% end %>
     </tr>

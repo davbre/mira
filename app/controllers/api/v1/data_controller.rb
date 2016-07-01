@@ -37,8 +37,9 @@ module Api
       def show
         db_table = get_db_table(params[:id],params[:table_ref])
         row = db_table.find(params[:data_id])
-        render json: row, except: MIRA_EXTRA_VARIABLE_MAP.keys
+        render json: row, except: except_vars
       end
+
 
       def update
         db_table = get_db_table(params[:id],params[:table_ref])
@@ -154,7 +155,7 @@ module Api
 
         (order_columns || "").split(",").each do |column|
           sort_column, sort_direction = (column || "").split(":")
-          sort_direction = sort_direction == "desc" ? "desc" : "asc"
+          sort_direction = sort_direction.downcase == "desc" ? "desc" : "asc"
           scope = scope.order(sort_column.to_sym => sort_direction.to_sym) unless sort_column.nil?
         end
 
@@ -178,7 +179,7 @@ module Api
         results[:data] = paginate scope, per_page: per_page_num
 
         # render excluding extra variables
-        render json: results, except: MIRA_EXTRA_VARIABLE_MAP.keys
+        render json: results, except: except_vars
 
 
       end
@@ -261,7 +262,7 @@ module Api
         results[:recordsTotal] = response.headers[ApiPagination.config.total_header]
         results[:recordsFiltered] = results[:recordsTotal] # don't yet know exactly what this is for
         results[:draw] = dt_draw
-        render json: results, except: MIRA_EXTRA_VARIABLE_MAP.keys
+        render json: results, except: except_vars
       end
 
 
@@ -327,6 +328,15 @@ module Api
 
         def select_without_extra_scope
           select(column_names - columns.map(&:to_s))
+        end
+
+        def user_ok?
+          # assuming at this point only one user, i.e. admin user
+          current_user.present?
+        end
+
+        def except_vars
+          exc_vars = (user_ok? == true) ? [] : MIRA_EXTRA_VARIABLE_MAP.keys
         end
 
     end

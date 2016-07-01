@@ -13,5 +13,7 @@
  *= require_tree .
  *= require_self
  *= require jquery-ui
- *= require jtable/themes/metro/blue/jtable
- */
+ * require jtable/themes/metro/blue/jtable
+ *= require jtable/themes/jqueryui/jtable_jqueryui
+ *= require jquery-ui-1.10.1.custom.min
+*/

@@ -1,4 +1,4 @@
-<h3>Project Details</h3>
+<!-- <h3>Project Details</h3> -->
 <table class="table">
   <tbody>
     <tr>
@@ -12,6 +12,19 @@
     <tr>
       <td><strong>Description</strong></td>
       <td><%= @project.description %></td>
+    </tr>
+    <tr>
+      <td><strong>API details</strong></td>
+      <td>
+        <a href="/projects/<%= @project.id %>/api-details">/projects/<%= @project.id %>/api-details</a><br />
+      </td>
+    </tr>
+    <tr>
+      <td><strong>Datapackage</strong></td>
+      <td>
+        <%= link_to @project.datapackage.datapackage_file_name, @project.datapackage.datapackage.url %>
+        , uploaded <%= @project.datapackage.created_at.strftime("%FT%R") %>
+      </td>
     </tr>
   </tbody>
 </table>

@@ -1,41 +1,30 @@
 <div class="panel panel-default">
   <div class="panel-heading">
-    <h3 class="panel-title">Project Overview</h3>
+    <h2 class="panel-title">Project Overview</h2>
   </div>
 
   <%= render 'error_messages' %>
 
   <div class="panel-body">
 
-    <%= render 'projects/partials/project_details' %><br />
+    <div class="col-md-6">
+      <%= render 'projects/partials/project_details' %><br />
+    </div>
 
     <div class="col-md-12">
 
 
       <% if @datapackage.present? %>
-        <table class="table">
-          <tr>
-            <th>Datapackage</th>
-            <th>Created</th>
-          </tr>
-          <tr>
-            <td><%= link_to @datapackage.datapackage_file_name, @datapackage.datapackage.url %></td>
-            <th><%= @datapackage.created_at.strftime("%FT%R") %></td>
-          </tr>
-        </table>
-
 
         <table class="table">
           <tr>
             <!-- Datasources table HEADER -->
-            <th>Datasources listed<br />in datapackage.json</th>
+            <th>Datasources<br />(as per datapackage.json)</th>
             <!-- <th>Upload<br />Datetime</th> -->
             <% if user_signed_in? %>
-              <th>ActiveRecord<br />Class Name</th>
-              <th>Uploads</th>
-              <!-- <th>Import<br />Status</th>
-              <th>Rows<br />Imported</th> -->
-              <th> </th>
+              <th>Database Table</th>
+              <th>Number<br />of Rows</th>
+              <th>Browse/<br />update data</th>
             <% end %>
 
             <!-- One row per datapackage resource -->
@@ -44,40 +33,29 @@
 
                 <!-- Datasource -->
                 <td>
-                  <%# if res.datasource_id.present? %>
-                    <%#= link_to res.path, @datasources.find(res.datasource_id).public_url %>
-                  <%# else %>
-                    <%= res.path %>
-                  <%# end %>
+                  <%= res.path %>
                 </td>
-
-                <!-- Upload datetime -->
-                <%# if res.datasource_id.present? %>
-                  <!-- <td><%#= @datasources.find(res.datasource_id).created_at.strftime("%FT%R") %></td> -->
-                <%# else %>
-                  <!-- <td>-- Not uploaded yet --</td> -->
-                <%# end %>
 
                 <% if user_signed_in? %>
                   <!-- ActiveRecord class name -->
-                  <td><%= res.db_table_name.capitalize %></td>
+                  <td><%= res.db_table_name %></td>
 
-                  <td><%= link_to Datasource.where(datapackage_resource_id: res.id).count, project_datapackage_datapackage_resource_path(@project,res) %></td>
-                    <!-- <a href=''><%#= Datasource.where(datapackage_resource_id: res.id).count %></a></td> -->
+                  <td><%= get_mira_ar_table(res.db_table_name.capitalize).count %></td>
 
-                  <%# if res.datasource_id.present? %>
-                    <!-- log file and status -->
-                    <!-- <td><a href="/job_logs/project_<%#= @datasources.find(res.datasource_id).project_id %>/<%#= @datasources.find(res.datasource_id).datafile_file_name %>.log"><%#= @datasources.find(res.datasource_id).datafile_file_name %>.log</a></td> -->
-                    <!-- <td><%#= @datasources.find(res.datasource_id).import_status %></td>
-                    <td><%#= res.imported_rows.to_s %></th>
-                    <td><%#= link_to "delete", project_datasource_path(@datasources.find(res.datasource_id).project_id, @datasources.find(res.datasource_id).id), method: :delete,
-                                                  data: { confirm: "You sure?" }, :class => "btn btn-xs btn-danger" %></td> -->
-                  <%# else %>
-                    <td>-- N/A --</td>
-                    <!-- <td>-- N/A --</td> -->
-                    <td> </td>
-                  <%# end %>
+                  <td>
+                    <%= link_to project_datapackage_datapackage_resource_path(@project,res) do %>
+                      <span class="glyphicon glyphicon-th" title="Browse/update data"></span>
+                    <% end %>
+                  </td>
 
+                  <td>
+                    <% num_uploads=Datasource.where(datapackage_resource_id: res.id).count %>
+                    <% if num_uploads == 0 %>
+                      0 files uploaded
+                    <% else %>
+                      <%= link_to "#{num_uploads} files uploaded", project_datapackage_datapackage_resource_path(@project,res) %></td>
+                    <% end %>
+                  </td>
                 <% end %>
 
               </tr>
