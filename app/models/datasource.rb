@@ -24,6 +24,8 @@ class Datasource < ActiveRecord::Base
   before_save :set_logfile_path
   after_destroy :delete_associated_artifacts
 
+  paginates_per 10 # kaminari
+
   # Some helper methods, useful for linking to log file
   def basename
     File.basename(self.datafile_file_name, ".*" )
@@ -33,9 +35,9 @@ class Datasource < ActiveRecord::Base
     File.dirname(self.datafile.path)
   end
 
-  def upload_path
-    full_upload_path[/(?=\/datafiles).*/]
-  end
+  # def url
+  #   self.datafile.url
+  # end
 
   def set_logfile_path
     self.logfile_path = Project.find(self.project_id).job_log_path + self.datafile_file_name + ".log"

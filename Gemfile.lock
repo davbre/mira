@@ -117,7 +117,7 @@ GEM
     jquery-ui-rails (5.0.5)
       railties (>= 3.2.16)
     json (1.8.3)
-    jtable-rails4 (0.1.0)
+    jtable-rails4 (0.1.1)
     kaminari (0.16.3)
       actionpack (>= 3.0.0)
       activesupport (>= 3.0.0)
@@ -271,7 +271,7 @@ DEPENDENCIES
   guard-minitest
   jquery-rails
   jquery-ui-rails
-  jtable-rails4 (~> 0.1.0)
+  jtable-rails4 (~> 0.1.1)
   kaminari
   mini_backtrace
   minitest-reporters

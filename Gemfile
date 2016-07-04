@@ -11,7 +11,8 @@ gem 'coffee-rails', '~> 4.1.0'
 gem 'jquery-rails'
 
 gem 'jquery-ui-rails'
-gem 'jtable-rails4', '~> 0.1.0'
+gem 'jtable-rails4', '~> 0.1.1'
+# gem "jtable-rails4", :path => "/home/david/webdev/jtable-rails4"
 
 gem 'turbolinks'
 gem 'sdoc', '~> 0.4.0', group: :doc

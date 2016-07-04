@@ -42,7 +42,7 @@
 
                   <td><%= get_mira_ar_table(res.db_table_name.capitalize).count %></td>
 
-                  <td>
+                  <td class="mira-browse-data-link">
                     <%= link_to project_datapackage_datapackage_resource_path(@project,res) do %>
                       <span class="glyphicon glyphicon-th" title="Browse/update data"></span>
                     <% end %>
@@ -82,4 +82,20 @@
   <% else %>
     <%= render :partial => 'upload_datasources' %>
   <% end %>
+<% end %>
+
+
+
+<% provide(:custom_endofpage) do %>
+<script>
+$(document).ready(function () {
+
+  // when we click on browse link we want to activate the browse tab!
+  $('td.mira-browse-data-link').click(function(e) {
+    debugger;
+    localStorage.setItem('DsSelectedTab', 'mira-browse'); // set equal to the browse tab id
+  });
+
+});
+</script>
 <% end %>

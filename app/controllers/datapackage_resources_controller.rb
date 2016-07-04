@@ -8,15 +8,10 @@ class DatapackageResourcesController < ApplicationController
   def show
     @project = Project.find(params[:project_id])
     @dpr = DatapackageResource.find(params[:id])
-    @dpr_ds = Datasource.where(datapackage_resource_id: @dpr.id)
+    @dpr_ds = Datasource.where(datapackage_resource_id: @dpr.id).order(id: :desc).page params[:page] # kaminari
     db_table = get_mira_ar_table(@dpr.db_table_name)
     @fields = DatapackageResourceField.where(datapackage_resource_id: @dpr.id).order(:order)
-    @rows = db_table.all.page params[:page]
     @tableUrl = request.base_url + "/api/projects/" + @project.id.to_s + "/tables/" + @dpr.table_ref + "/"
-    # binding.pry
-    #Project.order(id: :desc).page params[:page] # kaminari
-# binding.pry
-
   end
 
 
@@ -30,7 +25,6 @@ class DatapackageResourcesController < ApplicationController
     # get the unique API key IDs in the table
     db_table = get_mira_ar_table(@dpr.db_table_name)
     key_ids = db_table.uniq.pluck(:mira_source_id)
-    # binding.pry
   end
 
   # def destroy
@@ -44,7 +38,6 @@ class DatapackageResourcesController < ApplicationController
 
   private
     def correct_user
-      binding.pry
       @ds = current_user.projects.find_by(id: params[:project_id]).datasources.find_by(id: params[:id])
       redirect_to root_url if @ds.nil?
     end

@@ -11,23 +11,19 @@
 
 
 <h2>Data: <%= @dpr.table_ref %></h2>
-<ul class="nav nav-tabs">
-  <li class="active"><a data-toggle="tab" href="#home">Browse Data</a></li>
-  <li><a data-toggle="tab" href="#menu1">Uploads</a></li>
-  <li><a data-toggle="tab" href="#menu2">Table Metadata</a></li>
-  <li><a data-toggle="tab" href="#menu3">Column Metadata</a></li>
+<ul class="nav nav-tabs" id="ds-browse-tabs">
+  <li class="active"><a data-toggle="tab" href="#mira-uploads">Uploads</a></li>
+  <li><a data-toggle="tab" href="#mira-browse">Browse Data</a></li>
+  <li><a data-toggle="tab" href="#mira-table-metadata">Table Metadata</a></li>
+  <li><a data-toggle="tab" href="#mira-column-metadata">Column Metadata</a></li>
 </ul>
 
 <div class="tab-content">
-  <div id="home" class="tab-pane fade in active">
+  <div id="mira-uploads" class="tab-pane fade in active">
 
-    <div id="mira-jtable">
-    </div>
-
-  </div>
-  <div id="menu1" class="tab-pane fade">
 
     <h4>Uploads</h4>
+    <%= paginate @dpr_ds %>
     <table class="table">
       <thead>
         <tr><th>ID</th><th>File Name</th><th>Uploaded Date</th><th></th></tr>
@@ -36,7 +32,7 @@
         <% @dpr_ds.each do |ds| %>
           <tr>
             <td><%= ds.id %></td>
-            <td><%= ds.datafile_file_name %></td>
+            <td><%= link_to ds.datafile_file_name, project_datasource_path(@project,ds) %></td>
             <td><%= ds.created_at %></td>
             <td><%= link_to "delete", [@project,ds], method: :delete,
                             data: { confirm: "Are you sure? This will delete any associated observations from the database." }, :class => "btn btn-xs btn-danger" %></td></td>
@@ -44,10 +40,19 @@
         <% end %>
       </tbody>
     </table>
+    <%= paginate @dpr_ds %>
 
 
   </div>
-  <div id="menu2" class="tab-pane fade">
+  <div id="mira-browse" class="tab-pane fade">
+
+
+    <div id="mira-jtable">
+    </div>
+
+
+  </div>
+  <div id="mira-table-metadata" class="tab-pane fade">
 
     <table class="table">
       <thead>
@@ -69,9 +74,30 @@
     </table>
 
   </div>
-  <div id="menu3" class="tab-pane fade">
+  <div id="mira-column-metadata" class="tab-pane fade">
 
-    <p>TODO</p>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Position<br />(left to right)</th>
+          <th>Column Name</th>
+          <th>Datapackage Type</th>
+          <th>Database Type<br />(Ruby's ActiveRecord)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @fields.each do |field| %>
+          <tr>
+            <td><%= field.order %></td>
+            <td><%= field.name %></td>
+            <td><%= field.ftype %></td>
+            <td><%= DATAPACKAGE_TYPE_MAP[field.ftype] %>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+
+
 
   </div>
 </div>
@@ -273,7 +299,27 @@
 
 
 
+
+            // Keep track of active tab in the localStorage
+            $('#ds-browse-tabs  a').click(function(e) {
+              e.preventDefault();
+              $(this).tab('show');
+            });
+            $("ul.nav-tabs#ds-browse-tabs > li > a").on("shown.bs.tab", function(e) {
+              var id = $(e.target).attr("href");
+              localStorage.setItem('DsSelectedTab', id);
+            });
+            var selectedTab = localStorage.getItem('DsSelectedTab');
+            debugger;
+            $('#ds-browse-tabs a[href="#' + selectedTab + '"]').tab('show');
+
+
+
+
           });
+
+
+
       </script>
     <% end %>
   <!-- </div> -->
