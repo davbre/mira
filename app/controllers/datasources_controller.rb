@@ -30,7 +30,7 @@ class DatasourcesController < ApplicationController
     if Datasource.find(params[:id]).destroy
       flash[:notice].prepend(ds_name + " successfully deleted. ")
     end
-    redirect_to project_datapackage_datapackage_resource_path(@proj,@dpr)#project_path(params[:project_id])
+    redirect_to project_datapackage_datapackage_resource_path(@proj,@dpr)
   end
 
   private

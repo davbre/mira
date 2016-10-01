@@ -27,6 +27,11 @@ class ProjectsController < ApplicationController
     @project = Project.find(params[:id])
     @datasources = @project.datasources
     @datapackage = @project.datapackage
+    # filter API key permissions where the permission is read-write and the
+    # scope is either global or specific to the project.
+    # key_perms = ApiKeyPermission.where("permission = 1 and (permission_scope = ? or (permission_scope = ? and project_id = ?))",0,1,@project.id)
+    @keys_with_write_permission = ApiKey.joins(:api_key_permissions).where("permission = 1 and (permission_scope = ? or (permission_scope = ? and project_id = ?))",0,1,@project.id)
+    #binding.pry
     # @datapackage_resources = @datapackage.present? ?  @datapackage.datapackage_resources : nil
     # if there exists a datasource with the same name as a datapackage_resource then it was uploaded
     # @datapackage_resources.each do |dr|

@@ -27,7 +27,7 @@
           <a href="/projects/<%= @project.id %>/datapackage"><%= @project.datapackage.datapackage_file_name %></a>
           , uploaded <%= @project.datapackage.created_at.strftime("%FT%R") %>
         <% else %>
-          <code>Upload a datapackage! (See below)</code>
+          <code>Upload a datapackage.json file! <%= link_to "See here", edit_project_path(@project) %></code>
         <% end %>
       </td>
     </tr>

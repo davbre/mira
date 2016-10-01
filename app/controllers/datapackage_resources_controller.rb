@@ -10,10 +10,15 @@ class DatapackageResourcesController < ApplicationController
     @dpr = DatapackageResource.find(params[:id])
     @dpr_ds = Datasource.where(datapackage_resource_id: @dpr.id).order(id: :desc).page params[:page] # kaminari
     db_table = get_mira_ar_table(@dpr.db_table_name)
+    @apikey_ids = db_table.where(mira_source_type: "key").uniq.pluck(:mira_source_id)
     @fields = DatapackageResourceField.where(datapackage_resource_id: @dpr.id).order(:order)
     @tableUrl = request.base_url + "/api/projects/" + @project.id.to_s + "/tables/" + @dpr.table_ref + "/"
   end
 
+
+  def delete_apikey_rows
+     binding.pry
+  end
 
   def show_orig
     # /projects/:project_id/datapackage/datapackage_resources/:id

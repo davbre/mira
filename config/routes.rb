@@ -15,6 +15,7 @@ Rails.application.routes.draw do
   # Custom routes relating to API keys
   get "user/:user_id/api_keys/:id/generate-new-api-key" => "api_keys#gen_new_key"
   get "user/:user_id/api_keys/projects/:project_id" => "api_keys#index_project", as: :project_api_keys
+  delete "projects/:project_id/datapackage/datapackage_resources/:id/api_keys/:api_key_id" => "datapackage_resources#delete_apikey_rows"
 
   # UI routes
   resources :projects do

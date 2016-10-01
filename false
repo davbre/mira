@@ -1,2 +1,0 @@
-      invoke  active_record
-      create    db/migrate/20160531140512_add_private_to_datapackage_resource_fields.rb

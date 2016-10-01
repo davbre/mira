@@ -22,10 +22,13 @@
             <th>Datasources<br />(as per datapackage.json)</th>
             <!-- <th>Upload<br />Datetime</th> -->
             <% if user_signed_in? %>
-              <th>Database Table</th>
+              <th>Database<br />Table</th>
               <th>Number<br />of Rows</th>
               <th>Browse/<br />update data</th>
+              <th></th>
+              <th></th>
             <% end %>
+
 
             <!-- One row per datapackage resource -->
             <% @datapackage.datapackage_resources.sort_by { |obj| obj.table_ref }.each do |res| %>
@@ -53,7 +56,19 @@
                     <% if num_uploads == 0 %>
                       0 files uploaded
                     <% else %>
-                      <%= link_to "#{num_uploads} files uploaded", project_datapackage_datapackage_resource_path(@project,res) %></td>
+                      <%= link_to pluralize(num_uploads,"file") + " uploaded", project_datapackage_datapackage_resource_path(@project,res) %>
+                    <% end %>
+                  </td>
+
+                  <td class="mira-browse-apikeys-link">
+                    <% key_count_hash = get_mira_ar_table(res.db_table_name.capitalize).where(mira_source_type: "key").group(:mira_source_id).count %>
+                    <% num_apikeys = key_count_hash.length %>
+                    <%= key_count_hash.values.inject(0){|sum,x| sum + x } %> rows from
+                    <% if num_apikeys == 0 %>
+                      0 API keys
+                    <% else %>
+                      <%= link_to pluralize(num_apikeys,"API key"), project_datapackage_datapackage_resource_path(@project,res) %>
+
                     <% end %>
                   </td>
                 <% end %>
@@ -94,6 +109,11 @@ $(document).ready(function () {
   $('td.mira-browse-data-link').click(function(e) {
     debugger;
     localStorage.setItem('DsSelectedTab', 'mira-browse'); // set equal to the browse tab id
+  });
+
+  $('td.mira-browse-apikeys-link').click(function(e) {
+    debugger;
+    localStorage.setItem('DsSelectedTab', 'mira-apikeys'); // set equal to the browse tab id
   });
 
 });

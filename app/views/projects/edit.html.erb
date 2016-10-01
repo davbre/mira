@@ -6,7 +6,7 @@
 
   <%= render :partial => 'form' %>
 
-  <% if user_signed_in? %>
+  <% if user_signed_in? && @project.datapackage.nil? %>
     <%= render :partial => 'upload_project_files' %>
   <% end %>
 </div>

@@ -13,6 +13,7 @@
 <h2>Data: <%= @dpr.table_ref %></h2>
 <ul class="nav nav-tabs" id="ds-browse-tabs">
   <li class="active"><a data-toggle="tab" href="#mira-uploads">Uploads</a></li>
+  <li><a data-toggle="tab" href="#mira-apikeys">API Keys</a></li>
   <li><a data-toggle="tab" href="#mira-browse">Browse Data</a></li>
   <li><a data-toggle="tab" href="#mira-table-metadata">Table Metadata</a></li>
   <li><a data-toggle="tab" href="#mira-column-metadata">Column Metadata</a></li>
@@ -26,16 +27,23 @@
     <%= paginate @dpr_ds %>
     <table class="table">
       <thead>
-        <tr><th>ID</th><th>File Name</th><th>Uploaded Date</th><th></th></tr>
+        <tr>
+          <th>ID</th>
+          <th>File Name</th>
+          <th>Database Rows</th>
+          <th>Uploaded Date</th>
+          <th></th>
+        </tr>
       </thead>
       <tbody>
         <% @dpr_ds.each do |ds| %>
           <tr>
             <td><%= ds.id %></td>
             <td><%= link_to ds.datafile_file_name, project_datasource_path(@project,ds) %></td>
+            <td><%= get_mira_ar_table(@dpr.db_table_name.capitalize).where(mira_source_type: "csv", mira_source_id: ds.id).count %></td>
             <td><%= ds.created_at %></td>
             <td><%= link_to "delete", [@project,ds], method: :delete,
-                            data: { confirm: "Are you sure? This will delete any associated observations from the database." }, :class => "btn btn-xs btn-danger" %></td></td>
+                            data: { confirm: "Are you sure? This will delete any associated observations from the database." }, :class => "btn btn-xs btn-danger" %></td>
           </tr>
         <% end %>
       </tbody>
@@ -43,6 +51,36 @@
     <%= paginate @dpr_ds %>
 
 
+  </div>
+  <div id="mira-apikeys" class="tab-pane fade">
+
+    <table class="table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>API Key Description</th>
+          <th>API Key</th>
+          <th>Database Rows</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+
+      <% @apikey_ids.each do |keyid| %>
+        <% apikey = ApiKey.find(keyid) %>
+        <tr>
+          <td><%= keyid %></td>
+          <td><%= apikey.description %></td>
+          <td><%= apikey.token %></td>
+          <td><%= get_mira_ar_table(@dpr.db_table_name.capitalize).where(mira_source_type: "key", mira_source_id: keyid).count %></td>
+          <td>
+            <%= link_to "delete rows", "/projects/#{@project.id}/datapackage/datapackage_resources/#{@dpr.id}/api_keys/" + keyid.to_s, method: :delete,
+                          data: { confirm: "Are you sure? This will only delete the rows for this key, not the key itself." }, :class => "btn btn-xs btn-danger" %>
+          </td>
+        </tr>
+      <% end %>
+      </tbody>
+    </table>
   </div>
   <div id="mira-browse" class="tab-pane fade">
 
@@ -310,7 +348,6 @@
               localStorage.setItem('DsSelectedTab', id);
             });
             var selectedTab = localStorage.getItem('DsSelectedTab');
-            debugger;
             $('#ds-browse-tabs a[href="#' + selectedTab + '"]').tab('show');
 
 

@@ -11,6 +11,7 @@ class DatapackagesController < ApplicationController
     send_file @datapackage.datapackage.path, :type => @datapackage.datapackage_content_type, :disposition => 'inline'
   end
 
-  # to destroy a datapackage, we just destroy the project, so no need for action here
+  # to destroy a datapackage, we just destroy the project (because the project is
+  # pretty much defined by the datapackage), so no need for action here
 
 end

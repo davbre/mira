@@ -19,8 +19,8 @@
       <tr>
         <td><%= k.description %></td>
         <td><%= k.token %></td>
+        <td><%= link_to "Manage Permissions", user_api_key_api_key_permissions_path(@user,k), :class => "btn btn-xs btn-info" %></td>
         <td><%= link_to "Generate New Key", {:user_id => @user.id, :id => k.id, :controller => :api_keys, :action => :gen_new_key}, class: "btn btn-warning btn-xs" %></td>
-        <td><%= link_to "Permissions", user_api_key_api_key_permissions_path(@user,k), :class => "btn btn-xs btn-info" %></td>
         <td><%= link_to "Edit API Key", edit_user_api_key_path(@user,k), :class => "btn btn-xs btn-info" %></td>
         <td><%= link_to "delete", [@user, k] , method: :delete,
                           data: { confirm: "You sure?" }, :class => "btn btn-xs btn-danger" %></td>
