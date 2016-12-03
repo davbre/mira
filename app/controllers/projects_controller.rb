@@ -141,7 +141,6 @@ class ProjectsController < ApplicationController
 
   def upload_datasources
     @project = Project.find(params[:id])
-    @datasources = @project.datasources # needed in case we render 'show' (when error)
     @datapackage = @project.datapackage
     @datapackage_resources = @datapackage.present? ?  @datapackage.datapackage_resources : nil
     @feedback = { errors: [], warnings: [], notes: [] }

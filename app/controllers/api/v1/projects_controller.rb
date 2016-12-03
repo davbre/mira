@@ -16,12 +16,14 @@ module V1
         else
           key_project_ids = get_key_project_ids(api_key)
           resp = Project.where(project_id: key_project_ids)
+          paginate json: resp
         end
       else
         resp = { message: "No projects to list" }
       end
+      # reaches here if nothing to paginate or error
+      render json: resp
 
-      paginate json: resp
 	  end
 
 

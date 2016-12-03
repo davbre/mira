@@ -64,7 +64,7 @@ class ProjectsControllerUploadDatasourceTest < ActionController::TestCase
     good_upload = fixture_file_upload("uploads/upload1.csv")
     post :upload_datasources, id: @project.id, :datafiles => [good_upload]
     post :upload_datasources, id: @project.id, :datafiles => [good_upload]
-    expected_error = assigns["project"].errors.messages[:csv].flatten.include? datasource_errors[:already_uploaded]
+    expected_error = assigns["project"].errors.messages[:csv].flatten[0].include? "file of this name has already been uploaded to this project"
     assert expected_error
   end
 
@@ -89,20 +89,16 @@ class ProjectsControllerUploadDatasourceTest < ActionController::TestCase
   end
 
   test "when upload ok should behave as expected" do
-    # if we POST a file we have no way of triggering delayed job so we're assuming it's uploaded to server and take it from there...
     upload_file = "upload1"
     csv_line_count = csv_line_count(upload_file)
     upload_to_project(@controller,@project, [upload_file])
+    proj_dps = Datapackage.where(project_id: @project.id)
+    assert proj_dps.length == 1 # project should only have one datapackage
+    proj_dp = proj_dps.first
     ds = Datasource.last # last uploaded file is our file
-    dp_res_array = DatapackageResource.where(datasource_id: ds.id)
-    # if one DatapackageResource object returned then the datasource_id variable was set correctly
-    assert dp_res_array.length == 1
-    dp_res = dp_res_array.first
-    # import_status should be "ok"
     assert_equal "ok", ds.import_status
-    # imported_rows in corresponding datapackage_resource entry should corresponds to number of rows
-    # in csv files. Subtract 1 to account for header row.
-    assert_equal csv_line_count - 1 , dp_res.imported_rows
+    # Subtract 1 to account for header row.
+    assert_equal csv_line_count - 1 , ds.imported_rows
   end
 
   test "should rename columns appropriately" do

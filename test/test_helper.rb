@@ -9,7 +9,7 @@ class ActiveSupport::TestCase
 
   include ApplicationHelper
   include ProjectHelper
-
+  include DataAccessHelper
   # Add more helper methods to be used by all tests here...
 
   def map_datapackage_column_types(datapackage_json, csv_name)
@@ -43,7 +43,10 @@ class ActiveSupport::TestCase
 
     @uploads.each do |upl|
       csv_file = fixture_file_upload("uploads/" + upl + ".csv", "text/plain")
-      ds = project.datasources.create(datafile: csv_file, datafile_file_name: upl + ".csv", datapackage_id: @datapackage.id)
+      # need the datapackage_resource_id to mimic what's going on in the controller.
+      dpr_name = map_csv_basename(@datapackage, upl)
+      dpr = DatapackageResource.where(datapackage_id: @datapackage.id, table_ref: dpr_name).first
+      ds = project.datasources.create(datafile: csv_file, datafile_file_name: upl + ".csv", datapackage_id: @datapackage.id, datapackage_resource_id: dpr.id)
       ds.save
       Delayed::Job.enqueue ProcessCsvUpload.new(ds.id,"quick")
     end

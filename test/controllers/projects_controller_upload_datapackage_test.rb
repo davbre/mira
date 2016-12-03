@@ -223,13 +223,16 @@ class ProjectsControllerUploadDatapackageTest < ActionController::TestCase
       assert ActiveRecord::Base.connection.table_exists? expected_db_table_name
       # database table has correct columns
       expected_db_table_columns = dp_res.datapackage_resource_fields.map { |f| f.name } | ["id"] # add "id" if not already there
+      expected_db_table_columns = expected_db_table_columns + MIRA_EXTRA_VARIABLE_MAP.keys
       actual_columns = ar_table.columns.map { |c| c.name }
       assert_equal expected_db_table_columns.sort, actual_columns.sort
       # database table column types are as expected
-      expected_column_types = [ {"id" => "integer"} ]
-      dp_res.datapackage_resource_fields.map { |f| expected_column_types << {f.name => DATAPACKAGE_TYPE_MAP[f.ftype] } }
-      actual_column_types = []
-      ar_table.columns.map { |c| actual_column_types << { c.name => c.type.to_s }}
+      expected_column_types = {"id" => "integer"}.merge(MIRA_EXTRA_VARIABLE_MAP)
+      # binding.pry
+      # dp_res.datapackage_resource_fields.map { |f| expected_column_types << {f.name => DATAPACKAGE_TYPE_MAP[f.ftype] } }
+      dp_res.datapackage_resource_fields.each {|x| expected_column_types[x.name] = DATAPACKAGE_TYPE_MAP[x.ftype]}
+      actual_column_types = {}
+      ar_table.columns.each { |x| actual_column_types[x.name] = x.type.to_s }
       assert_equal expected_column_types, actual_column_types
       # database table indices as expected
       # **NOTE ON INDICES**: couldn't get this test to work. Although the index seems to be created (when viewing from phppgadmin)

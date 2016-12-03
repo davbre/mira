@@ -1,6 +1,7 @@
 class Datasource < ActiveRecord::Base
 
   belongs_to :project
+  belongs_to :datapackage
   belongs_to :datapackage_resource
   validates :project_id, presence: true
 
@@ -59,7 +60,7 @@ class Datasource < ActiveRecord::Base
 
     def validate_filename_unique
       if Datasource.where(project_id: self.project_id, datafile_file_name: self.datafile_file_name).length > 0
-        errors.add(:datasource, "A file of this name has already been uploaded to this project!")
+        errors.add(:datasource, ": A file of this name has already been uploaded to this project!")
       end
     end
 

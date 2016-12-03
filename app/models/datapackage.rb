@@ -1,5 +1,6 @@
 class Datapackage < ActiveRecord::Base
   belongs_to :project
+  has_many :datasources, dependent: :destroy
   has_many  :datapackage_resources, dependent: :destroy
   validates :project_id, presence: true
 

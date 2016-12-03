@@ -12,6 +12,7 @@ class Api::V1::DataControllerTest < ActionController::TestCase
     @project = @user.projects.build(name: "Upload test project", description: "Upload test project description")
     @project.save
     @uploads = ["good_upload"]
+    @controller = Api::V1::DataController.new # See http://stackoverflow.com/a/7743176
     upload_to_project(@controller,@project, @uploads, "uploads/datapackage/good/datapackage.json") # just upload datapackage file
     @dp_file_json = JSON.parse(File.read(@dp_file))
   end
@@ -89,6 +90,7 @@ class Api::V1::DataControllerTest < ActionController::TestCase
     @uploads.each do |upl|
       csv_file = fixture_file_upload("uploads/" + upl + ".csv", "text/plain")
       csv_header_columns = CSV.open(csv_file, 'r') { |csv| csv.first } # http://stackoverflow.com/a/18113090/1002140
+      sign_out users(:one)
       get :index, :id => @project.id, :table_ref => upl
       json_response = JSON.parse(response.body)
       column_counts = {}
@@ -104,8 +106,24 @@ class Api::V1::DataControllerTest < ActionController::TestCase
     end
   end
 
+  test "API projects/:id/tables/:table_ref/data - returns extra variables when logged in" do
+    @uploads.each do |upl|
+      csv_file = fixture_file_upload("uploads/" + upl + ".csv", "text/plain")
+      csv_header_columns = CSV.open(csv_file, 'r') { |csv| csv.first } + MIRA_EXTRA_VARIABLE_MAP.keys # http://stackoverflow.com/a/18113090/1002140
+      get :index, :id => @project.id, :table_ref => upl
+      json_response = JSON.parse(response.body)
+      column_counts = {}
+      json_response["data"].each do |row|
+        row.each do |col,val|
+          column_counts.key?(col) ? column_counts[col] += 1 : column_counts[col] = 1
+        end
+      end
+      assert_equal csv_header_columns.sort, (column_counts.keys - ["id"]).sort
+    end
+  end
 
   test "API projects/:id/tables/:table_ref/data - returns correct values in every cell" do
+    sign_out users(:one) # sign out to avoid getting MIRA_EXTRA_VARIABLE_MAP variables in the response
     @uploads.each do |upl|
       csv_file = fixture_file_upload("uploads/" + upl + ".csv", "text/plain")
       csv_table = CSV.read(csv_file, headers: true) # read in whole file, returns a CSV::Table object
@@ -127,6 +145,7 @@ class Api::V1::DataControllerTest < ActionController::TestCase
 
 
   test "API projects/:id/tables/:table_ref/data?[field] '_eq' and '_ne' queries are working" do
+    sign_out users(:one) # sign out to avoid getting MIRA_EXTRA_VARIABLE_MAP variables in the response
     @uploads.each do |upl|
 
       csv_file = fixture_file_upload("uploads/" + upl + ".csv", "text/plain")

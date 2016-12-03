@@ -17,8 +17,16 @@ class DatapackageResourcesController < ApplicationController
 
 
   def delete_apikey_rows
-     binding.pry
+    @proj = Project.find(params[:project_id])
+    @dpr = DatapackageResource.find(params[:id])
+    db_table = get_mira_ar_table(@dpr.db_table_name)
+    num_rows_deleted = db_table.where(
+                         mira_source_type: "key",
+                         mira_source_id: params[:api_key_id]).delete_all
+    flash[:notice] = "Deleted " + num_rows_deleted.to_s + " rows from the corresponding database table."
+    redirect_to project_datapackage_datapackage_resource_path(@proj,@dpr)
   end
+
 
   def show_orig
     # /projects/:project_id/datapackage/datapackage_resources/:id

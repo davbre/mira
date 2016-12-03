@@ -294,11 +294,12 @@ module ProjectHelper
       @feedback[:errors] << datasource_errors[:no_datapackage]
     elsif @csv_uploads.nil? || @csv_uploads.empty?
       @feedback[:errors] << datasource_errors[:no_upload]
-    elsif @datapackage.datapackage_resources.nil?
+    elsif @datapackage_resources.nil?
       @feedback[:errors] << datasource_errors[:missing_resource_metadata]
     else
+
       datasource_filenames = @csv_uploads.map { |u| u.original_filename }
-      datapackage_filenames = @datapackage.datapackage_resources.map { |ds| ds.path }
+      datapackage_filenames = @datapackage_resources.map { |ds| ds.path }
 
       @csv_uploads.each do |csv|
         # we may not have an exact filename match but we allow suffixes e.g. mydata_20161212.csv for mydata.csv
@@ -307,11 +308,11 @@ module ProjectHelper
         if csv.original_filename !~ /\.csv/i
           @feedback[:errors] << datasource_errors[:non_csv]
           @feedback[:errors] << "Upload: " + csv.original_filename + "."
-        elsif (datapackage_filenames.exclude?(csv.original_filename) && csv_root_name == "")
+        elsif (datapackage_filenames.exclude?(csv.original_filename) && csv_root_name.to_s == "")
           @feedback[:errors] << datasource_errors[:no_resource_metadata]
           @feedback[:errors] << "Upload: " + csv.original_filename + "."
         else
-          dp_res = @datapackage.datapackage_resources.where(path: csv_root_name + ".csv").first
+          dp_res = @datapackage_resources.where(path: csv_root_name + ".csv").first
           dp_res_fields = dp_res.datapackage_resource_fields
           if dp_res_fields.empty?
             # shouldn't ever reach here...but just in case

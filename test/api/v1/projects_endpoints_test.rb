@@ -59,10 +59,8 @@ class Api::V1::ProjectsEndpointsTest < ActionController::TestCase
                                           permission: perm,
                                           project_id: project_id)
         permission.save
-
-        get :index, :id => @project.id, :table_ref => @uploads[0]
-        assert_response :unauthorized
-
+        get :index
+        assert_equal 401, JSON.parse(response.body)["errors"][0]["code"]
       end
     end
   end

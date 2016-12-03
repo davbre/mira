@@ -39,10 +39,10 @@ class ProcessCsvUpload
     # know it has been uploaded
     # @datapackage_resource.datasource_id = @ds.id
     if @datapackage_resource.save
-      job_logger.info("Saved the datasource_id to the datapackage_resource table")
+      job_logger.info("Saved the datapackage_resource table")
       @ds.ok!
     else
-      job_logger.error("Unexpected - failed to save datasource ID to datapackage_resource table!")
+      job_logger.error("Unexpected - failed to save the datapackage_resource table!")
       @ds.error!
     end
     # TODO log some upload info, number or rows, column names.
