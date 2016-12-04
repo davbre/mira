@@ -1,0 +1,41 @@
+<div class="row">
+  <div class="col-md-6">
+    <br />
+    <%= form_for [@user, @key, @permission], :html => { multipart: true } do |f| %>
+      <%= render 'error_messages' %>
+        <p>Select projects:</p>
+        <select name="api_key_permission[projects][]" size="10" multiple required="true">
+          <optgroup label="Apply to all your projects">
+            <option value="all">All projects</option>
+          </optgroup>
+          <optgroup label="Apply to specific projects">
+          <%= @user.projects.each do |p| %>
+            <option value="<%= p.id %>"><%= p.name %></option>
+          <% end %>
+        </select>
+      <br />
+      <p>Apply permission: read or read-write</p>
+
+      <!-- <div class="radio">
+        <label><input type="radio" "api_key_permission[permission]" value="read" required>Read</label>
+      </div>
+      <div class="radio">
+        <label><input type="radio" name="api_key_permission[permission]" value="write" required>Read-write</label>
+      </div> -->
+
+      <div class="radio inline">
+        <input type="radio" name="api_key_permission[permission]" value="read" required="true">Read<br />
+        <input type="radio" name="api_key_permission[permission]" value="write" required="true">Read-write
+      </div>
+
+      <div class="form-actions">
+        <%= f.submit "Save", :class => 'btn btn-primary' %>
+        <%= link_to t('.cancel', :default => t("helpers.links.cancel")),
+                    root_url, :class => 'btn btn-mini' %>
+      </div>
+
+
+        <%#= f.submit "Save changes", class: "btn btn-primary" %>
+    <% end %>
+  </div>
+</div>

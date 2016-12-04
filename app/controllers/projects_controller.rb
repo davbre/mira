@@ -15,19 +15,30 @@ class ProjectsController < ApplicationController
 
   def index
     @projects = Project.order(id: :desc).page params[:page] # kaminari
+    @user = current_user
+    pids = @projects.ids
+    # note that nil is added to list of pids so that we include in our hash any global permissions. We do this
+    # because as soon as a global permission is added, it locks down all projects.
+    @read_key_hash = ApiKeyPermission.where(project_id: [nil] + pids,permission: [0,1]).group(:project_id).count
+    @write_key_hash = ApiKeyPermission.where(project_id: [nil] + pids,permission: 1).group(:project_id).count
   end
 
   def show
     @project = Project.find(params[:id])
     @datasources = @project.datasources
     @datapackage = @project.datapackage
-    @datapackage_resources = @datapackage.present? ?  @datapackage.datapackage_resources : nil
+    # filter API key permissions where the permission is read-write and the
+    # scope is either global or specific to the project.
+    # key_perms = ApiKeyPermission.where("permission = 1 and (permission_scope = ? or (permission_scope = ? and project_id = ?))",0,1,@project.id)
+    @keys_with_write_permission = ApiKey.joins(:api_key_permissions).where("permission = 1 and (permission_scope = ? or (permission_scope = ? and project_id = ?))",0,1,@project.id)
+    #binding.pry
+    # @datapackage_resources = @datapackage.present? ?  @datapackage.datapackage_resources : nil
     # if there exists a datasource with the same name as a datapackage_resource then it was uploaded
     # @datapackage_resources.each do |dr|
     #   @datasources.any?{ |a| a.datafile_file_name == dr.split("/").last }
     # end
-    log_files = Dir.glob(@project.job_log_path + '*.log')
-    @log_file_names = log_files.map { |l| l.split("/").last }
+    # log_files = Dir.glob(@project.job_log_path + '*.log')
+    # @log_file_names = log_files.map { |l| l.split("/").last }
   end
 
   def new
@@ -68,7 +79,7 @@ class ProjectsController < ApplicationController
     project = Project.find(params[:id])
     if project.datapackage.present?
       project.datapackage.datapackage_resources.each do |dp_res|
-        dp_res.delete_associated_artifacts
+        #dp_res.delete_associated_artifacts
         dp_res.delete_db_table
       end
     end
@@ -130,7 +141,6 @@ class ProjectsController < ApplicationController
 
   def upload_datasources
     @project = Project.find(params[:id])
-    @datasources = @project.datasources # needed in case we render 'show' (when error)
     @datapackage = @project.datapackage
     @datapackage_resources = @datapackage.present? ?  @datapackage.datapackage_resources : nil
     @feedback = { errors: [], warnings: [], notes: [] }
@@ -174,7 +184,8 @@ class ProjectsController < ApplicationController
 
     # Rails strong parameters
     def project_params
-      params.require(:project).permit(:name, :description, datasources: [:datafile_file_name, :table_ref, :public_url])
+      # params.require(:project).permit(:name, :description, datasources: [:datafile_file_name, :table_ref, :public_url])
+      params.require(:project).permit(:name, :description) #, datasources: [:datafile_file_name, :table_ref, :public_url])
     end
 
     def correct_user

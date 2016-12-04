@@ -2,9 +2,11 @@ module Api
 module V1
 
 
-  class DatasourcesController < ApplicationController
+  class DatasourcesController < ActionController::Base
 
     include ApplicationHelper
+
+    before_action :key_authorize_read
 
     def index
       datasources = Project.find(params[:id]).datasources

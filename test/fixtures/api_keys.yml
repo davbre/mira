@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  user: one
+  token: 123456789012345678901111
+  description: Test API key 1
+
+two:
+  user: one
+  token: 123456789012345678902222
+  description: Test API key 2

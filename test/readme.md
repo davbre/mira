@@ -10,3 +10,11 @@ Run tests in single file:
 
 Run single test:
   ruby -I test test/controllers/datasources_controller_test.rb -n "test_name_of_test"
+
+
+
+# Possible new tests...
+
+      do not show uploads / datapackages when not logged in??
+
+      test that private fields are not returned from API.

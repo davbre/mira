@@ -3,6 +3,128 @@ module Api
     class DataController < ActionController::Base
 
       include ApplicationHelper
+      include DataAccessHelper
+
+      before_action :key_authorize_read, only: [ :show, :index, :datatables, :distinct ]
+      before_action :key_authorize_write, only: [:create, :destroy, :update]
+
+
+      def create
+        db_table = get_db_table(params[:id],params[:table_ref])
+
+        @new_row = db_table.new(table_params db_table)
+        @new_row.mira_created_at = Time.now.iso8601
+        if current_user.present?
+          @new_row.mira_source_id = current_user.id
+          @new_row.mira_source_type = "user"
+        elsif db_key.id.present?
+          @new_row.mira_source_id = db_key.id
+          @new_row.mira_source_type = "key"
+        else
+          @new_row.errors.messages["dumb_error:"] << "Row not added"
+        end
+
+        response = {}
+        if @new_row.mira_source_id.present? && @new_row.errors.messages.empty?
+          response = @new_row if @new_row.save
+        else
+          response = { error: @new_row.errors.messages }
+        end
+        render json: response
+      end
+
+
+      def show
+        db_table = get_db_table(params[:id],params[:table_ref])
+        row = db_table.find(params[:data_id])
+        render json: row, except: except_vars
+      end
+
+
+      def update
+        db_table = get_db_table(params[:id],params[:table_ref])
+        @row = db_table.find(params[:data_id])
+        if @row.update(table_params db_table)
+          response = @row
+        else
+          response = { error: @row.errors.messages }
+        end
+        render json: response
+      end
+
+
+      def destroy
+        db_table_hash = get_db_table_info(params[:id],params[:table_ref])
+        db_table = db_table_hash[:db_table]
+        @row = db_table.where(id: params[:data_id]).first
+        if @row.present? && @row.destroy
+          response = { meta: {
+                         projectId: db_table_hash[:project].id,
+                         tableName: db_table_hash[:resource].table_ref,
+                         rowId: @row.id
+                     }}
+          status = :ok
+        else
+          response = { error: "404: row does not exist" }
+          status = :not_found
+        end
+        render json: response, status: status
+      end
+
+
+      # See API, and the response expected: https://editor.datatables.net/manual/server
+      def datatables_editor
+        db_table = get_db_table(params[:id],params[:table_ref])
+        # we inspect request.query_parameters because params["action"]
+        # overwrites the "action" field sent by datatables.
+        qparams = request.query_parameters
+
+        response = {"data" => [], "error" => "", "fieldErrors" => []}
+
+
+        if qparams["action"] == "create"
+              # qparams["data"] should have keys ["0", "1",..."n"]. Should
+              # check this is the case here...TODO!
+              qparams["data"].each do |key,row_data|
+                # on each iteration we overwrite params["data"]
+                params["data"] = row_data
+                new_row = db_table.new(table_params db_table)
+                if new_row.save
+                  response["data"] << new_row
+                else
+                  response["error"] << new_row.errors.messages
+                end
+              end
+        elsif qparams["action"] == "edit"
+              qparams["data"].each do |key,row_data|
+                # on each iteration we overwrite params["data"]
+                params["data"] = row_data
+                row = db_table.find(key.to_i) # for the datatables 'edit' action, the key will be the row id!
+                if row.update(table_params db_table)
+                  response["data"] << row
+                else
+                  response["error"] << new_row.errors.messages
+                end
+              end
+        elsif qparams["action"] == "remove"
+              db_table_hash = get_db_table_info(params[:id],params[:table_ref])
+              db_table = db_table_hash[:db_table]
+              qparams["data"].each do |key,row_data|
+                row = db_table.where(id: key.to_i).first
+                if row.present? && row.destroy
+                  response = {} # on successful delete datatables expects empty hash
+                else
+                  response = { error: 404 }
+                end
+              end
+        else
+          response["error"] = "Unexpected action '" + qparams["action"] + "' from datatables!"
+        end
+
+        render json: response
+      end
+
+
 
       def index
 
@@ -33,7 +155,7 @@ module Api
 
         (order_columns || "").split(",").each do |column|
           sort_column, sort_direction = (column || "").split(":")
-          sort_direction = sort_direction == "desc" ? "desc" : "asc"
+          sort_direction = sort_direction.downcase == "desc" ? "desc" : "asc"
           scope = scope.order(sort_column.to_sym => sort_direction.to_sym) unless sort_column.nil?
         end
 
@@ -55,13 +177,15 @@ module Api
         end
 
         results[:data] = paginate scope, per_page: per_page_num
-        render json: results
+
+        # render excluding extra variables
+        render json: results, except: except_vars
 
 
       end
 
 
-
+      # deals with incoming datatables js library requests
       def datatables
 
         project = Project.find(params[:id])
@@ -71,7 +195,7 @@ module Api
         table_with_scopes = get_mira_ar_table("#{resource.db_table_name}")
         scope = table_with_scopes.unscoped
 
-        per_page_num = @_params["length"].to_i
+        per_page_num = [@_params["length"].to_i,1].max
         # Datatables sends a start observations rather than a page number so
         # we infer the page number
         dt_draw = @_params["draw"]
@@ -138,7 +262,7 @@ module Api
         results[:recordsTotal] = response.headers[ApiPagination.config.total_header]
         results[:recordsFiltered] = results[:recordsTotal] # don't yet know exactly what this is for
         results[:draw] = dt_draw
-        render json: results
+        render json: results, except: except_vars
       end
 
 
@@ -169,6 +293,7 @@ module Api
       end
 
 
+
       private
 
         def get_query_string_params(params)
@@ -180,6 +305,39 @@ module Api
           end
         end
 
+        def get_db_table(project_id,table_ref)
+          project = Project.find(params[:id])
+          resource = DatapackageResource.where(datapackage_id: project.datapackage.id,table_ref: table_ref).first
+          db_table = get_mira_ar_table("#{resource.db_table_name}")
+        end
+
+        def get_db_table_info(project_id,table_ref)
+          project = Project.find(params[:id])
+          resource = DatapackageResource.where(datapackage_id: project.datapackage.id,table_ref: table_ref).first
+          db_table = get_mira_ar_table("#{resource.db_table_name}")
+          { project: project, resource: resource, db_table: db_table }
+        end
+
+
+        # strong params...only allow params[:data], and specific fields within (i.e. those defined by the datapackage!)
+        def table_params(db_table)
+          dp_res_id = db_table.name.split("_")[1].to_i
+          table_fields_syms = DatapackageResourceField.where(datapackage_resource_id: dp_res_id).map { |e| e.name.to_sym }
+          params.require(:data).permit(table_fields_syms)
+        end
+
+        def select_without_extra_scope
+          select(column_names - columns.map(&:to_s))
+        end
+
+        def user_ok?
+          # assuming at this point only one user, i.e. admin user
+          current_user.present?
+        end
+
+        def except_vars
+          exc_vars = (user_ok? == true) ? [] : MIRA_EXTRA_VARIABLE_MAP.keys
+        end
 
     end
   end

@@ -26,6 +26,9 @@ class Api::V1::ProjectsEndpointsTest < ActionController::TestCase
     # ProcessCsvUpload.new(ds.id).perform
   end
 
+  def teardown
+    Project.find(@project.id).destroy
+  end
 
   test "projects/ endpoint should return list of projects including newly created one" do
     get :index #, {}, { "Accept" => "application/json" }
@@ -44,5 +47,25 @@ class Api::V1::ProjectsEndpointsTest < ActionController::TestCase
            && json_project["id"] == @project.id && json_project["user_id"] == @user.id
   end
 
+
+  test "should not be able to read project metadata when API key set" do
+    # this is not currently the case! I.e. project metadata can be read
+    [:global, :project].each do |scope|
+
+      project_id = (scope == :global) ? nil : @project.id
+
+      [:read, :write].each_with_index do |perm,ndx|
+        new_key = ApiKey.new(user_id: @user.id, token: ndx.to_s[0]*24, description: "New API key")
+        new_key.save
+        permission = ApiKeyPermission.new(api_key_id: new_key.id, \
+                                          permission_scope: scope, \
+                                          permission: perm,
+                                          project_id: project_id)
+        permission.save
+        get :index
+        assert_equal 401, JSON.parse(response.body)["errors"][0]["code"]
+      end
+    end
+  end
 
 end

@@ -23,7 +23,21 @@
 
     a_klass.class_eval do
 
-      self.column_names.each do |sv|
+      self.columns.each do |sc|
+
+        sv = sc.name
+        st = sc.cast_type.type
+
+        # add validators
+        if ["id"].exclude? sv
+          if st == :integer
+            self.validates sv.to_sym, numericality: { only_integer: true, :allow_nil => true }
+          elsif [:float, :decimal].include? st
+            self.validates sv.to_sym, numericality: {:allow_nil => true}
+          end
+          # TODO ?? validators for dates, datetimes, booleans ??
+
+        end
 
         # !! NB: when a new scope is added, update data_controller, specifically the datatables section!!
         # using "_eq" suffix as without it we run the risk of conflicting with existing methods, e.g. "name", "time" etc.
@@ -71,6 +85,24 @@
         end
 
       end
+
+
+      if table.downcase.start_with? Rails.configuration.x.db_table_prefix.downcase
+        # want to exclude 'private' fields by default. See:
+        # http://www.daveperrett.com/articles/2010/10/03/excluding-fields-from-rails-json-and-xml-output/
+        # We create a method dynamically to do this - we override the as_json method
+        table_dpr = DatapackageResource.where(db_table_name: table).first
+        private_fields = []
+        DatapackageResourceField.where(datapackage_resource_id: table_dpr.id, private: true).each do |privf|
+          private_fields << privf.name.to_sym
+        end
+
+        define_method("as_json") do |options|
+          options[:except] ||= private_fields
+          super(options)
+        end
+      end
+
 
     end
 

@@ -1,10 +1,28 @@
-
-
 # Mira
 
-Mira is developed using Ruby on Rails. You upload CSV files to it and it *tries* to give you a read-only HTTP API (if it likes the files you upload ;))
+Mira is a Ruby on Rails application which gives you a simple HTTP API for CSV files.
 
-CSV files are uploaded to Mira along with a corresponding tabular data package (a datapackage.json file). The datapackage.json file provides the CSV file metadata, i.e. file names, columns, column-types, delimiters etc. See [here](http://data.okfn.org/doc/tabular-data-package) and [here](http://dataprotocols.org/tabular-data-package/) for more information on tabular data packages.
+## Summary
+
+1. You create a Mira *project*. A project is simply a home for one or more CSV files, along with a datapackage.json file. More on that now...
+
+2. You provide Mira with information about your CSV files by uploading a datapackage.json file to the project. This file provides metadata for the CSV files you plan to upload to the project. i.e. file names, columns names and types, delimiters etc. See [here](http://data.okfn.org/doc/tabular-data-package) and [here](http://dataprotocols.org/tabular-data-package/) for more information about datapackage.json files and tabular data packages.
+
+3. With the datapackage.json file Mira then does the following:
+    - it creates an empty database table for each CSV file specified in the datapackage.json file.
+    - it creates an API to these database tables which you can use to read and write data.
+
+4. You write data to the database tables by uploading CSV files, or by using a JSON API.
+
+5. You can query the data using simple API requests. Consider a table `mytable` in a project, with columns `col1`, `col2` and `col3`. To get rows where `col1` equals "XXX", `col2` equals "YYY" and `col3` equals "ZZZ", you could make the following `GET` request:
+
+  <pre>
+  http://localhost:3000/api/projects/1/tables/mytable/data?<b>col1_eq=XXX&col2_eq=YYY&col3_eq=ZZZ</b>
+  </pre>
+
+  See the demo for more details on how the data can be queried.
+
+6. You can generate API keys to control the reading and writing data.
 
 ## Demo
 
@@ -87,3 +105,10 @@ Some examles of interacting with a Mira API:
 10. Navigate to the following address for the project's API details:
 
     [http://localhost:3000/projects/1/api-details](http://localhost:3000/projects/1/api-details)
+
+
+## Extra Notes
+
+Assuming a write API key has been generated, here's how you can write data:
+
+curl -d "data[col1]=value1&data[col2]=val2" -H "X-Api-Key: 6041fa394bc84abe46ffdb71" http://localhost:3000/api/projects/1/tables/mytable/data

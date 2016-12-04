@@ -1,42 +1,34 @@
 <div class="panel panel-default">
   <div class="panel-heading">
-    <h3 class="panel-title">Project Overview</h3>
+    <h2 class="panel-title">Project Overview</h2>
   </div>
 
   <%= render 'error_messages' %>
 
   <div class="panel-body">
 
-    <%= render 'projects/partials/project_details' %><br />
+    <div class="col-md-6">
+      <%= render 'projects/partials/project_details' %><br />
+    </div>
 
     <div class="col-md-12">
 
 
       <% if @datapackage.present? %>
-        <table class="table">
-          <tr>
-            <th>Datapackage</th>
-            <th>Created</th>
-          </tr>
-          <tr>
-            <td><%= link_to @datapackage.datapackage_file_name, @datapackage.datapackage.url %></td>
-            <th><%= @datapackage.created_at.strftime("%FT%R") %></td>
-          </tr>
-        </table>
-
 
         <table class="table">
           <tr>
             <!-- Datasources table HEADER -->
-            <th>Datasources listed<br />in datapackage.json</th>
-            <th>Upload<br />Datetime</th>
+            <th>Datasources<br />(as per datapackage.json)</th>
+            <!-- <th>Upload<br />Datetime</th> -->
             <% if user_signed_in? %>
-              <th>ActiveRecord<br />Class Name</th>
-              <th>Upload Log</th>
-              <th>Import<br />Status</th>
-              <th>Rows<br />Imported</th>
-              <th> </th>
+              <th>Database<br />Table</th>
+              <th>Number<br />of Rows</th>
+              <th>Browse/<br />update data</th>
+              <th></th>
+              <th></th>
             <% end %>
+
 
             <!-- One row per datapackage resource -->
             <% @datapackage.datapackage_resources.sort_by { |obj| obj.table_ref }.each do |res| %>
@@ -44,37 +36,41 @@
 
                 <!-- Datasource -->
                 <td>
-                  <% if res.datasource_id.present? %>
-                    <%= link_to res.path, @datasources.find(res.datasource_id).public_url %>
-                  <% else %>
-                    <%= res.path %>
-                  <% end %>
+                  <%= res.path %>
                 </td>
-
-                <!-- Upload datetime -->
-                <% if res.datasource_id.present? %>
-                  <td><%= @datasources.find(res.datasource_id).created_at.strftime("%FT%R") %></td>
-                <% else %>
-                  <td>-- Not uploaded yet --</td>
-                <% end %>
 
                 <% if user_signed_in? %>
                   <!-- ActiveRecord class name -->
-                  <td><%= res.db_table_name.capitalize %></td>
+                  <td><%= res.db_table_name %></td>
 
-                  <% if res.datasource_id.present? %>
-                    <!-- log file and status -->
-                    <td><a href="/job_logs/project_<%= @datasources.find(res.datasource_id).project_id %>/<%= @datasources.find(res.datasource_id).datafile_file_name %>.log"><%= @datasources.find(res.datasource_id).datafile_file_name %>.log</a></td>
-                    <td><%= @datasources.find(res.datasource_id).import_status %></td>
-                    <td><%= res.imported_rows.to_s %></th>
-                    <td><%= link_to "delete", project_datasource_path(@datasources.find(res.datasource_id).project_id, @datasources.find(res.datasource_id).id), method: :delete,
-                                                  data: { confirm: "You sure?" }, :class => "btn btn-xs btn-danger" %></td>
-                  <% else %>
-                    <td>-- N/A --</td>
-                    <td>-- N/A --</td>
-                    <td> </td>
-                  <% end %>
+                  <td><%= get_mira_ar_table(res.db_table_name.capitalize).count %></td>
 
+                  <td class="mira-browse-data-link">
+                    <%= link_to project_datapackage_datapackage_resource_path(@project,res) do %>
+                      <span class="glyphicon glyphicon-th" title="Browse/update data"></span>
+                    <% end %>
+                  </td>
+
+                  <td>
+                    <% num_uploads=Datasource.where(datapackage_resource_id: res.id).count %>
+                    <% if num_uploads == 0 %>
+                      0 files uploaded
+                    <% else %>
+                      <%= link_to pluralize(num_uploads,"file") + " uploaded", project_datapackage_datapackage_resource_path(@project,res) %>
+                    <% end %>
+                  </td>
+
+                  <td class="mira-browse-apikeys-link">
+                    <% key_count_hash = get_mira_ar_table(res.db_table_name.capitalize).where(mira_source_type: "key").group(:mira_source_id).count %>
+                    <% num_apikeys = key_count_hash.length %>
+                    <%= key_count_hash.values.inject(0){|sum,x| sum + x } %> rows from
+                    <% if num_apikeys == 0 %>
+                      0 API keys
+                    <% else %>
+                      <%= link_to pluralize(num_apikeys,"API key"), project_datapackage_datapackage_resource_path(@project,res) %>
+
+                    <% end %>
+                  </td>
                 <% end %>
 
               </tr>
@@ -101,4 +97,25 @@
   <% else %>
     <%= render :partial => 'upload_datasources' %>
   <% end %>
+<% end %>
+
+
+
+<% provide(:custom_endofpage) do %>
+<script>
+$(document).ready(function () {
+
+  // when we click on browse link we want to activate the browse tab!
+  $('td.mira-browse-data-link').click(function(e) {
+    debugger;
+    localStorage.setItem('DsSelectedTab', 'mira-browse'); // set equal to the browse tab id
+  });
+
+  $('td.mira-browse-apikeys-link').click(function(e) {
+    debugger;
+    localStorage.setItem('DsSelectedTab', 'mira-apikeys'); // set equal to the browse tab id
+  });
+
+});
+</script>
 <% end %>

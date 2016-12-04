@@ -11,21 +11,41 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151227122837) do
+ActiveRecord::Schema.define(version: 20161203124306) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "api_key_permissions", force: :cascade do |t|
+    t.integer  "api_key_id"
+    t.integer  "permission_scope"
+    t.integer  "permission"
+    t.integer  "project_id"
+    t.integer  "datapackage_resource_id"
+    t.string   "db_table_name"
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
+  end
+
+  create_table "api_keys", force: :cascade do |t|
+    t.integer  "user_id"
+    t.string   "token"
+    t.text     "description"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+  end
 
   create_table "datapackage_resource_fields", force: :cascade do |t|
     t.integer  "datapackage_resource_id"
     t.text     "name"
     t.text     "ftype"
     t.integer  "order"
-    t.datetime "created_at",                             null: false
-    t.datetime "updated_at",                             null: false
+    t.datetime "created_at",                              null: false
+    t.datetime "updated_at",                              null: false
     t.boolean  "big_integer"
     t.boolean  "add_index",               default: true
     t.text     "format"
+    t.boolean  "private",                 default: false
   end
 
   add_index "datapackage_resource_fields", ["datapackage_resource_id"], name: "index_datapackage_resource_fields_on_datapackage_resource_id", using: :btree
@@ -38,11 +58,9 @@ ActiveRecord::Schema.define(version: 20151227122837) do
     t.text     "mediatype"
     t.datetime "created_at",      null: false
     t.datetime "updated_at",      null: false
-    t.integer  "datasource_id"
     t.text     "quote_character"
     t.text     "table_ref"
     t.text     "db_table_name"
-    t.integer  "imported_rows"
     t.text     "description"
   end
 
@@ -63,17 +81,21 @@ ActiveRecord::Schema.define(version: 20151227122837) do
 
   create_table "datasources", force: :cascade do |t|
     t.integer  "project_id"
-    t.datetime "created_at",            null: false
-    t.datetime "updated_at",            null: false
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
     t.string   "datafile_file_name"
     t.string   "datafile_content_type"
     t.integer  "datafile_file_size"
     t.datetime "datafile_updated_at"
-    t.text     "public_url"
-    t.integer  "datapackage_id"
+    t.text     "logfile_path"
     t.integer  "import_status"
+    t.integer  "datapackage_resource_id"
+    t.integer  "datapackage_id"
+    t.integer  "imported_rows"
   end
 
+  add_index "datasources", ["datapackage_id"], name: "index_datasources_on_datapackage_id", using: :btree
+  add_index "datasources", ["datapackage_resource_id"], name: "index_datasources_on_datapackage_resource_id", using: :btree
   add_index "datasources", ["project_id"], name: "index_datasources_on_project_id", using: :btree
 
   create_table "delayed_jobs", force: :cascade do |t|
@@ -122,5 +144,7 @@ ActiveRecord::Schema.define(version: 20151227122837) do
 
   add_foreign_key "datapackage_resource_fields", "datapackage_resources"
   add_foreign_key "datapackages", "projects"
-  add_foreign_key "datasources", "projects"
+  add_foreign_key "datasources", "datapackage_resources", on_delete: :cascade
+  add_foreign_key "datasources", "datapackages"
+  add_foreign_key "datasources", "projects", on_delete: :cascade
 end

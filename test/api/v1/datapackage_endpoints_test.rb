@@ -12,6 +12,9 @@ class Api::V1::DatapackageEndpointsTest < ActionController::TestCase
     @datapackage.save
   end
 
+  def teardown
+    Project.find(@project.id).destroy
+  end
 
   test "projects/:id/datapackage endpoint should return datapackage data" do
     get :show, :id => @project.id

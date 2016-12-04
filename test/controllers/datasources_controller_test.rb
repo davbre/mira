@@ -12,6 +12,10 @@ class DatasourcesControllerTest < ActionController::TestCase
     upload_to_project(@controller,@project,@upload_files, "uploads/datapackage.json")
   end
 
+  def teardown
+    Project.find(@project.id).destroy
+  end
+
   # destroy
   test "should destroy datasource if signed in and owner of project" do
     destroy_csv = @upload_files[0]
@@ -45,8 +49,8 @@ class DatasourcesControllerTest < ActionController::TestCase
 
   test "destroy datasource should not drop associated database table" do
     destroy_csv = @upload_files[0]
-    relevant_datasource = @project.datasources.where(datafile_file_name: destroy_csv + ".csv").first
-    relevant_db_table_name = DatapackageResource.where(datasource_id: relevant_datasource.id).first.db_table_name
+    relevant_datasource = Datasource.where(datapackage_id: @datapackage.id, datafile_file_name: destroy_csv + ".csv").first
+    relevant_db_table_name = @project.datapackage.datapackage_resources.where(table_ref: destroy_csv).first.db_table_name
     assert ActiveRecord::Base.connection.table_exists? relevant_db_table_name
     delete :destroy, project_id: @project, id: relevant_datasource.id
     assert ActiveRecord::Base.connection.table_exists? relevant_db_table_name
@@ -70,12 +74,11 @@ class DatasourcesControllerTest < ActionController::TestCase
     refute File.file?(@project.job_log_path + relevant_datasource.datafile_file_name + ".log")
   end
 
-  test "should unset datasource_id in datapackage_resource table" do
-    destroy_csv = @upload_files[0]
-    relevant_datasource = @project.datasources.where(datafile_file_name: destroy_csv + ".csv").first
-    # assert file exists, delete, then refute it exists
-    assert_equal 1, DatapackageResource.where(datasource_id: relevant_datasource.id).length
-    delete :destroy, project_id: @project, id: relevant_datasource.id
-    # refute File.file?(@project.job_log_path + relevant_datasource.datafile_file_name + ".log")
+  test "should be able to download uploaded csv files when no API key set" do
+    skip
+  end
+
+  test "should not be able to download uploaded csv files when API key set" do
+    skip
   end
 end

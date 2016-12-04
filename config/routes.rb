@@ -5,6 +5,18 @@ Rails.application.routes.draw do
   devise_for :users
   root "projects#index"
 
+
+  resources :user do
+    resources :api_keys do
+      resources :api_key_permissions
+    end
+  end
+
+  # Custom routes relating to API keys
+  get "user/:user_id/api_keys/:id/generate-new-api-key" => "api_keys#gen_new_key"
+  get "user/:user_id/api_keys/projects/:project_id" => "api_keys#index_project", as: :project_api_keys
+  delete "projects/:project_id/datapackage/datapackage_resources/:id/api_keys/:api_key_id" => "datapackage_resources#delete_apikey_rows"
+
   # UI routes
   resources :projects do
     resources :datasources
@@ -12,6 +24,7 @@ Rails.application.routes.draw do
       resources :datapackage_resources
     end
   end
+
 
   # custom project routes
   post "projects/:id/upload_datasources" => "projects#upload_datasources"
@@ -43,18 +56,36 @@ Rails.application.routes.draw do
       get "projects/:id/uploads" => "datasources#index"
       get "projects/:id/uploads/:table_ref" => "datasources#show"
 
-      # Data
-      match "projects/:id/tables/:table_ref/data" => "data#datatables",
-            :via => [:post],
-            :constraints => lambda { |request| (request.params.has_key?(:draw) && request.params.has_key?(:start) && request.params.has_key?(:length)) }
-
       get "projects/:id/tables/:table_ref/data" => "data#index"
+      get "projects/:id/tables/:table_ref/recline/data" => "data#recline"
       get ":db_table/metadata/search" => "data#index" # e.g. for searching project metadata
-
       # Distinct values
       get "projects/:id/tables/:table_ref/columns/:col_ref/distinct" => "data#distinct"
+
+      # generic CRUD
+      post "projects/:id/tables/:table_ref/data" => "data#create"
+      get "projects/:id/tables/:table_ref/data/:data_id" => "data#show"
+      patch "projects/:id/tables/:table_ref/data/:data_id" => "data#update"
+      delete "projects/:id/tables/:table_ref/data/:data_id" => "data#destroy"
+
+      # datatables CRUD
+      post "projects/:id/tables/:table_ref/datatables" => "data#datatables",
+            :via => [:post],
+            :constraints => lambda { |request| (request.params.has_key?(:draw) && request.params.has_key?(:start) && request.params.has_key?(:length)) }
+      post "projects/:id/tables/:table_ref/datatables/editor" => "data#datatables_editor"
+
     end
 
   end
+
+  # table = "xy41_97"
+  # table_klass = ActiveRecord::Base.const_get "#{table}".capitalize
+  # project_number, datasource_number = table.sub(Rails.configuration.x.db_table_prefix.downcase,"").split("_").map { |s| s.to_i }
+  # table_ref = DatapackageResource.where(datasource_id: datasource_number).first.table_ref
+  #
+  # puts "Adding routes for project " + project_number.to_s + ", table " + table_ref
+  # get_route =  "/api/projects/" + project_number.to_s + "/tables/" + table_ref + "/:id"
+  # binding.pry
+  # get get_route, :to => "projects#index"
 
 end

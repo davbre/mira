@@ -18,11 +18,9 @@
 
 # DBR: ignore spring files. See https://www.railstutorial.org/book/static_pages#sec-getting_started_with_testing
 /spring
-#/public/uploads/*
-#/public/job_logs/*
 /.idea/*
 docker.md
-notes.md
+notes*
 commands.md
 Dockerfile
 docker-compose.yml

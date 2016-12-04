@@ -125,7 +125,7 @@ $gray-medium-light: #eaeaea;
 
 /* forms */
 
-input, textarea, select, .uneditable-input {
+input, textarea, /*select,*/ .uneditable-input {
   border: 1px solid #bbb;
   width: 100%;
   margin-bottom: 15px;
@@ -198,4 +198,8 @@ dd, dt {
 dl {
   margin-top: 10;
   margin-bottom: 10px;
+}
+
+.special-mira-col {
+  background-color: LightGray;
 }

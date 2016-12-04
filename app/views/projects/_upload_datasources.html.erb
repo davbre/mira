@@ -27,11 +27,12 @@
     <% end %>
 
     <div class="col-md-9">
-      <p>
-      <strong><big>&nbsp*&nbsp</big></strong>The "quick upload" bypasses ActiveRecord table models, using instead an ActiveRecord
-      raw connection. This is much faster than the "slow upload" but is more prone to failure. For example it will fail if you
-      have a date column with an empty value, or if you have a date column with BC dates represented as negative dates
-      (e.g. "-0050-10-10" instead of "0050-10-10 BC"). If the quick upload fails, then delete and try the slow upload.
+      <p class="small">
+      <strong><big>&nbsp*&nbsp</big></strong>The "quick upload" bypasses
+      <a href="http://guides.rubyonrails.org/active_record_basics.html">ActiveRecord</a> table models, using
+      instead an ActiveRecord raw connection. This is much faster than the "slow upload" but is more prone to
+      failure (i.e. when data does not exactly conform to what is specified in the datapackage.json file). If
+      the quick upload fails, then delete and try the slow upload.
       </p>
     </div>
 

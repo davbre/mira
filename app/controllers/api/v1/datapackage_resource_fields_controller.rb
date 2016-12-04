@@ -2,9 +2,12 @@ module Api
 module V1
 
 
-  class DatapackageResourceFieldsController < ApplicationController
+  class DatapackageResourceFieldsController < ActionController::Base
 
     include ApplicationHelper
+    include DataAccessHelper
+
+    before_action :key_authorize_read
 
     def index
       project = Project.find(params[:id])

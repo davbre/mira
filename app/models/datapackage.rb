@@ -1,10 +1,11 @@
 class Datapackage < ActiveRecord::Base
   belongs_to :project
-  has_many  :datapackage_resources
+  has_many :datasources, dependent: :destroy
+  has_many  :datapackage_resources, dependent: :destroy
   validates :project_id, presence: true
 
   has_attached_file :datapackage,
-    :path => ":rails_root/public/uploads/project_:proj_id/:filename",
+    :path => ":rails_root/" + Rails.configuration.x.upload_path + "/project_:proj_id/:filename",
     :url  => "/uploads/project_:proj_id/:filename"
 
   validates_attachment :datapackage, content_type: { :content_type => ["text/plain", "application/json"] }

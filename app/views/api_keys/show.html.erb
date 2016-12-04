@@ -1,0 +1,16 @@
+<% provide(:title, 'API Key') %>
+
+<br /><br /><br />
+<%= link_to "Manage API key permissions", user_api_key_api_key_permissions_path(@user,@key), :class => "btn btn-primary" %>
+<br /><br />
+<table class="table">
+  <thead>
+    <th>Description</th>
+    <th>Key</th>
+    <th> </th>
+  </thead>
+  <tr>
+    <td><%= @key.description %></td>
+    <td><%= @key.token %></td>
+  </tr>
+</table>
