@@ -12,6 +12,10 @@ class DatasourcesControllerTest < ActionController::TestCase
     upload_to_project(@controller,@project,@upload_files, "uploads/datapackage.json")
   end
 
+  def teardown
+    Project.find(@project.id).destroy
+  end
+
   # destroy
   test "should destroy datasource if signed in and owner of project" do
     destroy_csv = @upload_files[0]

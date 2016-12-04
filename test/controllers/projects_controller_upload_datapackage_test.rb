@@ -12,6 +12,10 @@ class ProjectsControllerUploadDatapackageTest < ActionController::TestCase
     @project.save
   end
 
+  def teardown
+    Project.find(@project.id).destroy
+  end
+
   # datapackage upload
   test "should detect when datapackage already uploaded" do
     good_datapackage = fixture_file_upload("uploads/datapackage/good/datapackage.json", "application/json")

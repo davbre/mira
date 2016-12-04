@@ -17,7 +17,7 @@ module DataAccessHelper
       end
     end
 
-    unless global_permission || project_permission || authenticate_user!
+    unless global_permission || project_permission || current_user
       render json: resp401("for read access"), status: 401
     end
   end
@@ -33,7 +33,7 @@ module DataAccessHelper
       end
     end
 
-    unless global_permission || project_permission || authenticate_user!
+    unless global_permission || project_permission || current_user
       render json: resp401("for write access"), status: 401
     end
   end

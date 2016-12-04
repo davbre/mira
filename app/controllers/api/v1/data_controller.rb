@@ -195,7 +195,7 @@ module Api
         table_with_scopes = get_mira_ar_table("#{resource.db_table_name}")
         scope = table_with_scopes.unscoped
 
-        per_page_num = @_params["length"].to_i
+        per_page_num = [@_params["length"].to_i,1].max
         # Datatables sends a start observations rather than a page number so
         # we infer the page number
         dt_draw = @_params["draw"]

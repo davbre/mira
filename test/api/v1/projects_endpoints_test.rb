@@ -26,6 +26,9 @@ class Api::V1::ProjectsEndpointsTest < ActionController::TestCase
     # ProcessCsvUpload.new(ds.id).perform
   end
 
+  def teardown
+    Project.find(@project.id).destroy
+  end
 
   test "projects/ endpoint should return list of projects including newly created one" do
     get :index #, {}, { "Accept" => "application/json" }

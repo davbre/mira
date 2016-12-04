@@ -9,14 +9,16 @@ class Api::V1::DataControllerTest < ActionController::TestCase
     sign_in users(:one)
     # @project = projects(:one)
     @user = users(:one)
-    @project = @user.projects.build(name: "Upload test project", description: "Upload test project description")
+    @project = @user.projects.build(name: "Upload test data controller project", description: "Upload test data controller project description")
     @project.save
     @uploads = ["good_upload"]
-    @controller = Api::V1::DataController.new # See http://stackoverflow.com/a/7743176
     upload_to_project(@controller,@project, @uploads, "uploads/datapackage/good/datapackage.json") # just upload datapackage file
     @dp_file_json = JSON.parse(File.read(@dp_file))
   end
 
+  def teardown
+    Project.find(@project.id).destroy
+  end
 
   def csv_row_to_json(datapackage_upload_name,id,row) # row is CSV row object
     mapped_col_types = map_datapackage_column_types(@dp_file_json, datapackage_upload_name)

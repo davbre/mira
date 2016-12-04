@@ -23,6 +23,10 @@ class Api::V1::DatasourcesEndpointsTest < ActionController::TestCase
     @dp_file_json = JSON.parse(File.read(@dp_file))
   end
 
+  def teardown
+    Project.find(@project.id).destroy
+  end
+
   # api/project/:id/tables
   test "Enpoint api/projects/:id/tables - response ok" do
     get :index, :id => @project.id
