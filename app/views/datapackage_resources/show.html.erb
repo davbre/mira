@@ -187,7 +187,6 @@
                   create: false,
                   listClass: "special-mira-col",
                   display: function (data) {
-                    // return "boo";
                     return '<span title="' + data.record.mira_created_at + '">' + data.record.mira_source_type + ', ' + data.record.mira_source_id + '</span>';
                   }
                 },
@@ -215,7 +214,7 @@
         function miraPostData(postData) {
           miraPD = {};
           postData.split("&").forEach(function(item) {
-            miraPD[item.split("=")[0]] = item.split("=")[1]
+            miraPD[item.split("=")[0]] = decodeURIComponent(item.split("=")[1])
           });
           return miraPD;
         }
