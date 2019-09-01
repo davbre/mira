@@ -6,7 +6,7 @@ Mira is a Ruby on Rails application which gives you a simple HTTP API for CSV fi
 
 1. You create a Mira *project*. A project is simply a home for one or more CSV files, along with a datapackage.json file. More on that now...
 
-2. You provide Mira with information about your CSV files by uploading a datapackage.json file to the project. This file provides metadata for the CSV files you plan to upload to the project. i.e. file names, columns names and types, delimiters etc. See [here](http://data.okfn.org/doc/tabular-data-package) and [here](http://dataprotocols.org/tabular-data-package/) for more information about datapackage.json files and tabular data packages.
+2. You provide Mira with information about your CSV files by uploading a datapackage.json file to the project. This file provides metadata for the CSV files you plan to upload to the project. i.e. file names, columns names and types, delimiters etc. See [here](http://data.okfn.org/doc/tabular-data-package) and [here](https://frictionlessdata.io/docs/tabular-data-package/) for more information about datapackage.json files and tabular data packages.
 
 3. With the datapackage.json file Mira then does the following:
     - it creates an empty database table for each CSV file specified in the datapackage.json file.
@@ -23,20 +23,6 @@ Mira is a Ruby on Rails application which gives you a simple HTTP API for CSV fi
   See the demo for more details on how the data can be queried.
 
 6. You can generate API keys to control the reading and writing data.
-
-## Demo
-
-A Mira instance is running here providing APIs to several datasets:
-
-[http://178.62.193.189](http://178.62.193.189)
-
-For example, some [dummy clinical trial data](https://github.com/davbre/dummy-sdtm/tree/master/output/mira_sample_data) has been uploaded and its API details are found here:
-
-[http://178.62.193.189/projects/6/api-details](http://178.62.193.189/projects/6/api-details)
-
-Some examles of interacting with a Mira API:
-
-[http://davbre.github.io/mira-examples/](http://davbre.github.io/mira-examples/)
 
 
 ## Quick Start
